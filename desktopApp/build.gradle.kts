@@ -22,12 +22,12 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "net.newpipe.app.MainKt"
+        mainClass = "com.winatra.urmix.shared.app.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = NEWPIPE_APPLICATION_ID_NEW
-            packageVersion = NEWPIPE_VERSION_NAME
+            packageName = URMIX_APPLICATION_ID_SHARED
+            packageVersion = URMIX_VERSION_NAME
         }
     }
 }

@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-android-app:
+    name: Build URMIX Android app (debug)
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: gradle/actions/wrapper-validation@v6
+
+      - name: set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: 21
+          distribution: "temurin"
+          cache: 'gradle'
+
+      - name: Compile :app:assembleDebug
+        run: ./gradlew :app:assembleDebug --stacktrace -DskipFormatKtlint
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: urmix-apk
+          path: app/build/outputs/apk/debug/*.apk

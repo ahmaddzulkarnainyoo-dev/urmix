@@ -82,7 +82,7 @@
     <string name="use_external_audio_player_title">Tashqi audio pleerdan foydalanish</string>
     <string name="use_external_video_player_summary">Ba\'zi piksellarda ovozni o\'chirish</string>
     <string name="clear_views_history_title">Tomosha tarixini tozalash</string>
-    <string name="clear_cookie_summary">ReCAPTCHA-ni hal qilganingizda NewPipe-da saqlanadigan cookie-fayllarni o\'chirib tashlang</string>
+    <string name="clear_cookie_summary">ReCAPTCHA-ni hal qilganingizda URMIX-da saqlanadigan cookie-fayllarni o\'chirib tashlang</string>
     <string name="export_data_summary">Eksport tarixi, obunalari va pleylistlari</string>
     <string name="import_data_summary">Joriy tarixingiz va obunalaringizni bekor qiladi</string>
     <string name="recaptcha_cookies_cleared">reCAPTCHA cookies fayllari o\'chirildi</string>
@@ -93,10 +93,10 @@
     <string name="switch_to_popup">Pop-upga o\'tish</string>
     <string name="switch_to_background">Orqa fonga o\'tish</string>
     <string name="unknown_content">[Noma\'lum]</string>
-    <string name="app_update_notification_channel_description">NewPipe yangi versiyasi haqida bildirishnomalar</string>
+    <string name="app_update_notification_channel_description">URMIX yangi versiyasi haqida bildirishnomalar</string>
     <string name="app_update_notification_channel_name">Ilovani yangilash bildirishnomasi</string>
-    <string name="notification_channel_description">NewPipe fon va popup pleyerlari uchun bildirishnomalar</string>
-    <string name="notification_channel_name">NewPipe bildirishnomasi</string>
+    <string name="notification_channel_description">URMIX fon va popup pleyerlari uchun bildirishnomalar</string>
+    <string name="notification_channel_name">URMIX bildirishnomasi</string>
     <string name="file">Fayl</string>
     <string name="just_once">Faqat bittasi</string>
     <string name="always">Har doim</string>
@@ -192,7 +192,7 @@
     <string name="app_license_title">NewPipe litsenziyasi</string>
     <string name="read_privacy_policy">Maxfiylik siyosatini o\'qish</string>
     <string name="privacy_policy_encouragement">NewPipe loyihasi sizning shaxsiy hayotingizga jiddiy e\'tibor beradi. Shuning uchun ilova sizning roziligingizsiz biron bir ma\'lumot to\'plamaydi.
-\nNewPipe-ning maxfiylik siyosati halokat to\'g\'risidagi hisobotni yuborganingizda qanday ma\'lumotlar yuborilishi va saqlanishi haqida batafsil ma\'lumot beradi.</string>
+\nURMIX-ning maxfiylik siyosati halokat to\'g\'risidagi hisobotni yuborganingizda qanday ma\'lumotlar yuborilishi va saqlanishi haqida batafsil ma\'lumot beradi.</string>
     <string name="privacy_policy_title">NewPipe-ning maxfiylik siyosati</string>
     <string name="website_encouragement">Qo\'shimcha ma\'lumot va yangiliklar uchun NewPipe veb-saytiga tashrif buyuring.</string>
     <string name="website_title">Websayt</string>
@@ -329,12 +329,12 @@
     <string name="video_detail_by">%s tomonidan</string>
     <string name="channel_created_by">%s tomonidan yaratilgan</string>
     <string name="detail_sub_channel_thumbnail_view_description">Kanal avatari eskizi</string>
-    <string name="content_not_supported">Ushbu tarkib hali NewPipe tomonidan qo\'llab-quvvatlanmaydi.
+    <string name="content_not_supported">Ushbu tarkib hali URMIX tomonidan qo\'llab-quvvatlanmaydi.
 \n
 \nUmid qilamanki, kelgusi versiyada qo\'llab-quvvatlanadi.</string>
     <string name="feed_use_dedicated_fetch_method_help_text">Sizningcha, ta\'minotni yuklash juda sekinmi\? Agar shunday bo\'lsa, tez yuklashni yoqib ko\'ring (uni sozlamalardan yoki quyidagi tugmani bosib o\'zgartirishingiz mumkin).
 \n
-\nNewPipe ikkita lentani yuklash strategiyasini taklif qiladi:
+\nURMIX ikkita lentani yuklash strategiyasini taklif qiladi:
 \n• Sekin, lekin to\'liq bo\'lgan obuna kanalini to\'liq olish.
 \n• Tez, lekin odatda to\'liq bo\'lmagan maxsus xizmatning so\'nggi nuqtasidan foydalanish.
 \n
@@ -413,7 +413,7 @@
     <string name="error_timeout">Ulanish vaqti tugadi</string>
     <string name="error_progress_lost">Siljish yo\'qoldi, chunki fayl o\'chirildi</string>
     <string name="error_insufficient_storage_left">Qurilmada bo\'sh joy qolmadi</string>
-    <string name="error_postprocessing_stopped">NewPipe fayl ustida ishlash paytida yopilgan</string>
+    <string name="error_postprocessing_stopped">URMIX fayl ustida ishlash paytida yopilgan</string>
     <string name="error_postprocessing_failed">Keyingi ishlov berilmadi</string>
     <string name="error_http_not_found">Topilmadi</string>
     <string name="error_http_unsupported_range">Server ko\'p tarmoqli yuklamalarni qabul qilmaydi, @ string / msg_threads = 1 bilan qayta urinib ko\'ring</string>
@@ -440,7 +440,7 @@
     <string name="paused">to\'xtatildi</string>
     <string name="missions_header_pending">Kutilmoqda</string>
     <string name="missions_header_finished">Tugatildi</string>
-    <string name="app_update_available_notification_title">NewPipe yangilanishi mavjud!</string>
+    <string name="app_update_available_notification_title">URMIX yangilanishi mavjud!</string>
     <string name="auto">Avto</string>
     <string name="grid">Tarmoq</string>
     <string name="list">Ro\'yxat</string>

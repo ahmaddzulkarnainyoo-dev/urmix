@@ -2,8 +2,8 @@ package us.shandian.giga.postprocessing;
 
 import android.util.Log;
 
-import org.schabi.newpipe.streams.SrtFromTtmlWriter;
-import org.schabi.newpipe.streams.io.SharpStream;
+import com.winatra.urmix.streams.SrtFromTtmlWriter;
+import com.winatra.urmix.streams.io.SharpStream;
 
 import java.io.IOException;
 

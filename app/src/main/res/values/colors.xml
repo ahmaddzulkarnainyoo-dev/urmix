@@ -6,6 +6,13 @@
 
     <color name="ic_launcher_background">#CD201F</color>
 
+    <!-- URMIX brand palette (blueprint v2 §3.2) -->
+    <color name="urmix_primary_background">#121212</color>
+    <color name="urmix_card_surface">#181818</color>
+    <color name="urmix_accent">#1DB954</color>
+    <color name="urmix_text_primary">#FFFFFF</color>
+    <color name="urmix_text_secondary">#B3B3B3</color>
+
     <color name="placeholder_background">#999999</color>
     <color name="placeholder_foreground">#6C6C6C</color>
 

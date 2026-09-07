@@ -7,7 +7,7 @@
     <string name="msg_wait">Ji kerema xwe bisekinin…</string>
     <string name="msg_calculating_hash">Hesab hesibandin</string>
     <string name="msg_running_detail">Ji bo hûrguliyan tap bikin</string>
-    <string name="msg_running">Daxistina NewPipe</string>
+    <string name="msg_running">Daxistina URMIX</string>
     <string name="msg_error">Şaşî</string>
     <string name="msg_threads">Mijar</string>
     <string name="msg_name">Navê pelê</string>
@@ -112,7 +112,7 @@
     <string name="delete_view_history_alert">Tevahiya dîroka temaşekirinê tê jêbirin\?</string>
     <string name="clear_views_history_summary">Dîroka herikên lîstî û helwestên lîstinê jêbirin</string>
     <string name="clear_views_history_title">Dîroka temaşekirinê paqij bikin</string>
-    <string name="clear_cookie_summary">Dema ku hûn reCAPTCHA-yê çareser bikin cookie-yên ku NewPipe tomar dike paqij bikin</string>
+    <string name="clear_cookie_summary">Dema ku hûn reCAPTCHA-yê çareser bikin cookie-yên ku URMIX tomar dike paqij bikin</string>
     <string name="export_data_summary">Dîrok, abone, lîsteyên lîstin û mîhengan hinarde bikin</string>
     <string name="import_data_summary">Dîroka, abonî, lîsteyên lîstinê û mîhengên (vebijarkî) we yên heyî ji holê radike</string>
     <string name="recaptcha_cookies_cleared">çerezên reCAPTCHA hatine paqij kirin</string>
@@ -125,10 +125,10 @@
     <string name="unknown_content">[Nenas]</string>
     <string name="hash_channel_description">Agahdarî ji bo pêşveçûna heşandina vîdyoyê</string>
     <string name="hash_channel_name">Dîtina Agahdariya Vîdyoyê</string>
-    <string name="app_update_notification_channel_description">Notifications ji bo guhertoya nû ya NewPipe</string>
+    <string name="app_update_notification_channel_description">Notifications ji bo guhertoya nû ya URMIX</string>
     <string name="app_update_notification_channel_name">Nûvekirina Agahdariyê Appê</string>
-    <string name="notification_channel_description">Agahdarî ji bo lîstikvanên paşnav û popup ên NewPipe</string>
-    <string name="notification_channel_name">Agahdariya NewPipe</string>
+    <string name="notification_channel_description">Agahdarî ji bo lîstikvanên paşnav û popup ên URMIX</string>
+    <string name="notification_channel_name">Agahdariya URMIX</string>
     <string name="file">Dosî</string>
     <string name="just_once">Tenê Carek</string>
     <string name="always">Herdem</string>
@@ -384,7 +384,7 @@
     <string name="error_timeout">Dema girêdanê</string>
     <string name="error_progress_lost">Pêşkeftin winda bû, ji ber ku pel hate jêbirin</string>
     <string name="error_insufficient_storage_left">Cih li cîhazê namîne</string>
-    <string name="error_postprocessing_stopped">Dema ku pel dixebitî NewPipe hate girtin</string>
+    <string name="error_postprocessing_stopped">Dema ku pel dixebitî URMIX hate girtin</string>
     <string name="error_postprocessing_failed">Pêvajoya şûnda têk çû</string>
     <string name="error_http_not_found">Peyda nebû</string>
     <string name="error_http_unsupported_range">Pêşkêşker dakêşanên pir-têl qebûl nake, bi @string/msg_threads = 1 re dîsa biceribîne</string>
@@ -411,7 +411,7 @@
     <string name="paused">sekinî</string>
     <string name="missions_header_pending">Nexelas</string>
     <string name="missions_header_finished">Qediya</string>
-    <string name="app_update_available_notification_title">Nûvekirina NewPipe heye!</string>
+    <string name="app_update_available_notification_title">Nûvekirina URMIX heye!</string>
     <string name="auto">Jixweber</string>
     <string name="grid">Qefes</string>
     <string name="list">Rêzok</string>
@@ -514,7 +514,7 @@
     <string name="app_license_title">Lîsansa NewPipe</string>
     <string name="read_privacy_policy">Polîtîkaya nepeniyê bixwînin</string>
     <string name="privacy_policy_encouragement">Projeya NewPipe nepenîtiya we pir cidî digire. Ji ber vê yekê, sepanê bêyî razîbûna we tu daneyan kom nake.
-\nSiyaseta taybetîtiyê ya NewPipe dema ku hûn rapora qeza dişînin çi daneyên têne şandin û hilanîn bi berfirehî vedibêje.</string>
+\nSiyaseta taybetîtiyê ya URMIX dema ku hûn rapora qeza dişînin çi daneyên têne şandin û hilanîn bi berfirehî vedibêje.</string>
     <string name="privacy_policy_title">Siyaseta taybetîtiyê ya NewPipe</string>
     <string name="website_encouragement">Ji bo bêtir agahdarî û nûçeyan biçin Malpera NewPipe.</string>
     <string name="website_title">Malper</string>
@@ -552,12 +552,12 @@
     <string name="video_detail_by">Bi %s</string>
     <string name="channel_created_by">Ji hêla %s ve hatî afirandin</string>
     <string name="detail_sub_channel_thumbnail_view_description">Avrêl avatar a Qenal</string>
-    <string name="content_not_supported">Vê naverok hîn ji hêla NewPipe ve nayê piştgirî kirin.
+    <string name="content_not_supported">Vê naverok hîn ji hêla URMIX ve nayê piştgirî kirin.
 \n
 \nEw ê hêvî dikim ku di guhertoyek pêşerojê de piştgirî bibe.</string>
     <string name="feed_use_dedicated_fetch_method_help_text">Li gorî we barkirina xwarinê pir hêdî ye\? Ger wusa ye, barkirina zû biceribîne (hûn dikarin wê di mîhengan de an bi tikandina bişkoja jêrîn biguherînin).
 \n
-\nNewPipe du stratejiyên barkirina xwarinê pêşkêşî dike:
+\nURMIX du stratejiyên barkirina xwarinê pêşkêşî dike:
 \n• Dîtina tevahî kanala abonetiyê, ku hêdî ye lê temam e.
 \n• Bikaranîna xala dawîn a karûbarê taybetî, ku bilez e lê bi gelemperî ne temam e.
 \n

@@ -1,7 +1,7 @@
 package us.shandian.giga.service;
 
-import static org.schabi.newpipe.BuildConfig.APPLICATION_ID;
-import static org.schabi.newpipe.BuildConfig.DEBUG;
+import static com.winatra.urmix.BuildConfig.APPLICATION_ID;
+import static com.winatra.urmix.BuildConfig.DEBUG;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -38,13 +38,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.IntentCompat;
 import androidx.preference.PreferenceManager;
 
-import org.schabi.newpipe.R;
-import org.schabi.newpipe.download.DownloadActivity;
+import com.winatra.urmix.R;
+import com.winatra.urmix.download.DownloadActivity;
 import org.schabi.newpipe.extractor.stream.StreamInfo;
-import org.schabi.newpipe.player.helper.LockManager;
-import org.schabi.newpipe.streams.io.StoredDirectoryHelper;
-import org.schabi.newpipe.streams.io.StoredFileHelper;
-import org.schabi.newpipe.util.Localization;
+import com.winatra.urmix.player.helper.LockManager;
+import com.winatra.urmix.streams.io.StoredDirectoryHelper;
+import com.winatra.urmix.streams.io.StoredFileHelper;
+import com.winatra.urmix.util.Localization;
 
 import java.io.File;
 import java.io.IOException;

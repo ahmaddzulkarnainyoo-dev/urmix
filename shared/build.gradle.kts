@@ -16,13 +16,13 @@ plugins {
 // Better than adding a third-party dependency for something as simple as this
 // https://stackoverflow.com/a/74771876/8446131
 val buildConfigGenerator by tasks.registering(Sync::class) {
-    val buildConfigPackage = NEWPIPE_APPLICATION_ID_NEW
+    val buildConfigPackage = URMIX_APPLICATION_ID_SHARED
     val rawClass = """
         package $buildConfigPackage
 
         object BuildConfig {
-            const val VERSION_NAME = "$NEWPIPE_VERSION_NAME"
-            const val APP_NAME = "NewPipe"
+            const val VERSION_NAME = "$URMIX_VERSION_NAME"
+            const val APP_NAME = "URMIX"
         }
     """.trimIndent()
     from(resources.text.fromString(rawClass)) {
@@ -46,16 +46,25 @@ kotlin {
             "androidx.compose.foundation.layout.ExperimentalLayoutApi"
         )
     }
+}
+
+// Assign the generated compose resources Res class to the URMIX namespace
+// (the default would otherwise be derived from the (renamed) root project name).
+compose.resources {
+    packageOfResClass = "com.winatra.urmix.shared.generated.resources"
+}
+
+kotlin {
 
     android {
-        namespace = NEWPIPE_APPLICATION_ID_NEW
+        namespace = URMIX_APPLICATION_ID_SHARED
         compileSdk {
-            version = release(NEWPIPE_VERSION_SDK_COMPILE_MAJOR) {
-                minorApiLevel = NEWPIPE_VERSION_SDK_COMPILE_MINOR
+            version = release(URMIX_VERSION_SDK_COMPILE_MAJOR) {
+                minorApiLevel = URMIX_VERSION_SDK_COMPILE_MINOR
             }
         }
         minSdk {
-            version = release(NEWPIPE_VERSION_SDK_MIN)
+            version = release(URMIX_VERSION_SDK_MIN)
         }
         androidResources {
             enable = true

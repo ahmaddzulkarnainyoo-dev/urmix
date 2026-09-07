@@ -57,16 +57,16 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import org.schabi.newpipe.BuildConfig;
-import org.schabi.newpipe.R;
-import org.schabi.newpipe.error.ErrorInfo;
-import org.schabi.newpipe.error.ErrorUtil;
-import org.schabi.newpipe.error.UserAction;
+import com.winatra.urmix.BuildConfig;
+import com.winatra.urmix.R;
+import com.winatra.urmix.error.ErrorInfo;
+import com.winatra.urmix.error.ErrorUtil;
+import com.winatra.urmix.error.UserAction;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.streams.io.StoredFileHelper;
-import org.schabi.newpipe.util.Localization;
-import org.schabi.newpipe.util.NavigationHelper;
-import org.schabi.newpipe.util.external_communication.ShareUtils;
+import com.winatra.urmix.streams.io.StoredFileHelper;
+import com.winatra.urmix.util.Localization;
+import com.winatra.urmix.util.NavigationHelper;
+import com.winatra.urmix.util.external_communication.ShareUtils;
 
 import java.io.File;
 import java.net.URI;

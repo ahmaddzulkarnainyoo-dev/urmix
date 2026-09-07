@@ -38,11 +38,14 @@
         android:resizeableActivity="true"
         android:theme="@style/OpeningTheme"
         tools:ignore="AllowBackup">
+        <!-- URMIX splash screen is the launcher: it shows the brand for ~1.6 s,
+             fetches the WINATRA remote config and then starts MainActivity. -->
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:theme="@style/URMIX.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,6 +53,12 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask" />
 
         <receiver
             android:name="androidx.media.session.MediaButtonReceiver"

@@ -111,8 +111,8 @@
     <string name="enable_search_history_summary">Konservi la historio de serĉo lokale</string>
     <string name="enable_watch_history_title">Rigardu historion</string>
     <string name="enable_watch_history_summary">Protokoli spektitajn filmetojn</string>
-    <string name="notification_channel_name">Sciigo de NewPipe</string>
-    <string name="notification_channel_description">Sciigoj por ludilo de NewPipe</string>
+    <string name="notification_channel_name">Sciigo de URMIX</string>
+    <string name="notification_channel_description">Sciigoj por ludilo de URMIX</string>
     <string name="settings_category_player_title">Ludilo</string>
     <string name="settings_category_player_behavior_title">Konduto</string>
     <string name="settings_category_history_title">Historio kaj kaŝmemoro</string>
@@ -202,7 +202,7 @@
     <string name="settings_category_updates_title">Ĝisdatigoj</string>
     <string name="file_deleted">Dosiero forviŝita</string>
     <string name="app_update_notification_channel_name">Sciigo por ĝisdatigo de apo</string>
-    <string name="app_update_notification_channel_description">Sciigo por novaj versioj de NewPipe</string>
+    <string name="app_update_notification_channel_description">Sciigo por novaj versioj de URMIX</string>
     <string name="download_to_sdcard_error_title">Ekstera konservejo malhavebla</string>
     <string name="download_to_sdcard_error_message">Elŝuti al ekstera SD-karto ne eblas. Ĉu vi volas restarigi la elŝutan dosierujon \?</string>
     <string name="queued">viciĝita</string>
@@ -252,7 +252,7 @@
     <string name="msg_name">Dosiernomo</string>
     <string name="msg_threads">Fadenoj</string>
     <string name="msg_error">Eraro</string>
-    <string name="msg_running">NewPipe estas elŝutanta</string>
+    <string name="msg_running">URMIX estas elŝutanta</string>
     <string name="msg_running_detail">Premu por detaladoj</string>
     <string name="msg_wait">Bonvolu atendi…</string>
     <string name="msg_copied">Enpoŝigita</string>
@@ -352,7 +352,7 @@
     <string name="import_settings">Ĉu vi volas ankaŭ importi agordojn\?</string>
     <string name="privacy_policy_title">Privateca politiko de NewPipe</string>
     <string name="privacy_policy_encouragement">La NewPipe projekto serioze respektas vian privatecon. Konsekvence, la apo ne kolektas ajnan datumon sen via konsento.
-\nLa privateco politiko de NewPipe detale eksplikas kion datumon estas sendita kaj stokita kiam vi sendas falegosignalon.</string>
+\nLa privateco politiko de URMIX detale eksplikas kion datumon estas sendita kaj stokita kiam vi sendas falegosignalon.</string>
     <string name="read_privacy_policy">Legi la privatecan politikon</string>
     <string name="start_accept_privacy_policy">Por konformiĝi al la Ĝenerala Datum-Protekta Regularon (GDPR), ni allogas vian atenton al la privateca politiko de NewPipe. Bonvolu atentive legi ĝin.
 \nVi devas akcepti ĝin por sendi la cimsignalon al ni.</string>
@@ -377,7 +377,7 @@
     <string name="list">Listo</string>
     <string name="grid">Krado</string>
     <string name="auto">Aŭto</string>
-    <string name="app_update_available_notification_title">Ĝisdatigo de NewPipe havebla!</string>
+    <string name="app_update_available_notification_title">Ĝisdatigo de URMIX havebla!</string>
     <string name="missions_header_finished">Finita</string>
     <string name="missions_header_pending">Pritraktata</string>
     <string name="paused">Paŭzigita</string>
@@ -402,7 +402,7 @@
     <string name="overwrite_unrelated_warning">Dosiero kun ĉi tiu nomo jam ekzistas</string>
     <string name="overwrite_finished_warning">Elŝutita dosieron kun ĉi tiu nomo jam ekzistas</string>
     <string name="download_already_pending">Estas pritraktata elŝuto kun ĉi tiu nomo</string>
-    <string name="error_postprocessing_stopped">NewPipe estis fermita dum laborante sur la dosiero</string>
+    <string name="error_postprocessing_stopped">URMIX estis fermita dum laborante sur la dosiero</string>
     <string name="error_insufficient_storage_left">Neniu spaco havebla sur la aparato</string>
     <string name="error_progress_lost">Progreso perdita, ĉar la dosiero estis forviŝita</string>
     <string name="error_timeout">Eltempiĝo de Konekto</string>
@@ -484,7 +484,7 @@
     <string name="new_seek_duration_toast">Pro ExoPlayer limoj, la serĉa daŭro estas metita %d sekundojn</string>
     <string name="mute">Mutigi</string>
     <string name="unmute">Malmutigi</string>
-    <string name="content_not_supported">Tio enhavo ne estas ankoraŭ subtenata per NewPipe.\n\nĜi espereble estos en sekvanta versio.</string>
+    <string name="content_not_supported">Tio enhavo ne estas ankoraŭ subtenata per URMIX.\n\nĜi espereble estos en sekvanta versio.</string>
     <string name="infinite_videos">∞ filmetoj</string>
     <string name="more_than_100_videos">100+ filmetoj</string>
     <string name="artists">Artistoj</string>
@@ -569,7 +569,7 @@
     <string name="loading_metadata_title">Ŝargante metadatumoj…</string>
     <string name="hash_channel_description">Sciigo por kreado de haketaĵoj de filmetoj</string>
     <string name="youtube_restricted_mode_enabled_summary">YouTube provizas \"Limigitan Reĝimon\", kiu kaŝas enhavon, kiu potence maltaŭgas por infanoj</string>
-    <string name="restricted_video_no_stream">Ĉi tiu filmeto havas aĝminimumon. \nPro novaj reguloj de YouTube, kiuj rilatas filmojn kun minimuma aĝo, NewPipe ne povas atingi ajnan fluon de ĉi tiu filmo kaj tial ne povas ludi ĝin.</string>
+    <string name="restricted_video_no_stream">Ĉi tiu filmeto havas aĝminimumon. \nPro novaj reguloj de YouTube, kiuj rilatas filmojn kun minimuma aĝo, URMIX ne povas atingi ajnan fluon de ĉi tiu filmo kaj tial ne povas ludi ĝin.</string>
     <string name="error_report_channel_name">Sciigo por erar-raportoj</string>
     <string name="notifications">Sciigoj</string>
     <string name="settings_category_player_notification_title">Ludila sciigo</string>
@@ -580,8 +580,8 @@
     <string name="clear_cookie_title">Forigi kuketojn de reCAPTCHA</string>
     <string name="settings_category_player_notification_summary">Agordi la sciigon por ĉi-momente ludantaj datumtorentoj</string>
     <string name="start_main_player_fullscreen_summary">Ne ekludu filmojn en la etludilo, sed ŝalti plenekranan reĝimon rekte, se memaga turniĝo estas ŝaltita. Vi ankoraŭ povus aliri la etludilon elirinte la plenekranan reĝimon.</string>
-    <string name="clear_cookie_summary">Forigi kuketojn, kiujn NewPipe konservas, kiam vi solvas reCAPTCHA-taskojn</string>
-    <string name="error_report_notification_title">NewPipe renkontis eraron, tuŝi por raporti</string>
+    <string name="clear_cookie_summary">Forigi kuketojn, kiujn URMIX konservas, kiam vi solvas reCAPTCHA-taskojn</string>
+    <string name="error_report_notification_title">URMIX renkontis eraron, tuŝi por raporti</string>
     <string name="main_tabs_position_title">Pozicio de la ĉefaj langetoj</string>
     <string name="main_tabs_position_summary">Transloki la ĉefan langet-elektilon al la malsupro</string>
     <plurals name="new_streams">
@@ -606,7 +606,7 @@
     <string name="yes">Jes</string>
     <string name="no">Ne</string>
     <string name="remove_watched_popup_title">Ĉu forigu spektitajn filmetojn?</string>
-    <string name="youtube_music_premium_content">Ĉu tiu filmeto sole haveblas al abonantoj de YouTube Music Premium, do ĝi ne spekteblas nek elŝuteblas de NewPipe.</string>
+    <string name="youtube_music_premium_content">Ĉu tiu filmeto sole haveblas al abonantoj de YouTube Music Premium, do ĝi ne spekteblas nek elŝuteblas de URMIX.</string>
     <string name="audio_track_present_in_video">Sono devus jam esti en ĉi tiu fluo</string>
     <string name="no_video_streams_available_for_external_players">Neniu filmofluo ludeblas por ekstera ludilo</string>
     <string name="channel_tab_videos">Filmetoj</string>
