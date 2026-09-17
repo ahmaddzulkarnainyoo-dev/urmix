@@ -258,6 +258,13 @@ public class ChooseTabsFragment extends Fragment {
                             getString(R.string.feed_group_page_summary),
                             tab.getTabIconRes(context)));
                     break;
+                case HOME:
+                    if (!tabList.contains(tab)) {
+                        returnList.add(new ChooseTabListItem(tab.getTabId(),
+                                getString(R.string.tab_urmix_home),
+                                tab.getTabIconRes(context)));
+                    }
+                    break;
                 default:
                     if (!tabList.contains(tab)) {
                         returnList.add(new ChooseTabListItem(context, tab));
@@ -413,6 +420,8 @@ public class ChooseTabsFragment extends Fragment {
                     case FEEDGROUP:
                         return getString(R.string.feed_groups_header_title)
                                 + "/" + ((Tab.FeedGroupTab) tab).getFeedGroupName();
+                    case HOME:
+                        return getString(R.string.tab_urmix_home);
                     default:
                         return tab.getTabName(requireContext());
                 }

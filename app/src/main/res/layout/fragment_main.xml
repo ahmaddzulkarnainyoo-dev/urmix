@@ -10,10 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="?attr/colorPrimary"
-        app:tabRippleColor="@color/white"
-        app:tabIconTint="@color/white"
-        app:tabIndicatorColor="@color/white"
+        android:background="@color/urmix_primary_background"
+        app:tabRippleColor="@color/urmix_accent"
+        app:tabIconTint="@color/urmix_text_primary"
+        app:tabIndicatorColor="@color/urmix_accent"
+        app:tabSelectedTextColor="@color/urmix_text_primary"
+        app:tabTextColor="@color/urmix_text_secondary"
         app:tabGravity="fill"
         app:tabMinWidth="60dp" />
 

@@ -31,10 +31,10 @@
     <color name="light_card_item_contrast_color">#E9E9E9</color>
     <color name="light_border_color">#33000000</color>
 
-    <!-- Dark Theme -->
-    <color name="dark_background_color">#222222</color>
-    <color name="dark_dialog_background_color">#424242</color>
-    <color name="dark_settings_accent_color">#ff5252</color>
+    <!-- Dark Theme — URMIX Spotify palette (blueprint v2 §3.2) -->
+    <color name="dark_background_color">#121212</color>
+    <color name="dark_dialog_background_color">#181818</color>
+    <color name="dark_settings_accent_color">#1DB954</color>
     <color name="dark_separator_color">#0affffff</color>
     <color name="dark_ripple_color">#48ffffff</color>
     <color name="dark_selected_color">#2affffff</color>
@@ -43,8 +43,8 @@
     <color name="dark_license_background_color">#424242</color>
     <color name="dark_license_text_color">#ffffff</color>
     <color name="dark_queue_background_color">#af000000</color>
-    <color name="dark_card_item_background_color">#313131</color>
-    <color name="dark_card_item_contrast_color">#474747</color>
+    <color name="dark_card_item_background_color">#181818</color>
+    <color name="dark_card_item_contrast_color">#222222</color>
     <color name="dark_border_color">#33FFFFFF</color>
 
     <!-- Black Theme -->
@@ -55,6 +55,11 @@
     <color name="black_card_item_background_color">#0F0F0F</color>
     <color name="black_card_item_contrast_color">#202020</color>
     <color name="black_border_color">#25FFFFFF</color>
+
+    <!-- URMIX player surface tokens (blueprint v2 §3.1/§3.4) -->
+    <color name="urmix_player_surface">#181818</color>
+    <color name="urmix_progress_track">#535353</color>
+    <color name="urmix_progress_played">#1DB954</color>
 
     <!-- Miscellaneous -->
     <color name="queue_background_color">@color/dark_queue_background_color</color>

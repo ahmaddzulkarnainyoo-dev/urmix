@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- URMIX home card surface (blueprint v2 §3.2): #181818 rounded 12dp. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/urmix_card_surface" />
+    <corners android:radius="12dp" />
+</shape>

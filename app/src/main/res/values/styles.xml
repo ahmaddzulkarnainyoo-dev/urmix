@@ -54,13 +54,13 @@
     <style name="Base.LightTheme" parent="Base.V21.LightTheme" />
     <style name="LightTheme" parent="Base.LightTheme"/>
 
-    <!-- Dark Theme -->
+    <!-- Dark Theme — URMIX Spotify palette (blueprint v2 §3.2) -->
     <style name="Base.V21.DarkTheme" parent="Base">
-        <item name="colorPrimary">@color/dark_youtube_primary_color</item>
-        <item name="colorPrimaryDark">@color/dark_youtube_primary_color</item>
-        <item name="colorAccent">@color/dark_youtube_accent_color</item>
-        <item name="android:windowBackground">@color/dark_background_color</item>
-        <item name="windowBackground">@color/dark_background_color</item>
+        <item name="colorPrimary">@color/urmix_primary_background</item>
+        <item name="colorPrimaryDark">@color/urmix_primary_background</item>
+        <item name="colorAccent">@color/urmix_accent</item>
+        <item name="android:windowBackground">@color/urmix_primary_background</item>
+        <item name="windowBackground">@color/urmix_primary_background</item>
 
         <item name="separator_color">@color/dark_separator_color</item>
         <item name="contrast_background_color">@color/dark_contrast_background_color</item>
@@ -70,23 +70,24 @@
         <item name="selector">@drawable/selector_dark</item>
         <item name="colorControlHighlight">@color/dark_ripple_color</item>
         <item name="progress_horizontal_drawable">@drawable/progress_youtube_horizontal_dark</item>
-        <item name="card_item_background_color">@color/dark_card_item_background_color</item>
+        <item name="card_item_background_color">@color/urmix_card_surface</item>
         <item name="card_item_contrast_color">@color/dark_card_item_contrast_color</item>
         <item name="border_color">@color/dark_border_color</item>
         <item name="dashed_border">@drawable/dashed_border_dark</item>
+        <item name="toolbarSearchColor">@color/urmix_text_primary</item>
     </style>
     <style name="Base.DarkTheme" parent="Base.V21.DarkTheme" />
     <style name="DarkTheme" parent="Base.DarkTheme"/>
 
-    <!-- Black Theme -->
+    <!-- Black Theme — URMIX Spotify palette (blueprint v2 §3.2) -->
     <style name="Base.V21.BlackTheme" parent="DarkTheme">
-        <item name="android:windowBackground">@color/black_background_color</item>
-        <item name="windowBackground">@color/black_background_color</item>
+        <item name="android:windowBackground">@color/urmix_primary_background</item>
+        <item name="windowBackground">@color/urmix_primary_background</item>
 
         <item name="separator_color">@color/black_separator_color</item>
         <item name="contrast_background_color">@color/black_contrast_background_color</item>
 
-        <item name="card_item_background_color">@color/black_card_item_background_color</item>
+        <item name="card_item_background_color">@color/urmix_card_surface</item>
         <item name="card_item_contrast_color">@color/black_card_item_contrast_color</item>
         <item name="border_color">@color/black_border_color</item>
         <item name="dashed_border">@drawable/dashed_border_black</item>
@@ -104,9 +105,9 @@
     </style>
 
     <style name="DarkDialogTheme" parent="Theme.AppCompat.DayNight.Dialog">
-        <item name="colorPrimary">@color/dark_youtube_primary_color</item>
-        <item name="colorPrimaryDark">@color/dark_youtube_primary_color</item>
-        <item name="colorAccent">@color/dark_youtube_accent_color</item>
+        <item name="colorPrimary">@color/urmix_primary_background</item>
+        <item name="colorPrimaryDark">@color/urmix_primary_background</item>
+        <item name="colorAccent">@color/urmix_accent</item>
         <item name="android:windowBackground">@color/dark_dialog_background_color</item>
         <item name="windowBackground">@color/dark_dialog_background_color</item>
     </style>
@@ -120,9 +121,9 @@
     </style>
 
     <style name="DarkDialogMinWidthTheme" parent="Theme.AppCompat.DayNight.Dialog.MinWidth">
-        <item name="colorPrimary">@color/dark_youtube_primary_color</item>
-        <item name="colorPrimaryDark">@color/dark_youtube_primary_color</item>
-        <item name="colorAccent">@color/dark_youtube_accent_color</item>
+        <item name="colorPrimary">@color/urmix_primary_background</item>
+        <item name="colorPrimaryDark">@color/urmix_primary_background</item>
+        <item name="colorAccent">@color/urmix_accent</item>
         <item name="android:windowBackground">@color/dark_dialog_background_color</item>
         <item name="windowBackground">@color/dark_dialog_background_color</item>
     </style>
@@ -133,11 +134,11 @@
     </style>
 
     <style name="DarkSettingsTheme" parent="DarkTheme">
-        <item name="colorAccent">@color/dark_settings_accent_color</item>
+        <item name="colorAccent">@color/urmix_accent</item>
     </style>
 
     <style name="BlackSettingsTheme" parent="BlackTheme">
-        <item name="colorAccent">@color/black_settings_accent_color</item>
+        <item name="colorAccent">@color/urmix_accent</item>
     </style>
 
     <!-- Router Activity -->

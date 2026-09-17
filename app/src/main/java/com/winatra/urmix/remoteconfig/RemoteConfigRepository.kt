@@ -71,8 +71,14 @@ object RemoteConfigRepository {
         val forceUpdate: Boolean,
         val updateUrl: String?,
         val announcement: Announcement?,
-        val donation: Donation?
-    )
+        val donation: Donation?,
+        val podcastChannels: List<String> = emptyList(),
+        val podcastPlaylists: List<String> = emptyList()
+    ) {
+        /** All curated podcast source URLs (channels first, then playlists). */
+        val podcastSources: List<String>
+            get() = podcastChannels + podcastPlaylists
+    }
 
     /** Returns the in-memory config, transparently loading the persisted cache. */
     fun getCachedConfig(context: Context): RemoteConfig? {
@@ -179,7 +185,9 @@ object RemoteConfigRepository {
                 root.getBoolean("force_update", false),
                 validateHttpUrl(nullable(root.getString("update_url"))),
                 announcement,
-                donation
+                donation,
+                parseStringList(root, "podcast_channels"),
+                parseStringList(root, "podcast_playlists")
             )
         } catch (e: Exception) {
             if (BuildConfig.DEBUG) {
@@ -198,6 +206,27 @@ object RemoteConfigRepository {
 
     private fun prefs(context: Context): SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    /** Parses a JSON string array into validated http(s) URLs (blueprint v2 §3.3). */
+    private fun parseStringList(root: JsonObject, key: String): List<String> {
+        return try {
+            if (!root.containsKey(key)) {
+                return emptyList()
+            }
+            val array = root.getArray(key) ?: return emptyList()
+            val result = ArrayList<String>(array.size)
+            for (i in 0 until array.size) {
+                val raw = array.getString(i, null)
+                val url = validateHttpUrl(nullable(raw))
+                if (url != null) {
+                    result.add(url)
+                }
+            }
+            result
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 
     private fun nullable(value: String?): String? =
         if (value.isNullOrEmpty()) null else value

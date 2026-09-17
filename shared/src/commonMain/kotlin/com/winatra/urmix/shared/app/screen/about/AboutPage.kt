@@ -21,6 +21,9 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewWrapper
+import androidx.compose.ui.unit.dp
 import com.winatra.urmix.shared.app.BuildConfig
 import com.winatra.urmix.shared.app.Constants
 import com.winatra.urmix.shared.app.composable.about.LinkListItem
@@ -56,6 +60,7 @@ import com.winatra.urmix.shared.generated.resources.open_in_browser
 import com.winatra.urmix.shared.generated.resources.privacy_policy_encouragement
 import com.winatra.urmix.shared.generated.resources.privacy_policy_title
 import com.winatra.urmix.shared.generated.resources.read_privacy_policy
+import com.winatra.urmix.shared.generated.resources.urmix_attribution
 import com.winatra.urmix.shared.generated.resources.view_on_github
 import com.winatra.urmix.shared.generated.resources.website_encouragement
 import com.winatra.urmix.shared.generated.resources.website_title
@@ -110,6 +115,26 @@ fun AboutPageContent(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(Res.string.app_description),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        // URMIX transparent attribution (blueprint v2 §8)
+        item {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spaceLarge),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Text(
+                    modifier = Modifier.padding(spaceLarge),
+                    text = stringResource(Res.string.urmix_attribution),
+                    style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center
                 )
             }

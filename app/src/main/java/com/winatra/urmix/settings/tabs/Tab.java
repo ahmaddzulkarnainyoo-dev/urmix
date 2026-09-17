@@ -19,6 +19,7 @@ import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import com.winatra.urmix.fragments.BlankFragment;
+import com.winatra.urmix.home.HomeFragment;
 import com.winatra.urmix.fragments.list.channel.ChannelFragment;
 import com.winatra.urmix.fragments.list.kiosk.DefaultKioskFragment;
 import com.winatra.urmix.fragments.list.kiosk.KioskFragment;
@@ -165,7 +166,8 @@ public abstract class Tab {
         KIOSK(new KioskTab()),
         CHANNEL(new ChannelTab()),
         PLAYLIST(new PlaylistTab()),
-        FEEDGROUP(new FeedGroupTab());
+        FEEDGROUP(new FeedGroupTab()),
+        HOME(new HomeTab());
 
         private final Tab tab;
 
@@ -742,6 +744,35 @@ public abstract class Tab {
 
         public int getIconId() {
             return iconId;
+        }
+    }
+
+    /**
+     * URMIX Home tab (blueprint v2 §3.1): Spotify-style greeting + quick-play grid
+     * + Made For You / Trending Audio / Podcasting carousels on top of NewPipe feeds.
+     */
+    public static class HomeTab extends Tab {
+        public static final int ID = 10;
+
+        @Override
+        public int getTabId() {
+            return ID;
+        }
+
+        @Override
+        public String getTabName(final Context context) {
+            return context.getString(R.string.tab_urmix_home);
+        }
+
+        @DrawableRes
+        @Override
+        public int getTabIconRes(final Context context) {
+            return R.drawable.ic_home;
+        }
+
+        @Override
+        public HomeFragment getFragment(final Context context) {
+            return new HomeFragment();
         }
     }
 }

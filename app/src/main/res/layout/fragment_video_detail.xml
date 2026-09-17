@@ -26,12 +26,12 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll">
 
-                <!-- THUMBNAIL -->
+                <!-- THUMBNAIL — URMIX Spotify full-player art (§3.4) -->
                 <FrameLayout
                     android:id="@+id/detail_thumbnail_root_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/black"
+                    android:background="@color/urmix_primary_background"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
@@ -41,9 +41,12 @@
                         android:id="@+id/detail_thumbnail_image_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="?windowBackground"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:background="@drawable/bg_home_card"
                         android:contentDescription="@string/detail_thumbnail_view_description"
-                        android:minHeight="200dp"
+                        android:minHeight="280dp"
                         android:scaleType="fitCenter"
                         tools:ignore="RtlHardcoded"
                         tools:layout_height="200dp"
@@ -603,7 +606,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.9"
-        android:background="?attr/windowBackground">
+        android:background="@drawable/bg_mini_player">
 
         <ImageButton
             android:id="@+id/overlay_thumbnail"
@@ -640,6 +643,7 @@
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/urmix_text_primary"
                 android:textSize="@dimen/video_item_search_title_text_size"
                 tools:ignore="RtlHardcoded"
                 tools:text="The Video Title LONG very LONVideo Title LONG very LONG" />
@@ -654,6 +658,7 @@
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/urmix_text_secondary"
                 android:textSize="@dimen/video_item_search_uploader_text_size"
                 tools:text="The Video Artist  LONG very LONG very Long" />
 

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- URMIX home carousel card (blueprint v2 §3.1/§3.3): square Spotify-style track card. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="140dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_home_card"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/track_card_thumbnail"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
+        android:background="@drawable/bg_home_thumbnail_rounded"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/placeholder_thumbnail_video" />
+
+    <com.winatra.urmix.views.NewPipeTextView
+        android:id="@+id/track_card_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/urmix_text_primary"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        tools:text="Midnight Lo-Fi Mix" />
+
+    <com.winatra.urmix.views.NewPipeTextView
+        android:id="@+id/track_card_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="@color/urmix_text_secondary"
+        android:textSize="12sp"
+        tools:text="Chill Beats Radio" />
+</LinearLayout>
