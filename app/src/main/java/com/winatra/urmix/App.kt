@@ -10,6 +10,8 @@ import androidx.core.content.getSystemService
 import androidx.preference.PreferenceManager
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
+import coil3.disk.DiskCache
+import coil3.memory.MemoryCache
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.allowRgb565
 import coil3.request.crossfade
@@ -19,7 +21,9 @@ import com.winatra.urmix.error.ReCaptchaActivity
 import com.winatra.urmix.ktx.hasAssignableCause
 import com.winatra.urmix.settings.NewPipeSettings
 import com.winatra.urmix.util.BridgeStateSaverInitializer
+import com.winatra.urmix.util.CacheConfig
 import com.winatra.urmix.util.Localization
+import com.winatra.urmix.util.OkioInterop
 import com.winatra.urmix.util.ServiceHelper
 import com.winatra.urmix.util.StateSaver
 import com.winatra.urmix.util.image.ImageStrategy
@@ -126,17 +130,38 @@ open class App :
         YoutubeStreamExtractor.setPoTokenProvider(PoTokenProviderImpl)
     }
 
-    override fun newImageLoader(context: Context): ImageLoader = ImageLoader
-        .Builder(this)
-        .logger(if (BuildConfig.DEBUG) DebugLogger() else null)
-        .allowRgb565(getSystemService<ActivityManager>()!!.isLowRamDevice)
-        .crossfade(true)
-        .components {
-            add(OkHttpNetworkFetcherFactory(callFactory = DownloaderImpl.getInstance().client))
-        }.build()
+    override fun newImageLoader(context: Context): ImageLoader {
+        // FASE 5 §12.1: explicit, bounded image caches (memory + disk). The
+        // network fetcher shares the Downloader's OkHttp client, so images also
+        // benefit from its interceptors and HTTP response cache.
+        val isLowRamDevice = getSystemService<ActivityManager>()!!.isLowRamDevice
+        return ImageLoader
+            .Builder(this)
+            .logger(if (BuildConfig.DEBUG) DebugLogger() else null)
+            .allowRgb565(isLowRamDevice)
+            .crossfade(true)
+            .memoryCache {
+                MemoryCache.Builder()
+                    .maxSizePercent(this, CacheConfig.memoryCachePercent(isLowRamDevice))
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(
+                        OkioInterop.pathOf(
+                            cacheDir.resolve(CacheConfig.IMAGE_CACHE_DIR)
+                        )
+                    )
+                    .maxSizeBytes(CacheConfig.imageDiskCacheBytes(isLowRamDevice))
+                    .build()
+            }
+            .components {
+                add(OkHttpNetworkFetcherFactory(callFactory = DownloaderImpl.getInstance().client))
+            }.build()
+    }
 
     protected open fun getDownloader(): Downloader {
-        val downloader = DownloaderImpl.init(null)
+        val downloader = DownloaderImpl.init(this, null)
         setCookiesToDownloader(downloader)
         return downloader
     }

@@ -25,6 +25,7 @@ class DebugApp : App() {
 
     override fun getDownloader(): Downloader {
         val downloader = DownloaderImpl.init(
+            this,
             OkHttpClient.Builder()
                 .addNetworkInterceptor(StethoInterceptor())
         )

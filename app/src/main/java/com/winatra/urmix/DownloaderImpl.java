@@ -1,18 +1,24 @@
 package com.winatra.urmix;
 
+import android.app.ActivityManager;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.winatra.urmix.error.ReCaptchaActivity;
+import com.winatra.urmix.network.HttpCacheControlInterceptor;
+import com.winatra.urmix.network.OfflineCacheInterceptor;
+import com.winatra.urmix.util.CacheConfig;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import com.winatra.urmix.util.InfoCache;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -39,13 +46,29 @@ public final class DownloaderImpl extends Downloader {
     private final Map<String, String> mCookies;
     private final OkHttpClient client;
 
-    private DownloaderImpl(final OkHttpClient.Builder builder) {
-        this.client = builder
-                .readTimeout(30, TimeUnit.SECONDS)
-//                .cache(new Cache(new File(context.getExternalCacheDir(), "okhttp"),
-//                        16 * 1024 * 1024))
-                .build();
+    private DownloaderImpl(final OkHttpClient.Builder builder, @Nullable final Context context) {
+        final OkHttpClient.Builder finalBuilder = builder.readTimeout(30, TimeUnit.SECONDS);
+        if (context != null) {
+            // FASE 5 §12.1: bounded shared HTTP response cache + offline fallback.
+            // Only URMIX-owned hosts are cached (see HostCachePolicy); extractor
+            // traffic is pinned to `no-store` so stale stream URLs are impossible.
+            final File externalCacheDir = context.getExternalCacheDir();
+            final File cacheDir = new File(
+                    externalCacheDir != null ? externalCacheDir : context.getCacheDir(),
+                    CacheConfig.HTTP_CACHE_DIR);
+            finalBuilder
+                    .cache(new Cache(cacheDir, CacheConfig.httpCacheBytes(isLowRamDevice(context))))
+                    .addInterceptor(new OfflineCacheInterceptor(context))
+                    .addNetworkInterceptor(new HttpCacheControlInterceptor());
+        }
+        this.client = finalBuilder.build();
         this.mCookies = new HashMap<>();
+    }
+
+    private static boolean isLowRamDevice(@NonNull final Context context) {
+        final ActivityManager activityManager =
+                ContextCompat.getSystemService(context, ActivityManager.class);
+        return activityManager != null && activityManager.isLowRamDevice();
     }
 
     @NonNull
@@ -60,8 +83,21 @@ public final class DownloaderImpl extends Downloader {
      * @return a new instance of {@link DownloaderImpl}
      */
     public static DownloaderImpl init(@Nullable final OkHttpClient.Builder builder) {
+        return init(null, builder);
+    }
+
+    /**
+     * Like {@link #init(OkHttpClient.Builder)}, but additionally installs the
+     * FASE 5 §12.1 shared HTTP response cache when a context is provided.
+     *
+     * @param context app context, may be null to skip the HTTP cache entirely
+     * @param builder if null, default builder will be used
+     * @return a new instance of {@link DownloaderImpl}
+     */
+    public static DownloaderImpl init(@Nullable final Context context,
+                                      @Nullable final OkHttpClient.Builder builder) {
         instance = new DownloaderImpl(
-                builder != null ? builder : new OkHttpClient.Builder());
+                builder != null ? builder : new OkHttpClient.Builder(), context);
         return instance;
     }
 
@@ -125,6 +161,41 @@ public final class DownloaderImpl extends Downloader {
             throw new IOException("Invalid content length", e);
         } catch (final ReCaptchaException e) {
             throw new IOException(e);
+        }
+    }
+
+    /**
+     * Clears the shared HTTP response cache installed by
+     * {@link #init(Context, OkHttpClient.Builder)} (FASE 5 §12.1).
+     *
+     * @return true when a cache was installed and successfully cleared
+     */
+    public boolean clearHttpCache() {
+        final Cache cache = client.cache();
+        if (cache == null) {
+            return false;
+        }
+        try {
+            cache.evictAll();
+            return true;
+        } catch (final IOException e) {
+            return false;
+        }
+    }
+
+    /**
+     * @return the size of the shared HTTP response cache in bytes,
+     * or {@code -1L} when no cache is installed or the size cannot be read
+     */
+    public long getHttpCacheSizeBytes() {
+        final Cache cache = client.cache();
+        if (cache == null) {
+            return -1L;
+        }
+        try {
+            return cache.size();
+        } catch (final IOException e) {
+            return -1L;
         }
     }
 

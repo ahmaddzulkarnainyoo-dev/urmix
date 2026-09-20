@@ -266,6 +266,10 @@ dependencies {
     // HTML parser
     implementation(libs.jsoup)
 
+    // Text similarity used by PreferenceFuzzySearchFunction. Was dropped during
+    // the NewPipe graft; without it full javac builds fail.
+    implementation(libs.apache.commons.text)
+
     // HTTP client
     implementation(libs.squareup.okhttp)
 

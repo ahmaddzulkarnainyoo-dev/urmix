@@ -40,6 +40,7 @@ object RemoteConfigRepository {
 
     private const val PREFS_NAME = "urmix_remote_config"
     private const val KEY_CACHED_JSON = "cached_config_json"
+    private const val KEY_LAST_FETCH_MILLIS = "last_successful_fetch_millis"
     private const val TIMEOUT_SECONDS = 4L
 
     private val cachedConfig = AtomicReference<RemoteConfig?>(null)
@@ -104,6 +105,20 @@ object RemoteConfigRepository {
     /** The update_url to direct the user to (config value or the WINATRA default). */
     fun getEffectiveUpdateUrl(context: Context): String = getCachedConfig(context)?.updateUrl ?: DEFAULT_UPDATE_URL
 
+    /** Epoch millis of the last successful remote fetch, or 0 when never fetched. */
+    fun getLastSuccessfulFetchMillis(context: Context): Long =
+        prefs(context).getLong(KEY_LAST_FETCH_MILLIS, 0L)
+
+    /**
+     * True when the cached config is missing or older than [maxAgeMillis].
+     * Used by FASE 5 §12.2 to decide whether an offline banner must mention a
+     * potentially outdated remote config.
+     */
+    fun isConfigStale(context: Context, maxAgeMillis: Long): Boolean {
+        val lastFetch = getLastSuccessfulFetchMillis(context)
+        return lastFetch == 0L || System.currentTimeMillis() - lastFetch > maxAgeMillis
+    }
+
     /**
      * Fetches the remote config with a strict 4 s timeout and caches the last
      * successful response. Offline/timeout/corrupt payloads fall back to the
@@ -128,6 +143,7 @@ object RemoteConfigRepository {
         prefs(context)
             .edit()
             .putString(KEY_CACHED_JSON, raw)
+            .putLong(KEY_LAST_FETCH_MILLIS, System.currentTimeMillis())
             .apply()
     }
 
