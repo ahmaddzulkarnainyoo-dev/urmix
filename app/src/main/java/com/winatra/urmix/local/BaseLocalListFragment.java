@@ -176,6 +176,11 @@ public abstract class BaseLocalListFragment<I, N> extends BaseStateFragment<I>
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        // FASE 5 §12.3: release the header/footer bindings together with the
+        // adapter and the list so the fragment stays memory efficient in the
+        // back stack (see class javadoc).
+        headerRootBinding = null;
+        footerRootBinding = null;
         itemsList = null;
         itemListAdapter = null;
     }

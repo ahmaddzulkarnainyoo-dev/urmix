@@ -44,6 +44,11 @@ class HomeCarouselAdapter(
         holder.bind(items[position])
     }
 
+    override fun onViewRecycled(holder: TrackViewHolder) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
+
     override fun getItemCount(): Int = items.size
 
     class TrackViewHolder(
@@ -67,6 +72,11 @@ class HomeCarouselAdapter(
                 ?: ""
             binding.trackCardSubtitle.text = subtitle
             loadArt(binding.trackCardThumbnail, item.thumbnails)
+        }
+
+        /** Cancels pending artwork requests (FASE 5 §12.3). */
+        fun onViewRecycled() {
+            CoilHelper.disposeRequests(binding.trackCardThumbnail)
         }
 
         private fun loadArt(target: ImageView, images: List<Image>?) {

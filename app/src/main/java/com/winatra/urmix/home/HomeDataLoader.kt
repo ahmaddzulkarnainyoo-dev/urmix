@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.FragmentActivity
 import com.winatra.urmix.NewPipeDatabase
+import com.winatra.urmix.R
 import com.winatra.urmix.database.feed.model.FeedGroupEntity
 import com.winatra.urmix.databinding.FragmentHomeBinding
 import com.winatra.urmix.databinding.ItemHomeQuickPlayBinding
@@ -74,6 +75,11 @@ class HomeDataLoader(
     fun renderQuickPlay(tiles: List<QuickPlayTile>) {
         val binding = callbacks.binding() ?: return
         val grid = binding.homeQuickPlayGrid
+        // FASE 5 §12.3: cancel pending artwork requests of the old tiles
+        // before dropping them so detached views stop doing work.
+        for (i in 0 until grid.childCount) {
+            CoilHelper.disposeRequests(grid.getChildAt(i).findViewById(R.id.quick_play_thumbnail))
+        }
         grid.removeAllViews()
         if (tiles.isEmpty()) {
             grid.visibility = View.GONE

@@ -48,6 +48,11 @@ class HomeQuickPlayAdapter(
         holder.bind(tiles[position])
     }
 
+    override fun onViewRecycled(holder: TileViewHolder) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
+
     override fun getItemCount(): Int = tiles.size
 
     class TileViewHolder(
@@ -82,6 +87,11 @@ class HomeQuickPlayAdapter(
                     )
                 )
             }
+        }
+
+        /** Cancels pending artwork requests (FASE 5 §12.3). */
+        fun onViewRecycled() {
+            CoilHelper.disposeRequests(binding.quickPlayThumbnail)
         }
     }
 }

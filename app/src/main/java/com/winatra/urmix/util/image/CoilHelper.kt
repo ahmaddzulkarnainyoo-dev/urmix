@@ -20,6 +20,7 @@ import coil3.transform.Transformation
 import com.winatra.urmix.MainActivity
 import com.winatra.urmix.R
 import com.winatra.urmix.ktx.scale
+import java.util.WeakHashMap
 import kotlin.math.min
 import org.schabi.newpipe.extractor.Image
 
@@ -156,7 +157,28 @@ object CoilHelper {
             getImageRequest(target.context, url, placeholderResId, showPlaceholder)
                 .target(target)
                 .build()
-        target.context.imageLoader.enqueue(request)
+        enqueueTracked(target, request)
+    }
+
+    /**
+     * Active image requests keyed by their target ImageView (FASE 5 §12.3).
+     * A WeakHashMap keeps detached views collectable; enqueueing a new request
+     * for the same view cancels the previous one so callbacks never stack up.
+     */
+    private val activeRequests = WeakHashMap<ImageView, Disposable>()
+
+    private fun enqueueTracked(target: ImageView, request: ImageRequest) {
+        disposeRequests(target)
+        activeRequests[target] = target.context.imageLoader.enqueue(request)
+    }
+
+    /**
+     * Cancels the pending image request of [target]. Call this from
+     * `onViewRecycled`/teardown paths so recycled views stop doing work.
+     */
+    @JvmStatic
+    fun disposeRequests(target: ImageView) {
+        activeRequests.remove(target)?.dispose()
     }
 
     private fun getImageRequest(

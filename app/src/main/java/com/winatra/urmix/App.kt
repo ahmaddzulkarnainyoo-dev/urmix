@@ -2,6 +2,7 @@ package com.winatra.urmix
 
 import android.app.ActivityManager
 import android.app.Application
+import android.content.ComponentCallbacks2
 import android.content.Context
 import android.util.Log
 import androidx.core.app.NotificationChannelCompat
@@ -22,6 +23,7 @@ import com.winatra.urmix.ktx.hasAssignableCause
 import com.winatra.urmix.settings.NewPipeSettings
 import com.winatra.urmix.util.BridgeStateSaverInitializer
 import com.winatra.urmix.util.CacheConfig
+import com.winatra.urmix.util.InfoCache
 import com.winatra.urmix.util.Localization
 import com.winatra.urmix.util.OkioInterop
 import com.winatra.urmix.util.ServiceHelper
@@ -128,6 +130,30 @@ open class App :
         configureRxJavaErrorHandler()
 
         YoutubeStreamExtractor.setPoTokenProvider(PoTokenProviderImpl)
+    }
+
+    /**
+     * FASE 5 §12.3: release cached decoded bitmaps and trimmed metadata under
+     * real memory pressure. Deliberately NOT cleared on TRIM_MEMORY_UI_HIDDEN:
+     * that level also fires on every backgrounding and would kill scroll-back
+     * performance when the user returns.
+     */
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        when (level) {
+            ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW,
+            ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL,
+            ComponentCallbacks2.TRIM_MEMORY_COMPLETE ->
+                SingletonImageLoader.get(this).memoryCache?.clear()
+        }
+        if (level == ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL ||
+            level == ComponentCallbacks2.TRIM_MEMORY_COMPLETE
+        ) {
+            InfoCache.getInstance().trimCache()
+        }
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "onTrimMemory(level=$level) handled")
+        }
     }
 
     override fun newImageLoader(context: Context): ImageLoader {
