@@ -1,5 +1,6 @@
 package com.winatra.urmix.local.subscription.workers
 
+import com.winatra.urmix.streams.io.StoredFileHelper
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
@@ -14,7 +15,6 @@ import org.mockito.Mockito.withSettings
 import org.mockito.junit.MockitoJUnitRunner
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.subscription.SubscriptionItem as ExtractorSubscriptionItem
-import com.winatra.urmix.streams.io.StoredFileHelper
 
 @RunWith(MockitoJUnitRunner::class)
 class SubscriptionImportWorkerTest {

@@ -11,13 +11,13 @@ import androidx.annotation.StringRes
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.grack.nanojson.JsonParser
-import java.util.concurrent.TimeUnit
 import com.winatra.urmix.R
+import com.winatra.urmix.ktx.getStringSafe
+import java.util.concurrent.TimeUnit
 import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.StreamingService
 import org.schabi.newpipe.extractor.services.peertube.PeertubeInstance
-import com.winatra.urmix.ktx.getStringSafe
 
 object ServiceHelper {
     private val DEFAULT_FALLBACK_SERVICE: StreamingService = ServiceList.YouTube

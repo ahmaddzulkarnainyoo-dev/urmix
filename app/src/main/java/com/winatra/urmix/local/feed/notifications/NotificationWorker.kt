@@ -14,9 +14,6 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.rxjava3.RxWorker
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import java.util.concurrent.TimeUnit
 import com.winatra.urmix.App
 import com.winatra.urmix.R
 import com.winatra.urmix.error.ErrorInfo
@@ -24,6 +21,9 @@ import com.winatra.urmix.error.ErrorUtil
 import com.winatra.urmix.error.UserAction
 import com.winatra.urmix.local.feed.service.FeedLoadManager
 import com.winatra.urmix.local.feed.service.FeedLoadService
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import java.util.concurrent.TimeUnit
 
 /*
  * Worker which checks for new streams of subscribed channels

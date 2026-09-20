@@ -45,16 +45,6 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.evernote.android.state.State
-import com.xwray.groupie.GroupieAdapter
-import com.xwray.groupie.Item
-import com.xwray.groupie.OnItemClickListener
-import com.xwray.groupie.OnItemLongClickListener
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
-import java.time.OffsetDateTime
-import java.util.function.Consumer
 import com.winatra.urmix.NewPipeDatabase
 import com.winatra.urmix.R
 import com.winatra.urmix.database.feed.model.FeedGroupEntity
@@ -63,10 +53,6 @@ import com.winatra.urmix.databinding.FragmentFeedBinding
 import com.winatra.urmix.error.ErrorInfo
 import com.winatra.urmix.error.ErrorUtil
 import com.winatra.urmix.error.UserAction
-import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException
-import org.schabi.newpipe.extractor.stream.StreamInfoItem
-import org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty
 import com.winatra.urmix.fragments.BaseStateFragment
 import com.winatra.urmix.info_list.ItemViewMode
 import com.winatra.urmix.info_list.dialog.InfoItemDialog
@@ -83,6 +69,20 @@ import com.winatra.urmix.util.ThemeHelper.getGridSpanCountStreams
 import com.winatra.urmix.util.ThemeHelper.getItemViewMode
 import com.winatra.urmix.util.ThemeHelper.resolveDrawable
 import com.winatra.urmix.util.ThemeHelper.shouldUseGridLayout
+import com.xwray.groupie.GroupieAdapter
+import com.xwray.groupie.Item
+import com.xwray.groupie.OnItemClickListener
+import com.xwray.groupie.OnItemLongClickListener
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.time.OffsetDateTime
+import java.util.function.Consumer
+import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException
+import org.schabi.newpipe.extractor.stream.StreamInfoItem
+import org.schabi.newpipe.extractor.utils.Utils.isNullOrEmpty
 
 class FeedFragment : BaseStateFragment<FeedState>() {
     private var _feedBinding: FragmentFeedBinding? = null

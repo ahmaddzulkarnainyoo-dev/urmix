@@ -124,19 +124,24 @@ class HomeDataLoader(
         val manager = FeedDatabaseManager(appContext)
         disposables.add(
             manager.getStreams(
-                FeedGroupEntity.GROUP_ALL_ID, true, true, true
+                FeedGroupEntity.GROUP_ALL_ID,
+                true,
+                true,
+                true
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ streams ->
                     val items = streams.take(20).mapNotNull { withState ->
                         val stream = withState.stream
-                        if (stream.url.isNullOrEmpty()) {
+                        if (stream.url.isEmpty()) {
                             return@mapNotNull null
                         }
                         StreamInfoItem(
-                            stream.serviceId, stream.url,
-                            stream.title ?: "", stream.streamType
+                            stream.serviceId,
+                            stream.url,
+                            stream.title,
+                            stream.streamType
                         ).apply {
                             uploaderName = stream.uploader
                             thumbnails = ImageStrategy.dbUrlToImageList(stream.thumbnailUrl)
@@ -185,10 +190,12 @@ class HomeDataLoader(
             com.winatra.urmix.remoteconfig.RemoteConfigRepository
                 .getCachedConfig(appContext)?.podcastSources
         }.getOrNull().orEmpty()
-        val sources = (cached + listOf(
-            "https://www.youtube.com/@TED",
-            "https://www.youtube.com/@lexfridman"
-        )).distinct().take(6)
+        val sources = (
+            cached + listOf(
+                "https://www.youtube.com/@TED",
+                "https://www.youtube.com/@lexfridman"
+            )
+            ).distinct().take(6)
         if (sources.isEmpty()) {
             updateEmptyState()
             return
@@ -207,6 +214,16 @@ class HomeDataLoader(
                 .subscribe({ items ->
                     callbacks.podcast().submitList(items)
                     val binding = callbacks.binding()
+                    if (binding != null) {
+                        val visible = if (items.isEmpty()) View.GONE else View.VISIBLE
+                        binding.homePodcastTitle.visibility = visible
+                        binding.homePodcastList.visibility = visible
+                    }
+                    updateEmptyState()
+                }, { updateEmptyState() })
+        )
+    }
+
     fun resolvePodcastSource(
         appContext: Context,
         url: String
@@ -224,25 +241,40 @@ class HomeDataLoader(
             val sourceUrl = parts.second
             val linkType = parts.third
             when (linkType) {
-                org.schabi.newpipe.extractor.ListExtractor.LinkType.STREAM ->
+                org.schabi.newpipe.extractor.StreamingService.LinkType.STREAM ->
                     ExtractorHelper.getStreamInfo(serviceId, sourceUrl, false)
                         .map { info ->
                             listOf(
                                 StreamInfoItem(
-                                    info.serviceId, info.originalUrl,
-                                    info.name, info.streamType
+                                    info.serviceId,
+                                    info.originalUrl,
+                                    info.name,
+                                    info.streamType
                                 ).apply {
                                     uploaderName = info.uploaderName
                                     thumbnails = info.thumbnails
                                 }
                             )
                         }
-                org.schabi.newpipe.extractor.ListExtractor.LinkType.CHANNEL ->
+
+                org.schabi.newpipe.extractor.StreamingService.LinkType.CHANNEL ->
                     ExtractorHelper.getChannelInfo(serviceId, sourceUrl, false)
-                        .map { info ->
-                            info.relatedItems
-                                .filterIsInstance<StreamInfoItem>().take(8)
+                        .flatMap { info ->
+                            val tab = info.tabs.firstOrNull()
+                            if (tab == null) {
+                                io.reactivex.rxjava3.core.Single.just(emptyList())
+                            } else {
+                                ExtractorHelper.getChannelTab(
+                                    serviceId,
+                                    tab,
+                                    false
+                                ).map { page ->
+                                    page.relatedItems
+                                        .filterIsInstance<StreamInfoItem>().take(8)
+                                }
+                            }
                         }
+
                 else ->
                     ExtractorHelper.getPlaylistInfo(serviceId, sourceUrl, false)
                         .map { info ->
@@ -262,17 +294,3 @@ class HomeDataLoader(
         binding.homeEmpty.visibility = if (hasContent) View.GONE else View.VISIBLE
     }
 }
-
-                    if (binding != null) {
-                        val visible = if (items.isEmpty()) View.GONE else View.VISIBLE
-                        binding.homePodcastTitle.visibility = visible
-                        binding.homePodcastList.visibility = visible
-                    }
-                    updateEmptyState()
-                }, { updateEmptyState() })
-        )
-    }
-
-
-
-

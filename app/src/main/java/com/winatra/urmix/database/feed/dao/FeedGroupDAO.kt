@@ -6,10 +6,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Maybe
 import com.winatra.urmix.database.feed.model.FeedGroupEntity
 import com.winatra.urmix.database.feed.model.FeedGroupSubscriptionEntity
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Maybe
 
 @Dao
 abstract class FeedGroupDAO {

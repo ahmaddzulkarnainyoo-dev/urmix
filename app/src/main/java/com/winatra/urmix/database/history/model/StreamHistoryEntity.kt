@@ -11,12 +11,12 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
-import java.time.OffsetDateTime
 import com.winatra.urmix.database.history.model.StreamHistoryEntity.Companion.JOIN_STREAM_ID
 import com.winatra.urmix.database.history.model.StreamHistoryEntity.Companion.STREAM_ACCESS_DATE
 import com.winatra.urmix.database.history.model.StreamHistoryEntity.Companion.STREAM_HISTORY_TABLE
 import com.winatra.urmix.database.stream.model.StreamEntity
 import com.winatra.urmix.database.stream.model.StreamEntity.Companion.STREAM_ID
+import java.time.OffsetDateTime
 
 /**
  * @param streamUid the stream id this history item will refer to

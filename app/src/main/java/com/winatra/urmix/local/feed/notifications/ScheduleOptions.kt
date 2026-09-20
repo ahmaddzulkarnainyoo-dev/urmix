@@ -2,9 +2,9 @@ package com.winatra.urmix.local.feed.notifications
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import java.util.concurrent.TimeUnit
 import com.winatra.urmix.R
 import com.winatra.urmix.ktx.getStringSafe
+import java.util.concurrent.TimeUnit
 
 /**
  * Information for the Scheduler which checks for new streams.

@@ -2,10 +2,10 @@ package com.winatra.urmix.local.subscription.item
 
 import android.view.View
 import androidx.annotation.DrawableRes
-import com.xwray.groupie.viewbinding.BindableItem
 import com.winatra.urmix.R
 import com.winatra.urmix.databinding.PickerIconItemBinding
 import com.winatra.urmix.local.subscription.FeedGroupIcon
+import com.xwray.groupie.viewbinding.BindableItem
 
 class PickerIconItem(
     val icon: FeedGroupIcon

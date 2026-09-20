@@ -3,13 +3,13 @@ package com.winatra.urmix.local.subscription.item
 import android.content.Context
 import android.widget.ImageView
 import android.widget.TextView
-import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.Item
 import com.winatra.urmix.R
-import org.schabi.newpipe.extractor.channel.ChannelInfoItem
 import com.winatra.urmix.util.Localization
 import com.winatra.urmix.util.OnClickGesture
 import com.winatra.urmix.util.image.CoilHelper
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Item
+import org.schabi.newpipe.extractor.channel.ChannelInfoItem
 
 class ChannelItem(
     private val infoItem: ChannelInfoItem,

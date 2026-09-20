@@ -1973,8 +1973,8 @@ public final class Player implements PlaybackListener, Listener {
 
     private void saveStreamProgressState(final long progressMillis) {
         getCurrentStreamInfo().ifPresent(info -> {
-            // Persist the last playback state (track + position) locally so that playback can be
-            // restored when the app is reopened after the process was killed (see PlaybackStateStore).
+            // Persist last playback state (track + position) so playback can be
+            // restored after the process was killed (see PlaybackStateStore).
             PlaybackStateStore.save(context, info.getServiceId(), info.getUrl(),
                     info.getName(), info.getDuration(), progressMillis);
 

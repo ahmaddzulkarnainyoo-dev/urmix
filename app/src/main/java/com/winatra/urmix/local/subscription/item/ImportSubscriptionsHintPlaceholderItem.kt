@@ -1,9 +1,9 @@
 package com.winatra.urmix.local.subscription.item
 
 import android.view.View
-import com.xwray.groupie.viewbinding.BindableItem
 import com.winatra.urmix.R
 import com.winatra.urmix.databinding.ListEmptyViewBinding
+import com.xwray.groupie.viewbinding.BindableItem
 
 /**
  * When there are no subscriptions, show a hint to the user about how to import subscriptions

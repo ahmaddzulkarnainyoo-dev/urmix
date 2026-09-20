@@ -1,9 +1,9 @@
 package com.winatra.urmix.local.subscription.item
 
 import android.view.View
-import com.xwray.groupie.viewbinding.BindableItem
 import com.winatra.urmix.R
 import com.winatra.urmix.databinding.SubscriptionHeaderBinding
+import com.xwray.groupie.viewbinding.BindableItem
 
 class Header(private val title: String) : BindableItem<SubscriptionHeaderBinding>() {
 

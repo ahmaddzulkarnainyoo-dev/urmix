@@ -33,7 +33,9 @@ class HomeCarouselAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val binding = ItemHomeTrackCardBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
         return TrackViewHolder(binding, onItemClick)
     }

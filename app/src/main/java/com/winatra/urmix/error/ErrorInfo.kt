@@ -7,9 +7,13 @@ import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.upstream.Loader
+import com.winatra.urmix.R
+import com.winatra.urmix.ktx.isNetworkRelated
+import com.winatra.urmix.player.mediasource.FailedMediaSource
+import com.winatra.urmix.player.resolver.PlaybackResolver
+import com.winatra.urmix.util.text.getText
 import java.net.UnknownHostException
 import kotlinx.parcelize.Parcelize
-import com.winatra.urmix.R
 import org.schabi.newpipe.extractor.Info
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.ServiceList.YouTube
@@ -26,10 +30,6 @@ import org.schabi.newpipe.extractor.exceptions.SignInConfirmNotBotException
 import org.schabi.newpipe.extractor.exceptions.SoundCloudGoPlusContentException
 import org.schabi.newpipe.extractor.exceptions.UnsupportedContentInCountryException
 import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentException
-import com.winatra.urmix.ktx.isNetworkRelated
-import com.winatra.urmix.player.mediasource.FailedMediaSource
-import com.winatra.urmix.player.resolver.PlaybackResolver
-import com.winatra.urmix.util.text.getText
 
 /**
  * An error has occurred in the app. This class contains plain old parcelable data that can be used

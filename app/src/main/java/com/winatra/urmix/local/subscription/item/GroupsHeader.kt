@@ -2,9 +2,9 @@ package com.winatra.urmix.local.subscription.item
 
 import android.view.View
 import androidx.core.view.isVisible
-import com.xwray.groupie.viewbinding.BindableItem
 import com.winatra.urmix.R
 import com.winatra.urmix.databinding.SubscriptionGroupsHeaderBinding
+import com.xwray.groupie.viewbinding.BindableItem
 
 class GroupsHeader(
     private val title: String,

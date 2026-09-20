@@ -10,13 +10,13 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
-import io.reactivex.rxjava3.core.Flowable
 import com.winatra.urmix.database.BasicDAO
 import com.winatra.urmix.database.playlist.PlaylistDuplicatesEntry
 import com.winatra.urmix.database.playlist.PlaylistMetadataEntry
 import com.winatra.urmix.database.playlist.PlaylistStreamEntry
 import com.winatra.urmix.database.playlist.model.PlaylistEntity.Companion.DEFAULT_THUMBNAIL_ID
 import com.winatra.urmix.database.playlist.model.PlaylistStreamEntity
+import io.reactivex.rxjava3.core.Flowable
 
 @Dao
 interface PlaylistStreamDAO : BasicDAO<PlaylistStreamEntity> {

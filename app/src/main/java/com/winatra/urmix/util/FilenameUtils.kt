@@ -7,9 +7,9 @@ package com.winatra.urmix.util
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import java.util.regex.Matcher
 import com.winatra.urmix.R
 import com.winatra.urmix.ktx.getStringSafe
+import java.util.regex.Matcher
 
 object FilenameUtils {
     private const val CHARSET_MOST_SPECIAL = "[\\n\\r|?*<\":\\\\>/']+"

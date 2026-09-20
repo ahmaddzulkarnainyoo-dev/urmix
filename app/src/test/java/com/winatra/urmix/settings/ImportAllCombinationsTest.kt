@@ -1,6 +1,9 @@
 package com.winatra.urmix.settings
 
 import android.content.SharedPreferences
+import com.winatra.urmix.settings.export.BackupFileLocator
+import com.winatra.urmix.settings.export.ImportExportManager
+import com.winatra.urmix.streams.io.StoredFileHelper
 import java.io.File
 import java.io.IOException
 import kotlin.io.path.createTempFile
@@ -9,9 +12,6 @@ import kotlin.io.path.fileSize
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito
-import com.winatra.urmix.settings.export.BackupFileLocator
-import com.winatra.urmix.settings.export.ImportExportManager
-import com.winatra.urmix.streams.io.StoredFileHelper
 import us.shandian.giga.io.FileStream
 
 class ImportAllCombinationsTest {

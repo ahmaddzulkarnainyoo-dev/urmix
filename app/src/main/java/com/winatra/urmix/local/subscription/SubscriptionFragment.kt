@@ -18,11 +18,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.evernote.android.state.State
-import com.xwray.groupie.Group
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Section
-import com.xwray.groupie.viewbinding.GroupieViewHolder
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 import com.winatra.urmix.R
 import com.winatra.urmix.database.feed.model.FeedGroupEntity.Companion.GROUP_ALL_ID
 import com.winatra.urmix.databinding.DialogTitleBinding
@@ -30,8 +25,6 @@ import com.winatra.urmix.databinding.FeedItemCarouselBinding
 import com.winatra.urmix.databinding.FragmentSubscriptionBinding
 import com.winatra.urmix.error.ErrorInfo
 import com.winatra.urmix.error.UserAction
-import org.schabi.newpipe.extractor.ServiceList
-import org.schabi.newpipe.extractor.channel.ChannelInfoItem
 import com.winatra.urmix.fragments.BaseStateFragment
 import com.winatra.urmix.ktx.animate
 import com.winatra.urmix.local.subscription.SubscriptionViewModel.SubscriptionState
@@ -51,6 +44,13 @@ import com.winatra.urmix.util.OnClickGesture
 import com.winatra.urmix.util.ServiceHelper
 import com.winatra.urmix.util.ThemeHelper.getGridSpanCountChannels
 import com.winatra.urmix.util.external_communication.ShareUtils
+import com.xwray.groupie.Group
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Section
+import com.xwray.groupie.viewbinding.GroupieViewHolder
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import org.schabi.newpipe.extractor.ServiceList
+import org.schabi.newpipe.extractor.channel.ChannelInfoItem
 
 class SubscriptionFragment : BaseStateFragment<SubscriptionState>() {
     private var _binding: FragmentSubscriptionBinding? = null

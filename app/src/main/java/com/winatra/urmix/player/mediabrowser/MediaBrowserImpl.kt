@@ -13,11 +13,6 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot.EXTRA_RECENT
 import androidx.media.MediaBrowserServiceCompat.Result
 import androidx.media.utils.MediaConstants
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.function.Consumer
 import com.winatra.urmix.MainActivity.DEBUG
 import com.winatra.urmix.NewPipeDatabase
 import com.winatra.urmix.R
@@ -25,6 +20,17 @@ import com.winatra.urmix.database.history.model.StreamHistoryEntry
 import com.winatra.urmix.database.playlist.PlaylistLocalItem
 import com.winatra.urmix.database.playlist.PlaylistStreamEntry
 import com.winatra.urmix.database.playlist.model.PlaylistRemoteEntity
+import com.winatra.urmix.local.bookmark.MergedPlaylistManager
+import com.winatra.urmix.local.playlist.LocalPlaylistManager
+import com.winatra.urmix.local.playlist.RemotePlaylistManager
+import com.winatra.urmix.util.ExtractorHelper
+import com.winatra.urmix.util.ServiceHelper
+import com.winatra.urmix.util.image.ImageStrategy
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.function.Consumer
 import org.schabi.newpipe.extractor.InfoItem
 import org.schabi.newpipe.extractor.InfoItem.InfoType
 import org.schabi.newpipe.extractor.channel.ChannelInfoItem
@@ -32,12 +38,6 @@ import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException
 import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem
 import org.schabi.newpipe.extractor.search.SearchInfo
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
-import com.winatra.urmix.local.bookmark.MergedPlaylistManager
-import com.winatra.urmix.local.playlist.LocalPlaylistManager
-import com.winatra.urmix.local.playlist.RemotePlaylistManager
-import com.winatra.urmix.util.ExtractorHelper
-import com.winatra.urmix.util.ServiceHelper
-import com.winatra.urmix.util.image.ImageStrategy
 
 /**
  * This class is used to cleanly separate the Service implementation (in

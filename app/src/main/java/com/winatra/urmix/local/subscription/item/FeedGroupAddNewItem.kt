@@ -1,9 +1,9 @@
 package com.winatra.urmix.local.subscription.item
 
 import android.view.View
-import com.xwray.groupie.viewbinding.BindableItem
 import com.winatra.urmix.R
 import com.winatra.urmix.databinding.FeedGroupAddNewItemBinding
+import com.xwray.groupie.viewbinding.BindableItem
 
 class FeedGroupAddNewItem : BindableItem<FeedGroupAddNewItemBinding>() {
     override fun getLayout(): Int = R.layout.feed_group_add_new_item

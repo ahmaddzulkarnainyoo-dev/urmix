@@ -12,8 +12,8 @@ import com.winatra.urmix.database.LocalItem
 import com.winatra.urmix.database.playlist.model.PlaylistStreamEntity
 import com.winatra.urmix.database.stream.model.StreamEntity
 import com.winatra.urmix.database.stream.model.StreamStateEntity
-import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import com.winatra.urmix.util.image.ImageStrategy
+import org.schabi.newpipe.extractor.stream.StreamInfoItem
 
 data class PlaylistStreamEntry(
     @Embedded

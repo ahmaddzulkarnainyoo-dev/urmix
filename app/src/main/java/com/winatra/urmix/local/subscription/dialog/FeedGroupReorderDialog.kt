@@ -13,9 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.evernote.android.state.State
 import com.livefront.bridge.Bridge
-import com.xwray.groupie.GroupieAdapter
-import com.xwray.groupie.TouchCallback
-import java.util.Collections
 import com.winatra.urmix.R
 import com.winatra.urmix.database.feed.model.FeedGroupEntity
 import com.winatra.urmix.databinding.DialogFeedGroupReorderBinding
@@ -23,6 +20,9 @@ import com.winatra.urmix.local.subscription.dialog.FeedGroupReorderDialogViewMod
 import com.winatra.urmix.local.subscription.dialog.FeedGroupReorderDialogViewModel.DialogEvent.SuccessEvent
 import com.winatra.urmix.local.subscription.item.FeedGroupReorderItem
 import com.winatra.urmix.util.ThemeHelper
+import com.xwray.groupie.GroupieAdapter
+import com.xwray.groupie.TouchCallback
+import java.util.Collections
 
 class FeedGroupReorderDialog : DialogFragment() {
     private var _binding: DialogFeedGroupReorderBinding? = null

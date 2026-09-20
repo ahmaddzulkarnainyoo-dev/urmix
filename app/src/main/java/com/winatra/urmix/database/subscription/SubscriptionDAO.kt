@@ -6,9 +6,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
+import com.winatra.urmix.database.BasicDAO
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Maybe
-import com.winatra.urmix.database.BasicDAO
 
 @Dao
 abstract class SubscriptionDAO : BasicDAO<SubscriptionEntity> {

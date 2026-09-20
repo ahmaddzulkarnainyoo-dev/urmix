@@ -2,9 +2,9 @@ package com.winatra.urmix.testUtil
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import org.junit.Assert.assertSame
 import com.winatra.urmix.NewPipeDatabase
 import com.winatra.urmix.database.AppDatabase
+import org.junit.Assert.assertSame
 
 class TestDatabase {
     companion object {

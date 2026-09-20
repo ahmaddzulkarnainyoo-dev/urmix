@@ -2,6 +2,9 @@ package com.winatra.urmix.settings
 
 import android.content.SharedPreferences
 import com.grack.nanojson.JsonParser
+import com.winatra.urmix.settings.export.BackupFileLocator
+import com.winatra.urmix.settings.export.ImportExportManager
+import com.winatra.urmix.streams.io.StoredFileHelper
 import java.io.File
 import java.io.ObjectInputStream
 import java.nio.file.Paths
@@ -30,9 +33,6 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.withSettings
 import org.mockito.junit.MockitoJUnitRunner
-import com.winatra.urmix.settings.export.BackupFileLocator
-import com.winatra.urmix.settings.export.ImportExportManager
-import com.winatra.urmix.streams.io.StoredFileHelper
 import us.shandian.giga.io.FileStream
 
 @RunWith(MockitoJUnitRunner::class)

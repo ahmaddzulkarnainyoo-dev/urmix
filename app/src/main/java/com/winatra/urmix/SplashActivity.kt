@@ -30,7 +30,7 @@ class SplashActivity : AppCompatActivity() {
      */
     private val splashDurationMs = 1600L
 
-    override fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val binding = ActivitySplashBinding.inflate(getLayoutInflater())
@@ -41,7 +41,7 @@ class SplashActivity : AppCompatActivity() {
         binding.splashBrandBlock.animate().alpha(1.0f).setDuration(600).start()
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle) {
+    override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
 
         // Fetch the WINATRA remote config non-blocking in the background

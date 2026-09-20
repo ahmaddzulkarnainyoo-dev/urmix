@@ -2,14 +2,6 @@ package com.winatra.urmix.local.feed
 
 import android.content.Context
 import android.util.Log
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Maybe
-import io.reactivex.rxjava3.schedulers.Schedulers
-import java.time.LocalDate
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
 import com.winatra.urmix.MainActivity.DEBUG
 import com.winatra.urmix.NewPipeDatabase
 import com.winatra.urmix.database.feed.model.FeedEntity
@@ -18,9 +10,17 @@ import com.winatra.urmix.database.feed.model.FeedLastUpdatedEntity
 import com.winatra.urmix.database.stream.StreamWithState
 import com.winatra.urmix.database.stream.model.StreamEntity
 import com.winatra.urmix.database.subscription.NotificationMode
+import com.winatra.urmix.local.subscription.FeedGroupIcon
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.time.LocalDate
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import org.schabi.newpipe.extractor.stream.StreamType
-import com.winatra.urmix.local.subscription.FeedGroupIcon
 
 class FeedDatabaseManager(context: Context) {
     private val database = NewPipeDatabase.getInstance(context)

@@ -8,9 +8,9 @@ package com.winatra.urmix.database.history.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import io.reactivex.rxjava3.core.Flowable
 import com.winatra.urmix.database.BasicDAO
 import com.winatra.urmix.database.history.model.SearchHistoryEntry
+import io.reactivex.rxjava3.core.Flowable
 
 @Dao
 interface SearchHistoryDAO : BasicDAO<SearchHistoryEntry> {

@@ -5,11 +5,6 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.xwray.groupie.Group
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.processors.BehaviorProcessor
-import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 import com.winatra.urmix.info_list.ItemViewMode
 import com.winatra.urmix.local.feed.FeedDatabaseManager
 import com.winatra.urmix.local.subscription.item.ChannelItem
@@ -17,6 +12,11 @@ import com.winatra.urmix.local.subscription.item.FeedGroupCardGridItem
 import com.winatra.urmix.local.subscription.item.FeedGroupCardItem
 import com.winatra.urmix.util.DEFAULT_THROTTLE_TIMEOUT
 import com.winatra.urmix.util.ThemeHelper.getItemViewMode
+import com.xwray.groupie.Group
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.processors.BehaviorProcessor
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class SubscriptionViewModel(application: Application) : AndroidViewModel(application) {
     private var feedDatabaseManager: FeedDatabaseManager = FeedDatabaseManager(application)

@@ -10,19 +10,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector.PlaybackPreparer
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.function.BiConsumer
-import java.util.function.Consumer
 import com.winatra.urmix.MainActivity
 import com.winatra.urmix.NewPipeDatabase
 import com.winatra.urmix.R
 import com.winatra.urmix.error.ErrorInfo
-import org.schabi.newpipe.extractor.InfoItem.InfoType
-import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException
-import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler
 import com.winatra.urmix.local.playlist.LocalPlaylistManager
 import com.winatra.urmix.local.playlist.RemotePlaylistManager
 import com.winatra.urmix.player.playqueue.ChannelTabPlayQueue
@@ -32,6 +23,15 @@ import com.winatra.urmix.player.playqueue.SinglePlayQueue
 import com.winatra.urmix.util.ChannelTabHelper
 import com.winatra.urmix.util.ExtractorHelper
 import com.winatra.urmix.util.NavigationHelper
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.function.BiConsumer
+import java.util.function.Consumer
+import org.schabi.newpipe.extractor.InfoItem.InfoType
+import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler
 
 /**
  * This class is used to cleanly separate the Service implementation (in

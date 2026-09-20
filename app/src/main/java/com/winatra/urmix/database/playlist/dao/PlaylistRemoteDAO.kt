@@ -9,9 +9,9 @@ package com.winatra.urmix.database.playlist.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import io.reactivex.rxjava3.core.Flowable
 import com.winatra.urmix.database.BasicDAO
 import com.winatra.urmix.database.playlist.model.PlaylistRemoteEntity
+import io.reactivex.rxjava3.core.Flowable
 
 @Dao
 interface PlaylistRemoteDAO : BasicDAO<PlaylistRemoteEntity> {

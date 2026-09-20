@@ -8,7 +8,6 @@ package com.winatra.urmix
 
 import android.content.Context
 import androidx.room.Room.databaseBuilder
-import kotlin.concurrent.Volatile
 import com.winatra.urmix.database.AppDatabase
 import com.winatra.urmix.database.Migrations.MIGRATION_1_2
 import com.winatra.urmix.database.Migrations.MIGRATION_2_3
@@ -18,6 +17,7 @@ import com.winatra.urmix.database.Migrations.MIGRATION_5_6
 import com.winatra.urmix.database.Migrations.MIGRATION_6_7
 import com.winatra.urmix.database.Migrations.MIGRATION_7_8
 import com.winatra.urmix.database.Migrations.MIGRATION_8_9
+import kotlin.concurrent.Volatile
 
 object NewPipeDatabase {
 

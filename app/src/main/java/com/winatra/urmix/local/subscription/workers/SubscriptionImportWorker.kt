@@ -21,6 +21,11 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.winatra.urmix.R
+import com.winatra.urmix.local.subscription.SubscriptionManager
+import com.winatra.urmix.streams.io.SharpInputStream
+import com.winatra.urmix.streams.io.StoredFileHelper
+import com.winatra.urmix.util.ExtractorHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
@@ -32,12 +37,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
-import com.winatra.urmix.R
 import org.schabi.newpipe.extractor.NewPipe
-import com.winatra.urmix.local.subscription.SubscriptionManager
-import com.winatra.urmix.streams.io.SharpInputStream
-import com.winatra.urmix.streams.io.StoredFileHelper
-import com.winatra.urmix.util.ExtractorHelper
 
 class SubscriptionImportWorker(
     private val context: Context,

@@ -9,11 +9,11 @@ package com.winatra.urmix.database.history.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
-import io.reactivex.rxjava3.core.Flowable
 import com.winatra.urmix.database.BasicDAO
 import com.winatra.urmix.database.history.model.StreamHistoryEntity
 import com.winatra.urmix.database.history.model.StreamHistoryEntry
 import com.winatra.urmix.database.stream.StreamStatisticsEntry
+import io.reactivex.rxjava3.core.Flowable
 
 @Dao
 abstract class StreamHistoryDAO : BasicDAO<StreamHistoryEntity> {

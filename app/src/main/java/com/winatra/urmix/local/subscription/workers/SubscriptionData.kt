@@ -1,8 +1,8 @@
 package com.winatra.urmix.local.subscription.workers
 
+import com.winatra.urmix.BuildConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import com.winatra.urmix.BuildConfig
 
 @Serializable
 class SubscriptionData(

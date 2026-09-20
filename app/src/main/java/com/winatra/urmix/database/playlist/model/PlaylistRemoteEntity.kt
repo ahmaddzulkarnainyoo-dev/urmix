@@ -17,9 +17,9 @@ import com.winatra.urmix.database.playlist.PlaylistLocalItem
 import com.winatra.urmix.database.playlist.model.PlaylistRemoteEntity.Companion.REMOTE_PLAYLIST_SERVICE_ID
 import com.winatra.urmix.database.playlist.model.PlaylistRemoteEntity.Companion.REMOTE_PLAYLIST_TABLE
 import com.winatra.urmix.database.playlist.model.PlaylistRemoteEntity.Companion.REMOTE_PLAYLIST_URL
-import org.schabi.newpipe.extractor.playlist.PlaylistInfo
 import com.winatra.urmix.util.NO_SERVICE_ID
 import com.winatra.urmix.util.image.ImageStrategy
+import org.schabi.newpipe.extractor.playlist.PlaylistInfo
 
 @Entity(
     tableName = REMOTE_PLAYLIST_TABLE,

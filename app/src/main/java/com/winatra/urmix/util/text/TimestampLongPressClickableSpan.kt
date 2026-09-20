@@ -7,11 +7,11 @@ package com.winatra.urmix.util.text
 
 import android.content.Context
 import android.view.View
+import com.winatra.urmix.util.external_communication.ShareUtils
+import com.winatra.urmix.util.text.TimestampExtractor.TimestampMatchDTO
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.StreamingService
-import com.winatra.urmix.util.external_communication.ShareUtils
-import com.winatra.urmix.util.text.TimestampExtractor.TimestampMatchDTO
 
 class TimestampLongPressClickableSpan(
     private val context: Context,

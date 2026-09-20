@@ -4,10 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.time.OffsetDateTime
 import com.winatra.urmix.database.feed.model.FeedLastUpdatedEntity.Companion.FEED_LAST_UPDATED_TABLE
 import com.winatra.urmix.database.feed.model.FeedLastUpdatedEntity.Companion.SUBSCRIPTION_ID
 import com.winatra.urmix.database.subscription.SubscriptionEntity
+import java.time.OffsetDateTime
 
 @Entity(
     tableName = FEED_LAST_UPDATED_TABLE,

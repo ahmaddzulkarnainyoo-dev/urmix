@@ -2,10 +2,10 @@ package com.winatra.urmix.database.history.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
-import java.time.OffsetDateTime
 import com.winatra.urmix.database.stream.model.StreamEntity
-import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import com.winatra.urmix.util.image.ImageStrategy
+import java.time.OffsetDateTime
+import org.schabi.newpipe.extractor.stream.StreamInfoItem
 
 data class StreamHistoryEntry(
     @Embedded

@@ -3,6 +3,17 @@ package com.winatra.urmix.local.feed.service
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import com.winatra.urmix.R
+import com.winatra.urmix.database.feed.model.FeedGroupEntity
+import com.winatra.urmix.database.subscription.NotificationMode
+import com.winatra.urmix.database.subscription.SubscriptionEntity
+import com.winatra.urmix.ktx.getStringSafe
+import com.winatra.urmix.local.feed.FeedDatabaseManager
+import com.winatra.urmix.local.subscription.SubscriptionManager
+import com.winatra.urmix.util.ChannelTabHelper
+import com.winatra.urmix.util.ExtractorHelper.getChannelInfo
+import com.winatra.urmix.util.ExtractorHelper.getChannelTab
+import com.winatra.urmix.util.ExtractorHelper.getMoreChannelTabItems
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
@@ -15,22 +26,11 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
-import com.winatra.urmix.R
-import com.winatra.urmix.database.feed.model.FeedGroupEntity
-import com.winatra.urmix.database.subscription.NotificationMode
-import com.winatra.urmix.database.subscription.SubscriptionEntity
 import org.schabi.newpipe.extractor.Info
 import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.feed.FeedInfo
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
-import com.winatra.urmix.ktx.getStringSafe
-import com.winatra.urmix.local.feed.FeedDatabaseManager
-import com.winatra.urmix.local.subscription.SubscriptionManager
-import com.winatra.urmix.util.ChannelTabHelper
-import com.winatra.urmix.util.ExtractorHelper.getChannelInfo
-import com.winatra.urmix.util.ExtractorHelper.getChannelTab
-import com.winatra.urmix.util.ExtractorHelper.getMoreChannelTabItems
 
 class FeedLoadManager(private val context: Context) {
 

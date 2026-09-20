@@ -1,13 +1,13 @@
 package com.winatra.urmix.info_list
 
 import android.view.View
-import com.xwray.groupie.viewbinding.BindableItem
-import com.xwray.groupie.viewbinding.GroupieViewHolder
 import com.winatra.urmix.R
 import com.winatra.urmix.databinding.ItemStreamSegmentBinding
-import org.schabi.newpipe.extractor.stream.StreamSegment
 import com.winatra.urmix.util.Localization
 import com.winatra.urmix.util.image.CoilHelper
+import com.xwray.groupie.viewbinding.BindableItem
+import com.xwray.groupie.viewbinding.GroupieViewHolder
+import org.schabi.newpipe.extractor.stream.StreamSegment
 
 class StreamSegmentItem(
     private val item: StreamSegment,

@@ -11,14 +11,14 @@ import android.webkit.WebView
 import androidx.annotation.MainThread
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
+import com.winatra.urmix.BuildConfig
+import com.winatra.urmix.DownloaderImpl
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.time.Instant
-import com.winatra.urmix.BuildConfig
-import com.winatra.urmix.DownloaderImpl
 
 class PoTokenWebView private constructor(
     context: Context,

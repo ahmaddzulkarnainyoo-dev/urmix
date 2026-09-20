@@ -1,6 +1,10 @@
 package com.winatra.urmix.local.history
 
 import androidx.test.core.app.ApplicationProvider
+import com.winatra.urmix.database.AppDatabase
+import com.winatra.urmix.database.history.model.SearchHistoryEntry
+import com.winatra.urmix.testUtil.TestDatabase
+import com.winatra.urmix.testUtil.TrampolineSchedulerRule
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -10,10 +14,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.winatra.urmix.database.AppDatabase
-import com.winatra.urmix.database.history.model.SearchHistoryEntry
-import com.winatra.urmix.testUtil.TestDatabase
-import com.winatra.urmix.testUtil.TrampolineSchedulerRule
 
 class HistoryRecordManagerTest {
 

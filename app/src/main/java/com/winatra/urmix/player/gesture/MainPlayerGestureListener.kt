@@ -8,7 +8,6 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isVisible
-import kotlin.math.abs
 import com.winatra.urmix.MainActivity
 import com.winatra.urmix.R
 import com.winatra.urmix.ktx.AnimationType
@@ -18,6 +17,7 @@ import com.winatra.urmix.player.helper.AudioReactor
 import com.winatra.urmix.player.helper.PlayerHelper
 import com.winatra.urmix.player.ui.MainPlayerUi
 import com.winatra.urmix.util.ThemeHelper.getAndroidDimenPx
+import kotlin.math.abs
 
 /**
  * GestureListener for the player

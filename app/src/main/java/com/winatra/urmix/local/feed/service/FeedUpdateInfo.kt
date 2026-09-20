@@ -2,10 +2,10 @@ package com.winatra.urmix.local.feed.service
 
 import com.winatra.urmix.database.subscription.NotificationMode
 import com.winatra.urmix.database.subscription.SubscriptionEntity
+import com.winatra.urmix.util.image.ImageStrategy
 import org.schabi.newpipe.extractor.Info
 import org.schabi.newpipe.extractor.channel.ChannelInfo
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
-import com.winatra.urmix.util.image.ImageStrategy
 
 /**
  * Instances of this class might stay around in memory for some time while fetching the feed,

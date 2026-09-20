@@ -1,14 +1,14 @@
 package com.winatra.urmix.local.playlist
 
+import com.winatra.urmix.database.AppDatabase
+import com.winatra.urmix.database.stream.model.StreamEntity
+import com.winatra.urmix.testUtil.TestDatabase
+import com.winatra.urmix.testUtil.TrampolineSchedulerRule
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.winatra.urmix.database.AppDatabase
-import com.winatra.urmix.database.stream.model.StreamEntity
 import org.schabi.newpipe.extractor.stream.StreamType
-import com.winatra.urmix.testUtil.TestDatabase
-import com.winatra.urmix.testUtil.TrampolineSchedulerRule
 
 class LocalPlaylistManagerTest {
 

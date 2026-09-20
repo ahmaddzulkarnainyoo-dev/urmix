@@ -1,10 +1,10 @@
 package com.winatra.urmix.local.feed.service
 
 import androidx.annotation.StringRes
+import com.winatra.urmix.local.feed.service.FeedEventManager.Event.IdleEvent
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 import java.util.concurrent.atomic.AtomicBoolean
-import com.winatra.urmix.local.feed.service.FeedEventManager.Event.IdleEvent
 
 object FeedEventManager {
     private var processor: BehaviorProcessor<Event> = BehaviorProcessor.create()

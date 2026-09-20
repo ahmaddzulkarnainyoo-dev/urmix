@@ -5,23 +5,23 @@ import android.text.TextUtils
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
-import com.xwray.groupie.viewbinding.BindableItem
-import java.util.concurrent.TimeUnit
-import java.util.function.Consumer
 import com.winatra.urmix.MainActivity
 import com.winatra.urmix.R
 import com.winatra.urmix.database.stream.StreamWithState
 import com.winatra.urmix.database.stream.model.StreamEntity
 import com.winatra.urmix.databinding.ListStreamItemBinding
+import com.winatra.urmix.util.Localization
+import com.winatra.urmix.util.StreamTypeUtil
+import com.winatra.urmix.util.image.CoilHelper
+import com.xwray.groupie.viewbinding.BindableItem
+import java.util.concurrent.TimeUnit
+import java.util.function.Consumer
 import org.schabi.newpipe.extractor.stream.StreamType.AUDIO_LIVE_STREAM
 import org.schabi.newpipe.extractor.stream.StreamType.AUDIO_STREAM
 import org.schabi.newpipe.extractor.stream.StreamType.LIVE_STREAM
 import org.schabi.newpipe.extractor.stream.StreamType.POST_LIVE_AUDIO_STREAM
 import org.schabi.newpipe.extractor.stream.StreamType.POST_LIVE_STREAM
 import org.schabi.newpipe.extractor.stream.StreamType.VIDEO_STREAM
-import com.winatra.urmix.util.Localization
-import com.winatra.urmix.util.StreamTypeUtil
-import com.winatra.urmix.util.image.CoilHelper
 
 data class StreamItem(
     val streamWithState: StreamWithState,

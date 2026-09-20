@@ -5,12 +5,12 @@ import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.DOWN
 import androidx.recyclerview.widget.ItemTouchHelper.UP
-import com.xwray.groupie.viewbinding.BindableItem
-import com.xwray.groupie.viewbinding.GroupieViewHolder
 import com.winatra.urmix.R
 import com.winatra.urmix.database.feed.model.FeedGroupEntity
 import com.winatra.urmix.databinding.FeedGroupReorderItemBinding
 import com.winatra.urmix.local.subscription.FeedGroupIcon
+import com.xwray.groupie.viewbinding.BindableItem
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 
 data class FeedGroupReorderItem(
     val groupId: Long = FeedGroupEntity.GROUP_ALL_ID,

@@ -6,9 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Maybe
-import java.time.OffsetDateTime
 import com.winatra.urmix.database.feed.model.FeedEntity
 import com.winatra.urmix.database.feed.model.FeedGroupEntity
 import com.winatra.urmix.database.feed.model.FeedLastUpdatedEntity
@@ -16,6 +13,9 @@ import com.winatra.urmix.database.stream.StreamWithState
 import com.winatra.urmix.database.stream.model.StreamStateEntity
 import com.winatra.urmix.database.subscription.NotificationMode
 import com.winatra.urmix.database.subscription.SubscriptionEntity
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Maybe
+import java.time.OffsetDateTime
 
 @Dao
 abstract class FeedDAO {

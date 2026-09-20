@@ -5,12 +5,12 @@
 
 package com.winatra.urmix.local.playlist
 
+import com.winatra.urmix.database.AppDatabase
+import com.winatra.urmix.database.playlist.model.PlaylistRemoteEntity
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import com.winatra.urmix.database.AppDatabase
-import com.winatra.urmix.database.playlist.model.PlaylistRemoteEntity
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo
 
 class RemotePlaylistManager(private val database: AppDatabase) {

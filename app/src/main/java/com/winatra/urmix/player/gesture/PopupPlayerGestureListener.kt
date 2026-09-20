@@ -5,14 +5,14 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.core.view.isVisible
-import kotlin.math.abs
-import kotlin.math.hypot
-import kotlin.math.max
-import kotlin.math.min
 import com.winatra.urmix.MainActivity
 import com.winatra.urmix.ktx.AnimationType
 import com.winatra.urmix.ktx.animate
 import com.winatra.urmix.player.ui.PopupPlayerUi
+import kotlin.math.abs
+import kotlin.math.hypot
+import kotlin.math.max
+import kotlin.math.min
 
 class PopupPlayerGestureListener(
     private val playerUi: PopupPlayerUi

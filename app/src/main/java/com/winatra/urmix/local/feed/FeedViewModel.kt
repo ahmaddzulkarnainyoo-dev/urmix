@@ -9,13 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.preference.PreferenceManager
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.functions.Function6
-import io.reactivex.rxjava3.processors.BehaviorProcessor
-import io.reactivex.rxjava3.schedulers.Schedulers
-import java.time.OffsetDateTime
-import java.util.concurrent.TimeUnit
 import com.winatra.urmix.App
 import com.winatra.urmix.R
 import com.winatra.urmix.database.feed.model.FeedGroupEntity
@@ -27,6 +20,13 @@ import com.winatra.urmix.local.feed.service.FeedEventManager.Event.IdleEvent
 import com.winatra.urmix.local.feed.service.FeedEventManager.Event.ProgressEvent
 import com.winatra.urmix.local.feed.service.FeedEventManager.Event.SuccessResultEvent
 import com.winatra.urmix.util.DEFAULT_THROTTLE_TIMEOUT
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.functions.Function6
+import io.reactivex.rxjava3.processors.BehaviorProcessor
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.time.OffsetDateTime
+import java.util.concurrent.TimeUnit
 
 class FeedViewModel(
     private val application: Application,

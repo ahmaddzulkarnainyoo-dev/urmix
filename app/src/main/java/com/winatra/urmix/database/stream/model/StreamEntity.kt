@@ -5,17 +5,17 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.io.Serializable
-import java.time.OffsetDateTime
 import com.winatra.urmix.database.stream.model.StreamEntity.Companion.STREAM_SERVICE_ID
 import com.winatra.urmix.database.stream.model.StreamEntity.Companion.STREAM_TABLE
 import com.winatra.urmix.database.stream.model.StreamEntity.Companion.STREAM_URL
+import com.winatra.urmix.player.playqueue.PlayQueueItem
+import com.winatra.urmix.util.image.ImageStrategy
+import java.io.Serializable
+import java.time.OffsetDateTime
 import org.schabi.newpipe.extractor.localization.DateWrapper
 import org.schabi.newpipe.extractor.stream.StreamInfo
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import org.schabi.newpipe.extractor.stream.StreamType
-import com.winatra.urmix.player.playqueue.PlayQueueItem
-import com.winatra.urmix.util.image.ImageStrategy
 
 @Entity(
     tableName = STREAM_TABLE,

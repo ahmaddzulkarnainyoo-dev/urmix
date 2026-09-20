@@ -17,10 +17,10 @@ import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
 import com.winatra.urmix.R
-import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import com.winatra.urmix.local.feed.service.FeedUpdateInfo
 import com.winatra.urmix.util.NavigationHelper
 import com.winatra.urmix.util.image.CoilHelper
+import org.schabi.newpipe.extractor.stream.StreamInfoItem
 
 /**
  * Helper for everything related to show notifications about new streams to the user.

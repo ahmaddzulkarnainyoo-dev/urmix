@@ -1,11 +1,11 @@
 package com.winatra.urmix.local.subscription.item
 
 import android.view.View
-import com.xwray.groupie.viewbinding.BindableItem
 import com.winatra.urmix.R
 import com.winatra.urmix.database.feed.model.FeedGroupEntity
 import com.winatra.urmix.databinding.FeedGroupCardItemBinding
 import com.winatra.urmix.local.subscription.FeedGroupIcon
+import com.xwray.groupie.viewbinding.BindableItem
 
 data class FeedGroupCardItem(
     val groupId: Long = FeedGroupEntity.GROUP_ALL_ID,

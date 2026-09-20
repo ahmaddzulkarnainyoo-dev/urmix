@@ -8,8 +8,6 @@ import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.google.android.material.snackbar.Snackbar
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.Disposable
 import com.winatra.urmix.R
 import com.winatra.urmix.database.subscription.NotificationMode
 import com.winatra.urmix.database.subscription.SubscriptionEntity
@@ -20,6 +18,8 @@ import com.winatra.urmix.local.feed.notifications.NotificationHelper
 import com.winatra.urmix.local.feed.notifications.NotificationWorker
 import com.winatra.urmix.local.feed.notifications.ScheduleOptions
 import com.winatra.urmix.local.subscription.SubscriptionManager
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.Disposable
 
 class NotificationsSettingsFragment : BasePreferenceFragment(), OnSharedPreferenceChangeListener {
 

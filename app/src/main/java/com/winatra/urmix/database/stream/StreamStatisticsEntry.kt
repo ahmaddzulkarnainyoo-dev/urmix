@@ -9,13 +9,13 @@ package com.winatra.urmix.database.stream
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Ignore
-import java.time.OffsetDateTime
 import com.winatra.urmix.database.LocalItem
 import com.winatra.urmix.database.history.model.StreamHistoryEntity
 import com.winatra.urmix.database.stream.model.StreamEntity
 import com.winatra.urmix.database.stream.model.StreamStateEntity.Companion.STREAM_PROGRESS_MILLIS
-import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import com.winatra.urmix.util.image.ImageStrategy
+import java.time.OffsetDateTime
+import org.schabi.newpipe.extractor.stream.StreamInfoItem
 
 data class StreamStatisticsEntry(
     @Embedded

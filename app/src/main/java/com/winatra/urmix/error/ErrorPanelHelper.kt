@@ -9,14 +9,14 @@ import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.jakewharton.rxbinding4.view.clicks
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.Disposable
-import java.util.concurrent.TimeUnit
 import com.winatra.urmix.MainActivity
 import com.winatra.urmix.R
 import com.winatra.urmix.ktx.animate
 import com.winatra.urmix.util.external_communication.ShareUtils
 import com.winatra.urmix.util.text.setTextWithLinks
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.Disposable
+import java.util.concurrent.TimeUnit
 
 class ErrorPanelHelper(
     private val fragment: Fragment,

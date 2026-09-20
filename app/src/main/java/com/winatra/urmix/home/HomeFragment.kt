@@ -85,15 +85,11 @@ class HomeFragment : Fragment() {
             ExtractorHelper.getStreamInfo(item.serviceId, item.url, false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorReturnItem(null)
                 .subscribe({ info ->
-                    if (info != null) {
-                        NavigationHelper.playOnMainPlayer(activity, SinglePlayQueue(info), false)
-                    } else {
-                        NavigationHelper.playOnMainPlayer(
-                            activity, SinglePlayQueue(item), false)
-                    }
-                }, { })
+                    NavigationHelper.playOnMainPlayer(activity, SinglePlayQueue(info), false)
+                }, {
+                    NavigationHelper.playOnMainPlayer(activity, SinglePlayQueue(item), false)
+                })
         )
     }
 
@@ -118,8 +114,7 @@ class HomeFragment : Fragment() {
         fun isAudioLeaning(type: StreamType?): Boolean {
             return type == StreamType.AUDIO_STREAM ||
                 type == StreamType.AUDIO_LIVE_STREAM ||
-                type == StreamType.POST_LIVE_AUDIO_STREAM ||
-                type == StreamType.MUSIC
+                type == StreamType.POST_LIVE_AUDIO_STREAM
         }
     }
 }

@@ -1,23 +1,23 @@
 package com.winatra.urmix.local.subscription
 
 import android.content.Context
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.schedulers.Schedulers
 import com.winatra.urmix.NewPipeDatabase
 import com.winatra.urmix.database.feed.model.FeedGroupEntity
 import com.winatra.urmix.database.stream.model.StreamEntity
 import com.winatra.urmix.database.subscription.NotificationMode
 import com.winatra.urmix.database.subscription.SubscriptionDAO
 import com.winatra.urmix.database.subscription.SubscriptionEntity
-import org.schabi.newpipe.extractor.channel.ChannelInfo
-import org.schabi.newpipe.extractor.channel.tabs.ChannelTabInfo
-import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import com.winatra.urmix.local.feed.FeedDatabaseManager
 import com.winatra.urmix.local.feed.service.FeedUpdateInfo
 import com.winatra.urmix.util.ExtractorHelper
 import com.winatra.urmix.util.image.ImageStrategy
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import org.schabi.newpipe.extractor.channel.ChannelInfo
+import org.schabi.newpipe.extractor.channel.tabs.ChannelTabInfo
+import org.schabi.newpipe.extractor.stream.StreamInfoItem
 
 class SubscriptionManager(context: Context) {
     private val database = NewPipeDatabase.getInstance(context)

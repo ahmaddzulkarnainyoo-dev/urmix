@@ -4,13 +4,13 @@ import android.os.Parcelable
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.viewbinding.BindableItem
-import com.xwray.groupie.viewbinding.GroupieViewHolder
 import com.winatra.urmix.R
 import com.winatra.urmix.databinding.FeedItemCarouselBinding
 import com.winatra.urmix.util.DeviceUtils
 import com.winatra.urmix.util.ThemeHelper.getGridSpanCount
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.viewbinding.BindableItem
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 
 class FeedGroupCarouselItem(
     private val carouselAdapter: GroupAdapter<GroupieViewHolder<FeedItemCarouselBinding>>,

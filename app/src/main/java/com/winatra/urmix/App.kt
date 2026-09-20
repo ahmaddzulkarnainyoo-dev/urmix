@@ -15,6 +15,16 @@ import coil3.request.allowRgb565
 import coil3.request.crossfade
 import coil3.util.DebugLogger
 import com.jakewharton.processphoenix.ProcessPhoenix
+import com.winatra.urmix.error.ReCaptchaActivity
+import com.winatra.urmix.ktx.hasAssignableCause
+import com.winatra.urmix.settings.NewPipeSettings
+import com.winatra.urmix.util.BridgeStateSaverInitializer
+import com.winatra.urmix.util.Localization
+import com.winatra.urmix.util.ServiceHelper
+import com.winatra.urmix.util.StateSaver
+import com.winatra.urmix.util.image.ImageStrategy
+import com.winatra.urmix.util.image.PreferredImageQuality
+import com.winatra.urmix.util.potoken.PoTokenProviderImpl
 import io.reactivex.rxjava3.exceptions.CompositeException
 import io.reactivex.rxjava3.exceptions.MissingBackpressureException
 import io.reactivex.rxjava3.exceptions.OnErrorNotImplementedException
@@ -27,19 +37,9 @@ import java.net.SocketException
 import org.acra.ACRA.init
 import org.acra.ACRA.isACRASenderServiceProcess
 import org.acra.config.CoreConfigurationBuilder
-import com.winatra.urmix.error.ReCaptchaActivity
 import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.downloader.Downloader
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor
-import com.winatra.urmix.ktx.hasAssignableCause
-import com.winatra.urmix.settings.NewPipeSettings
-import com.winatra.urmix.util.BridgeStateSaverInitializer
-import com.winatra.urmix.util.Localization
-import com.winatra.urmix.util.ServiceHelper
-import com.winatra.urmix.util.StateSaver
-import com.winatra.urmix.util.image.ImageStrategy
-import com.winatra.urmix.util.image.PreferredImageQuality
-import com.winatra.urmix.util.potoken.PoTokenProviderImpl
 
 /*
  * Copyright (C) Hans-Christoph Steiner 2016 <hans@eds.org>

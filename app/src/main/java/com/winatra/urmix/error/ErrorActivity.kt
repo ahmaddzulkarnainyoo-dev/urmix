@@ -17,8 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import androidx.core.net.toUri
 import com.grack.nanojson.JsonWriter
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import com.winatra.urmix.BuildConfig
 import com.winatra.urmix.R
 import com.winatra.urmix.databinding.ActivityErrorBinding
@@ -26,6 +24,8 @@ import com.winatra.urmix.util.Localization
 import com.winatra.urmix.util.ThemeHelper
 import com.winatra.urmix.util.external_communication.ShareUtils
 import com.winatra.urmix.util.text.setTextWithLinks
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * This activity is used to show error details and allow reporting them in various ways.

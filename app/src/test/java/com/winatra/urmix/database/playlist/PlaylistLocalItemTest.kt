@@ -6,11 +6,11 @@
 
 package com.winatra.urmix.database.playlist
 
+import com.winatra.urmix.database.playlist.model.PlaylistRemoteEntity
+import com.winatra.urmix.local.bookmark.MergedPlaylistManager
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import com.winatra.urmix.database.playlist.model.PlaylistRemoteEntity
-import com.winatra.urmix.local.bookmark.MergedPlaylistManager
 
 class PlaylistLocalItemTest {
 

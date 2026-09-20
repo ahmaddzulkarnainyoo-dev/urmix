@@ -20,10 +20,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.evernote.android.state.State
 import com.livefront.bridge.Bridge
-import com.xwray.groupie.GroupieAdapter
-import com.xwray.groupie.OnItemClickListener
-import com.xwray.groupie.Section
-import java.io.Serializable
 import com.winatra.urmix.R
 import com.winatra.urmix.database.feed.model.FeedGroupEntity
 import com.winatra.urmix.databinding.DialogFeedGroupCreateBinding
@@ -41,6 +37,10 @@ import com.winatra.urmix.local.subscription.item.PickerIconItem
 import com.winatra.urmix.local.subscription.item.PickerSubscriptionItem
 import com.winatra.urmix.util.DeviceUtils
 import com.winatra.urmix.util.ThemeHelper
+import com.xwray.groupie.GroupieAdapter
+import com.xwray.groupie.OnItemClickListener
+import com.xwray.groupie.Section
+import java.io.Serializable
 
 class FeedGroupDialog : DialogFragment(), BackPressable {
     private var _feedGroupCreateBinding: DialogFeedGroupCreateBinding? = null

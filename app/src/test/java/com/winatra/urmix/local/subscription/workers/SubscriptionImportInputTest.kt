@@ -2,11 +2,11 @@ package com.winatra.urmix.local.subscription.workers
 
 import androidx.work.Data
 import androidx.work.workDataOf
-import org.junit.Assert.assertEquals
-import org.junit.Test
 import com.winatra.urmix.local.subscription.workers.SubscriptionImportInput.ChannelUrlMode
 import com.winatra.urmix.local.subscription.workers.SubscriptionImportInput.InputStreamMode
 import com.winatra.urmix.local.subscription.workers.SubscriptionImportInput.PreviousExportMode
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 class SubscriptionImportInputTest {
 

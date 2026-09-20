@@ -102,8 +102,7 @@ object RemoteConfigRepository {
     }
 
     /** The update_url to direct the user to (config value or the WINATRA default). */
-    fun getEffectiveUpdateUrl(context: Context): String =
-        getCachedConfig(context)?.updateUrl ?: DEFAULT_UPDATE_URL
+    fun getEffectiveUpdateUrl(context: Context): String = getCachedConfig(context)?.updateUrl ?: DEFAULT_UPDATE_URL
 
     /**
      * Fetches the remote config with a strict 4 s timeout and caches the last
@@ -134,25 +133,19 @@ object RemoteConfigRepository {
 
     private fun fetchConfigJson(): String? {
         val request = Request.Builder().url(REMOTE_CONFIG_URL).build()
-        val response = httpClient.newCall(request).execute()
-        try {
+        httpClient.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 if (BuildConfig.DEBUG) {
-                    Log.w(TAG, "Remote config request failed: HTTP " + response.code())
+                    Log.w(TAG, "Remote config request failed: HTTP " + response.code)
                 }
                 return null
             }
-            val body = response.body ?: return null
-            val text = body.string()
-            body.close()
-            return text
-        } finally {
-            response.close()
+            return response.body.string()
         }
     }
 
     private fun parseConfig(raw: String): RemoteConfig? {
-        try {
+        return try {
             val root: JsonObject = JsonParser.`object`().from(raw)
             val announcementObject = root.getObject("announcement")
             val donationObject = root.getObject("donation")
@@ -178,7 +171,7 @@ object RemoteConfigRepository {
                 )
             }
 
-            return RemoteConfig(
+            RemoteConfig(
                 root.getInt("config_schema_version", 0),
                 nullable(root.getString("app_version")),
                 nullable(root.getString("min_extractor_version")),
@@ -204,8 +197,7 @@ object RemoteConfigRepository {
         return parsed
     }
 
-    private fun prefs(context: Context): SharedPreferences =
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private fun prefs(context: Context): SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     /** Parses a JSON string array into validated http(s) URLs (blueprint v2 §3.3). */
     private fun parseStringList(root: JsonObject, key: String): List<String> {
@@ -228,15 +220,13 @@ object RemoteConfigRepository {
         }
     }
 
-    private fun nullable(value: String?): String? =
-        if (value.isNullOrEmpty()) null else value
+    private fun nullable(value: String?): String? = if (value.isNullOrEmpty()) null else value
 
-    private fun validateHttpUrl(url: String?): String? =
-        if (url != null && (url.startsWith("https://") || url.startsWith("http://"))) {
-            url
-        } else {
-            null
-        }
+    private fun validateHttpUrl(url: String?): String? = if (url != null && (url.startsWith("https://") || url.startsWith("http://"))) {
+        url
+    } else {
+        null
+    }
 
     private fun isNewerVersion(required: String?, current: String): Boolean {
         if (required == null) {
@@ -246,9 +236,9 @@ object RemoteConfigRepository {
     }
 
     private fun compareVersions(a: String, b: String): Int {
-        val partsA = a.split("\\.").toList()
-        val partsB = b.split("\\.").toList()
-        val length = max(partsA.size, partsB.size)
+        val partsA = a.split(".")
+        val partsB = b.split(".")
+        val length = maxOf(partsA.size, partsB.size)
         for (i in 0 until length) {
             val partA = parseSegment(partsA.getOrNull(i))
             val partB = parseSegment(partsB.getOrNull(i))
