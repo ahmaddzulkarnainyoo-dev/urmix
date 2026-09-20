@@ -852,6 +852,7 @@
     <string name="select_audio_track_external_players">Select audio track for external players</string>
     <string name="unknown_format">Unknown format</string>
     <string name="unknown_quality">Unknown quality</string>
+
     <string name="unknown_audio_track">Unknown</string>
     <string name="feed_show_watched">Fully watched</string>
     <string name="feed_show_partially_watched">Partially watched</string>
@@ -946,4 +947,10 @@
     <string name="player_error_skipping_to_next">Couldn\'t play this track, skipping to the next one.</string>
     <string name="player_error_check_for_updates">Several tracks failed to load. Check for a URMIX update — the extractor may be outdated.</string>
     <string name="player_error_restore_failed">Couldn\'t restore the last playback session.</string>
+
+    <!-- URMIX Offline resilience (FASE 5 §12.2) -->
+    <string name="offline_banner_message">You\'re offline — showing your saved library.</string>
+    <string name="offline_banner_retry">Retry</string>
+    <string name="offline_search_unavailable">Search needs an internet connection. Your recent searches are still available.</string>
+    <string name="offline_feed_cached_note">Showing cached updates.</string>
 </resources>

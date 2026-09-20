@@ -86,6 +86,14 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <!-- URMIX offline banner (FASE 5 §12.2) -->
+    <include
+        android:id="@+id/offline_banner"
+        layout="@layout/view_offline_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/refresh_root_view" />
+
     <Button
         android:id="@+id/new_items_loaded_button"
         android:layout_width="wrap_content"

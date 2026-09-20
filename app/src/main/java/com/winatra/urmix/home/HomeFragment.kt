@@ -20,6 +20,8 @@ import com.winatra.urmix.databinding.FragmentHomeBinding
 import com.winatra.urmix.player.playqueue.SinglePlayQueue
 import com.winatra.urmix.util.ExtractorHelper
 import com.winatra.urmix.util.NavigationHelper
+import com.winatra.urmix.util.network.NetworkStateObserver
+import com.winatra.urmix.view.OfflineBannerHelper
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -34,6 +36,10 @@ class HomeFragment : Fragment() {
     private lateinit var madeForYouAdapter: HomeCarouselAdapter
     private lateinit var trendingAdapter: HomeCarouselAdapter
     private lateinit var podcastAdapter: HomeCarouselAdapter
+
+    // FASE 5 §12.2: offline banner + reconnect retry for the cached sections.
+    private lateinit var networkObserver: NetworkStateObserver
+    private lateinit var offlineBanner: OfflineBannerHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,15 +59,47 @@ class HomeFragment : Fragment() {
         setupCarousel(binding.homeMadeForYouList, madeForYouAdapter)
         setupCarousel(binding.homeTrendingList, trendingAdapter)
         setupCarousel(binding.homePodcastList, podcastAdapter)
+        offlineBanner = OfflineBannerHelper(binding.offlineBanner) { reloadContent() }
+        networkObserver = NetworkStateObserver(
+            requireContext().applicationContext,
+            onOnline = { reloadContent() }
+        )
+        networkObserver.start()
         binding.homeLoading.visibility = View.VISIBLE
         binding.homeEmpty.visibility = View.GONE
         HomeDataLoader(this, disposables, callbacks()).loadAll()
     }
 
     override fun onDestroyView() {
+        networkObserver.stop()
+        offlineBanner.dispose()
         disposables.clear()
         _binding = null
         super.onDestroyView()
+    }
+
+    fun showOfflineBanner() {
+        if (_binding != null) {
+            offlineBanner.show()
+        }
+    }
+
+    fun hideOfflineBanner() {
+        if (_binding != null) {
+            offlineBanner.hide()
+        }
+    }
+
+    fun isOnlineNow(): Boolean = ::networkObserver.isInitialized && networkObserver.isOnline
+
+    private fun reloadContent() {
+        hideOfflineBanner()
+        if (_binding == null) {
+            return
+        }
+        // Cached sections reload instantly; network sections refresh too so the
+        // transition back online is seamless.
+        HomeDataLoader(this, disposables, callbacks()).loadAll()
     }
 
     fun greetingText(): String {

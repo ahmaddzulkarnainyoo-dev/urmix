@@ -20,6 +20,7 @@ package com.winatra.urmix.local.history;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -59,6 +60,7 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class HistoryRecordManager {
+    private static final String TAG = HistoryRecordManager.class.getSimpleName();
     private final AppDatabase database;
     private final StreamDAO streamTable;
     private final StreamHistoryDAO streamHistoryTable;
@@ -100,15 +102,23 @@ public class HistoryRecordManager {
         return Maybe.fromCallable(() -> database.runInTransaction(() -> {
             final long streamId;
             final long duration;
-            // Duration will not exist if the item was loaded with fast mode, so fetch it if empty
+            // Duration will not exist if the item was loaded with fast mode, so fetch it if empty.
+            // FASE 5 §12.2: offline (or any extraction failure) must never crash the
+            // database transaction — fall back to a no-op instead of throwing.
             if (info.getDuration() < 0) {
-                final StreamInfo completeInfo = ExtractorHelper.getStreamInfo(
-                        info.getServiceId(),
-                        info.getUrl(),
-                        false
-                )
-                        .subscribeOn(Schedulers.io())
-                        .blockingGet();
+                final StreamInfo completeInfo;
+                try {
+                    completeInfo = ExtractorHelper.getStreamInfo(
+                            info.getServiceId(),
+                            info.getUrl(),
+                            false
+                    )
+                            .subscribeOn(Schedulers.io())
+                            .blockingGet();
+                } catch (final Exception e) {
+                    Log.w(TAG, "markAsWatched: could not fetch stream info, skipping", e);
+                    return null; // -> Maybe.empty(), nothing is recorded
+                }
                 duration = completeInfo.getDuration();
                 streamId = streamTable.upsert(new StreamEntity(completeInfo));
             } else {

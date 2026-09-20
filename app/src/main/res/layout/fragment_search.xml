@@ -111,6 +111,14 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
+    <!-- URMIX offline banner (FASE 5 §12.2) -->
+    <include
+        android:id="@+id/offline_banner"
+        layout="@layout/view_offline_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="4dp"

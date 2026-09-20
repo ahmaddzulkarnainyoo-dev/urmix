@@ -125,6 +125,39 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
+        <LinearLayout
+            android:id="@+id/offline_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="12dp"
+            android:background="@color/urmix_offline_banner_background"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.winatra.urmix.views.NewPipeTextView
+                android:id="@+id/offline_banner_message"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/offline_banner_message"
+                android:textColor="@color/urmix_text_secondary"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/offline_banner_retry"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:text="@string/offline_banner_retry"
+                android:textColor="@color/urmix_text_primary" />
+        </LinearLayout>
+
         <com.winatra.urmix.views.NewPipeTextView
             android:id="@+id/home_empty"
             android:layout_width="match_parent"

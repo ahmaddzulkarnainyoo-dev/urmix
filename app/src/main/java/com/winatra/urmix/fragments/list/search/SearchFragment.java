@@ -71,6 +71,8 @@ import com.winatra.urmix.util.ExtractorHelper;
 import com.winatra.urmix.util.KeyboardUtil;
 import com.winatra.urmix.util.NavigationHelper;
 import com.winatra.urmix.util.ServiceHelper;
+import com.winatra.urmix.util.network.NetworkStateObserver;
+import com.winatra.urmix.view.OfflineBannerHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +108,10 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
      */
     private static final int SUGGESTIONS_DEBOUNCE = 120; //ms
     private final PublishSubject<String> suggestionPublisher = PublishSubject.create();
+
+    // FASE 5 §12.2: offline banner + reconnect retry for the last search.
+    private NetworkStateObserver networkObserver;
+    private OfflineBannerHelper offlineBanner;
 
     @State
     int filterItemCheckedId = -1;
@@ -317,6 +323,15 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
         }
         unsetSearchListeners();
 
+        if (networkObserver != null) {
+            networkObserver.stop();
+            networkObserver = null;
+        }
+        if (offlineBanner != null) {
+            offlineBanner.dispose();
+            offlineBanner = null;
+        }
+
         searchBinding = null;
         super.onDestroyView();
     }
@@ -354,6 +369,18 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
     @Override
     protected void initViews(final View rootView, final Bundle savedInstanceState) {
         super.initViews(rootView, savedInstanceState);
+
+        // FASE 5 §12.2: offline banner; reconnect retries the last search.
+        offlineBanner = new OfflineBannerHelper(
+                rootView.findViewById(R.id.offline_banner),
+                () -> search(searchString, contentFilter, sortFilter));
+        networkObserver = new NetworkStateObserver(
+                requireContext().getApplicationContext(),
+                this::retrySearchOnReconnect);
+        networkObserver.start();
+        if (!networkObserver.isOnline()) {
+            offlineBanner.show();
+        }
 
         searchBinding.suggestionsList.setAdapter(suggestionListAdapter);
         // animations are just strange and useless, since the suggestions keep changing too much
@@ -934,9 +961,24 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
         if (exception instanceof SearchExtractor.NothingFoundException) {
             infoListAdapter.clearStreamItemList();
             showEmptyState();
+        } else if (networkObserver != null && !networkObserver.isOnline()) {
+            // FASE 5 §12.2: offline — show the banner instead of the error
+            // panel; the retry button re-runs the search once online again.
+            hideErrorPanel();
+            offlineBanner.show();
         } else {
             showError(new ErrorInfo(exception, UserAction.SEARCHED, searchString, serviceId,
                     getOpenInBrowserUrlForErrors()));
+        }
+    }
+
+    /** Retries the last search after connectivity returned (FASE 5 §12.2). */
+    private void retrySearchOnReconnect() {
+        if (offlineBanner != null) {
+            offlineBanner.hide();
+        }
+        if (!TextUtils.isEmpty(searchString)) {
+            search(searchString, contentFilter, sortFilter);
         }
     }
 

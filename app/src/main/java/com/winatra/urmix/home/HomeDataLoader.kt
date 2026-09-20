@@ -38,8 +38,15 @@ class HomeDataLoader(
     fun loadAll() {
         loadQuickPlay()
         loadMadeForYou()
-        loadTrendingAudio()
-        loadPodcasting()
+        if (fragment.isOnlineNow()) {
+            loadTrendingAudio()
+            loadPodcasting()
+        } else {
+            // FASE 5 §12.2: offline — skip the network-only sections, keep the
+            // Room-backed sections visible and raise the offline banner.
+            fragment.showOfflineBanner()
+            updateEmptyState()
+        }
     }
     fun loadQuickPlay() {
         val appContext = callbacks.appContext() ?: return

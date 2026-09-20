@@ -69,6 +69,8 @@ import com.winatra.urmix.util.ThemeHelper.getGridSpanCountStreams
 import com.winatra.urmix.util.ThemeHelper.getItemViewMode
 import com.winatra.urmix.util.ThemeHelper.resolveDrawable
 import com.winatra.urmix.util.ThemeHelper.shouldUseGridLayout
+import com.winatra.urmix.util.network.NetworkStateObserver
+import com.winatra.urmix.view.OfflineBannerHelper
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.OnItemClickListener
@@ -89,6 +91,10 @@ class FeedFragment : BaseStateFragment<FeedState>() {
     private val feedBinding get() = _feedBinding!!
 
     private val disposables = CompositeDisposable()
+
+    // FASE 5 §12.2: offline banner + reconnect retry for the cached feed.
+    private lateinit var networkObserver: NetworkStateObserver
+    private lateinit var offlineBanner: OfflineBannerHelper
 
     private lateinit var viewModel: FeedViewModel
 
@@ -161,6 +167,18 @@ class FeedFragment : BaseStateFragment<FeedState>() {
 
         feedBinding.itemsList.adapter = groupAdapter
         setupListViewMode()
+
+        // FASE 5 §12.2: offline banner — the Room-cached feed stays visible
+        // while the network refresh is unavailable; reconnect triggers a retry.
+        offlineBanner = OfflineBannerHelper(feedBinding.offlineBanner.root) { reloadContent() }
+        networkObserver = NetworkStateObserver(
+            requireContext().applicationContext,
+            onOnline = { reloadContent() }
+        )
+        networkObserver.start()
+        if (!networkObserver.isOnline) {
+            offlineBanner.show()
+        }
     }
 
     override fun onPause() {
@@ -300,6 +318,9 @@ class FeedFragment : BaseStateFragment<FeedState>() {
     override fun onDestroyView() {
         // Ensure that all animations are canceled
         tryGetNewItemsLoadedButton()?.clearAnimation()
+
+        networkObserver.stop()
+        offlineBanner.dispose()
 
         feedBinding.itemsList.adapter = null
         _feedBinding = null
@@ -457,12 +478,22 @@ class FeedFragment : BaseStateFragment<FeedState>() {
     }
 
     private fun handleErrorState(errorState: FeedState.ErrorState): Boolean {
-        return if (errorState.error == null) {
-            hideLoading()
-            false
-        } else {
-            showError(ErrorInfo(errorState.error, UserAction.REQUESTED_FEED, "Loading feed"))
-            true
+        return when {
+            errorState.error == null -> {
+                hideLoading()
+                false
+            }
+            // FASE 5 §12.2: while offline, keep the cached feed visible and
+            // raise the banner instead of the blocking error panel.
+            !networkObserver.isOnline -> {
+                hideLoading()
+                offlineBanner.show()
+                true
+            }
+            else -> {
+                showError(ErrorInfo(errorState.error, UserAction.REQUESTED_FEED, "Loading feed"))
+                true
+            }
         }
     }
 

@@ -96,4 +96,7 @@
 
     <color name="black">#000</color>
 
+    <!-- URMIX offline banner (FASE 5 §12.2) -->
+    <color name="urmix_offline_banner_background">#1F1F1F</color>
+
 </resources>

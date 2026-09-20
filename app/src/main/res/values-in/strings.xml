@@ -853,4 +853,10 @@
     <string name="api23_requirement_dialog_title">URMIX akan sudahi dukungan Android 5</string>
     <string name="api23_requirement_dialog_message">Sayangnya, URMIX dibuat dengan pustaka yang akan menyudahi dukungan Android 5.0 dan 5.1. Maka, rilis URMIX berikutnya hanya akan berfungsi pada perangkat Android 6 ke atas. Rincian ada di postingan blog.</string>
     <string name="api23_requirement_dialog_blogpost">Postingan</string>
+
+    <!-- URMIX Offline resilience (FASE 5 §12.2) -->
+    <string name="offline_banner_message">Kamu sedang offline — menampilkan koleksi tersimpan.</string>
+    <string name="offline_banner_retry">Coba lagi</string>
+    <string name="offline_search_unavailable">Pencarian butuh koneksi internet. Riwayat pencarianmu tetap tersedia.</string>
+    <string name="offline_feed_cached_note">Menampilkan pembaruan tersimpan.</string>
 </resources>
