@@ -28,22 +28,37 @@ import com.winatra.urmix.error.ErrorUtil;
 import com.winatra.urmix.error.UserAction;
 import com.winatra.urmix.local.subscription.SubscriptionsImportExportHelper;
 import com.winatra.urmix.settings.export.BackupFileLocator;
+import com.winatra.urmix.settings.export.BackupGuideDialog;
+import com.winatra.urmix.settings.export.BackupImportPreviewDialog;
+import com.winatra.urmix.settings.export.BackupJsonException;
+import com.winatra.urmix.settings.export.BackupJsonModelsKt;
+import com.winatra.urmix.settings.export.BackupPreview;
+import com.winatra.urmix.settings.export.BackupResolveHelper;
+import com.winatra.urmix.settings.export.BackupSchema;
 import com.winatra.urmix.settings.export.ImportExportManager;
+import com.winatra.urmix.settings.export.LibraryBackupExporter;
+import com.winatra.urmix.settings.export.LibraryBackupImporter;
+import com.winatra.urmix.settings.export.UrmixBackup;
 import com.winatra.urmix.streams.io.NoFileManagerSafeGuard;
+import com.winatra.urmix.streams.io.SharpOutputStream;
 import com.winatra.urmix.streams.io.StoredFileHelper;
 import com.winatra.urmix.util.NavigationHelper;
 import com.winatra.urmix.util.ZipHelper;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class BackupRestoreSettingsFragment extends BasePreferenceFragment {
+public class BackupRestoreSettingsFragment extends BasePreferenceFragment
+        implements BackupImportPreviewDialog.Listener {
 
-    private static final String ZIP_MIME_TYPE = "application/zip";
+    private static final String ANY_MIME_TYPE = "*/*";
 
     private final SimpleDateFormat exportDateFormat =
             new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
@@ -54,7 +69,9 @@ public class BackupRestoreSettingsFragment extends BasePreferenceFragment {
                     this::requestImportPathResult);
     private final ActivityResultLauncher<Intent> requestExportPathLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                    this::requestExportPathResult);
+                    this::requestJsonExportPathResult);
+    private UrmixBackup pendingJsonBackup;
+    private final ExecutorService backupWorkExecutor = Executors.newSingleThreadExecutor();
     private SubscriptionsImportExportHelper importExportHelper;
 
 
@@ -73,12 +90,19 @@ public class BackupRestoreSettingsFragment extends BasePreferenceFragment {
 
         addPreferencesFromResourceRegistry();
 
+        final Preference guidePreference = requirePreference(R.string.backup_guide);
+        guidePreference.setOnPreferenceClickListener((Preference p) -> {
+            BackupGuideDialog.newInstance()
+                    .show(getParentFragmentManager(), null);
+            return true;
+        });
+
         final Preference importDataPreference = requirePreference(R.string.import_data);
         importDataPreference.setOnPreferenceClickListener((Preference p) -> {
             NoFileManagerSafeGuard.launchSafe(
                     requestImportPathLauncher,
                     StoredFileHelper.getPicker(requireContext(),
-                            ZIP_MIME_TYPE, getImportExportDataUri()),
+                            ANY_MIME_TYPE, getImportExportDataUri()),
                     TAG,
                     getContext()
             );
@@ -91,8 +115,9 @@ public class BackupRestoreSettingsFragment extends BasePreferenceFragment {
             NoFileManagerSafeGuard.launchSafe(
                     requestExportPathLauncher,
                     StoredFileHelper.getNewPicker(requireContext(),
-                            "NewPipeData-" + exportDateFormat.format(new Date()) + ".zip",
-                            ZIP_MIME_TYPE, getImportExportDataUri()),
+                            BackupSchema.FILE_NAME_PREFIX
+                                    + exportDateFormat.format(new Date()) + ".json",
+                            BackupSchema.JSON_MIME_TYPE, getImportExportDataUri()),
                     TAG,
                     getContext()
             );
@@ -142,54 +167,196 @@ public class BackupRestoreSettingsFragment extends BasePreferenceFragment {
 
     }
 
-    private void requestExportPathResult(final ActivityResult result) {
-        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-            // will be saved only on success
-            final Uri lastExportDataUri = result.getData().getData();
-
-            final StoredFileHelper file = new StoredFileHelper(
-                    requireContext(), result.getData().getData(), ZIP_MIME_TYPE);
-
-            exportDatabase(file, lastExportDataUri);
+    private void requestJsonExportPathResult(final ActivityResult result) {
+        if (result.getResultCode() != Activity.RESULT_OK
+                || result.getData() == null
+                || result.getData().getData() == null) {
+            return;
         }
+        final StoredFileHelper exportDataFile;
+        try {
+            exportDataFile = StoredFileHelper.deserialize(
+                    new StoredFileHelper(requireActivity(), null,
+                            result.getData().getData(), ""),
+                    requireActivity());
+        } catch (final Exception e) {
+            showErrorSnackbar(e, "Exporting backup");
+            return;
+        }
+        if (exportDataFile.isInvalid()) {
+            return;
+        }
+        final Context appContext = requireContext().getApplicationContext();
+        backupWorkExecutor.execute(() -> {
+            try {
+                final UrmixBackup backup = LibraryBackupExporter.INSTANCE.build(
+                        appContext, NewPipeDatabase.getInstance(appContext));
+                final String json = BackupJsonModelsKt.writeBackupJson(backup);
+                final byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
+                try (OutputStream out = new BufferedOutputStream(
+                        new SharpOutputStream(
+                                exportDataFile.openAndTruncateStream()))) {
+                    out.write(bytes);
+                    out.flush();
+                }
+                saveLastImportExportDataUri(exportDataFile.getUri());
+                runOnUiThreadSafe(() -> {
+                    if (!isAdded()) {
+                        return;
+                    }
+                    Toast.makeText(requireContext(),
+                            R.string.backup_export_complete,
+                            Toast.LENGTH_LONG).show();
+                });
+            } catch (final Exception e) {
+                runOnUiThreadSafe(() -> showErrorSnackbar(e, "Exporting backup"));
+            }
+        });
     }
 
     private void requestImportPathResult(final ActivityResult result) {
-        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-            // will be saved only on success
-            final Uri lastImportDataUri = result.getData().getData();
-
-            final StoredFileHelper file = new StoredFileHelper(
-                    requireContext(), result.getData().getData(), ZIP_MIME_TYPE);
-
-            new androidx.appcompat.app.AlertDialog.Builder(requireActivity())
-                    .setMessage(R.string.override_current_data)
-                    .setPositiveButton(R.string.ok, (d, id) ->
-                            importDatabase(file, lastImportDataUri))
-                    .setNegativeButton(R.string.cancel, (d, id) ->
-                            d.cancel())
-                    .show();
+        if (result.getResultCode() != Activity.RESULT_OK
+                || result.getData() == null
+                || result.getData().getData() == null) {
+            return;
         }
-    }
-
-    private void exportDatabase(final StoredFileHelper file, final Uri exportDataUri) {
-        try (ExecutorService executor = Executors.newSingleThreadExecutor()) {
-            //checkpoint before export
-            executor.submit(NewPipeDatabase::checkpoint).get();
-
-            final SharedPreferences preferences = PreferenceManager
-                    .getDefaultSharedPreferences(requireContext());
-            manager.exportDatabase(preferences, file);
-
-            saveLastImportExportDataUri(exportDataUri); // save export path only on success
-            Toast.makeText(requireContext(), R.string.export_complete_toast, Toast.LENGTH_SHORT)
-                    .show();
+        final StoredFileHelper file;
+        try {
+            file = StoredFileHelper.deserialize(
+                    new StoredFileHelper(requireActivity(), null,
+                            result.getData().getData(), ""),
+                    requireActivity());
         } catch (final Exception e) {
-            showErrorSnackbar(e, "Exporting database and settings");
+            showErrorSnackbar(e, "Importing backup");
+            return;
         }
+        if (file.isInvalid()) {
+            return;
+        }
+        final Uri importDataUri = file.getUri();
+        final String fileName = file.getName() == null ? "" : file.getName().toLowerCase();
+        if (fileName.endsWith(".json")) {
+            importJsonBackup(file, importDataUri);
+            return;
+        }
+        backupWorkExecutor.execute(() -> {
+            final boolean looksLikeZip;
+            try {
+                looksLikeZip = ZipHelper.isValidZipFile(file);
+            } catch (final Exception e) {
+                runOnUiThreadSafe(() -> showImportFailed(e));
+                return;
+            }
+            if (looksLikeZip) {
+                runOnUiThreadSafe(() -> confirmLegacyZipImport(file, importDataUri));
+            } else {
+                importJsonBackup(file, importDataUri);
+            }
+        });
     }
 
-    private void importDatabase(final StoredFileHelper file, final Uri importDataUri) {
+    private void importJsonBackup(final StoredFileHelper file, final Uri importDataUri) {
+        backupWorkExecutor.execute(() -> {
+            final UrmixBackup jsonBackup;
+            try {
+                jsonBackup = LibraryBackupImporter.INSTANCE.parse(file);
+            } catch (final BackupJsonException e) {
+                runOnUiThreadSafe(() -> showImportFailed(e));
+                return;
+            } catch (final Exception e) {
+                runOnUiThreadSafe(() -> showImportFailed(new BackupJsonException(
+                        getString(R.string.backup_import_invalid_file), e)));
+                return;
+            }
+            pendingJsonBackup = jsonBackup;
+            saveLastImportExportDataUri(importDataUri);
+            final BackupPreview preview = LibraryBackupImporter.INSTANCE.preview(jsonBackup);
+            runOnUiThreadSafe(() -> {
+                if (!isAdded()) {
+                    return;
+                }
+                BackupImportPreviewDialog.newInstance(preview)
+                        .show(getParentFragmentManager(), null);
+            });
+        });
+    }
+
+    @Override
+    public void onBackupImportConfirmed() {
+        final UrmixBackup backup = pendingJsonBackup;
+        if (backup == null) {
+            return;
+        }
+        pendingJsonBackup = null;
+        final Context appContext = requireContext().getApplicationContext();
+        backupWorkExecutor.execute(() -> {
+            try {
+                LibraryBackupImporter.INSTANCE.apply(appContext, backup);
+            } catch (final Exception e) {
+                runOnUiThreadSafe(() -> showImportFailed(e));
+                return;
+            }
+            runOnUiThreadSafe(() -> {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(), R.string.backup_import_success,
+                        Toast.LENGTH_SHORT).show();
+                NavigationHelper.restartApp(requireActivity());
+            });
+        });
+    }
+
+    private void confirmLegacyZipImport(final StoredFileHelper file, final Uri importDataUri) {
+        if (!isAdded()) {
+            return;
+        }
+        new AlertDialog.Builder(requireContext())
+                .setMessage(R.string.backup_import_legacy_zip_warning)
+                .setCancelable(true)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.ok, (d, id) -> handleLegacyZipImport(file))
+                .show();
+    }
+
+    private void handleLegacyZipImport(final StoredFileHelper file) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.import_data_title)
+                .setMessage(R.string.override_current_data)
+                .setPositiveButton(R.string.ok, (d, id) -> {
+                    importLegacyZipDatabase(file, file.getUri());
+                })
+                .setNegativeButton(R.string.cancel, (d, id) -> d.cancel())
+                .setCancelable(true)
+                .show();
+    }
+
+    private void showImportFailed(final Throwable e) {
+        if (!isAdded()) {
+            return;
+        }
+        final String detail = e.getMessage() == null ? "" : e.getMessage();
+        Toast.makeText(requireContext(),
+                getString(R.string.backup_import_failed, detail),
+                Toast.LENGTH_LONG).show();
+        showErrorSnackbar(e, "Importing backup");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        backupWorkExecutor.shutdownNow();
+    }
+
+    private void runOnUiThreadSafe(final Runnable action) {
+        if (!isAdded()) {
+            return;
+        }
+        requireActivity().runOnUiThread(action);
+    }
+
+
+    private void importLegacyZipDatabase(final StoredFileHelper file, final Uri importDataUri) {
         // check if file is supported
         if (!ZipHelper.isValidZipFile(file)) {
             Toast.makeText(requireContext(), R.string.no_valid_zip_file, Toast.LENGTH_SHORT)
@@ -214,10 +381,10 @@ public class BackupRestoreSettingsFragment extends BasePreferenceFragment {
                         .setTitle(R.string.import_settings)
                         .setMessage(hasJsonPrefs ? null : requireContext()
                                 .getString(R.string.import_settings_vulnerable_format))
-                        .setOnDismissListener(dialog -> finishImport(importDataUri))
+                        .setOnDismissListener(dialog -> finishLegacyZipImport(importDataUri))
                         .setNegativeButton(R.string.cancel, (dialog, which) -> {
                             dialog.dismiss();
-                            finishImport(importDataUri);
+                            finishLegacyZipImport(importDataUri);
                         })
                         .setPositiveButton(R.string.ok, (dialog, which) -> {
                             dialog.dismiss();
@@ -235,11 +402,11 @@ public class BackupRestoreSettingsFragment extends BasePreferenceFragment {
                                 return;
                             }
                             cleanImport(context, prefs);
-                            finishImport(importDataUri);
+                            finishLegacyZipImport(importDataUri);
                         })
                         .show();
             } else {
-                finishImport(importDataUri);
+                finishLegacyZipImport(importDataUri);
             }
         } catch (final Exception e) {
             showErrorSnackbar(e, "Importing database and settings");
@@ -283,11 +450,28 @@ public class BackupRestoreSettingsFragment extends BasePreferenceFragment {
      *
      * @param importDataUri The import path to save
      */
-    private void finishImport(final Uri importDataUri) {
+    private void finishLegacyZipImport(final Uri importDataUri) {
         // save import path only on success
         saveLastImportExportDataUri(importDataUri);
-        // restart app to properly load db
-        NavigationHelper.restartApp(requireActivity());
+        final Context appContext = requireContext().getApplicationContext();
+        // The ZIP replaced newpipe.db on disk, so the open Room instance still points at the
+        // OLD database. Close + re-resolve the Liked Songs UID against the NEW file on a
+        // worker thread (Room forbids main-thread queries), then restart to properly load db.
+        backupWorkExecutor.execute(() -> {
+            try {
+                NewPipeDatabase.close();
+            } catch (final Exception e) {
+                runOnUiThreadSafe(() -> showErrorSnackbar(e, "Closing database after import"));
+            }
+            BackupResolveHelper.resolveLikedUidAfterLegacyZipImport(appContext);
+            runOnUiThreadSafe(() -> {
+                if (!isAdded()) {
+                    return;
+                }
+                // restart app to properly load db
+                NavigationHelper.restartApp(requireActivity());
+            });
+        });
     }
 
     private Uri getImportExportDataUri() {

@@ -220,12 +220,12 @@
     <string name="switch_to_background">Switch to Background</string>
     <string name="switch_to_popup">Switch to Popup</string>
     <string name="switch_to_main">Switch to Main</string>
-    <string name="import_data_title">Import database</string>
-    <string name="export_data_title">Export database</string>
+    <string name="import_data_title">Import data</string>
+    <string name="export_data_title">Export data</string>
     <string name="clear_cookie_title">Clear reCAPTCHA cookies</string>
     <string name="recaptcha_cookies_cleared">reCAPTCHA cookies have been cleared</string>
-    <string name="import_data_summary">Overrides your current history, subscriptions, playlists and (optionally) settings</string>
-    <string name="export_data_summary">Export history, subscriptions, playlists and settings</string>
+    <string name="import_data_summary">Restore library from a URMIX JSON backup, or import an older ZIP backup file</string>
+    <string name="export_data_summary">Save playlists, liked songs, history and search to a JSON backup file</string>
     <string name="clear_cookie_summary">Clear cookies that URMIX stores when you solve a reCAPTCHA</string>
     <string name="clear_views_history_title">Clear watch history</string>
     <string name="clear_views_history_summary">Deletes the history of played streams and the playback positions</string>
@@ -486,6 +486,21 @@
     <string name="playlist_add_stream_success_duplicate">Duplicate added %d time(s)</string>
     <string name="playlist_thumbnail_change_success">Playlist thumbnail changed.</string>
     <string name="playlist_no_uploader">Auto-generated (no uploader found)</string>
+    <!-- URMIX FASE 4: manual library backup (blueprint v2 §5.2) -->
+    <string name="liked_songs_playlist_name">Liked Songs</string>
+    <string name="liked_songs_playlist_summary">Special playlist for tracks you like</string>
+    <string name="backup_preview_title">Confirm import</string>
+    <string name="backup_preview_message">Found %1$d liked tracks, %2$d playlists and %3$d history entries. Overwrite current data now?</string>
+    <string name="backup_guide">Backup guide</string>
+    <string name="backup_guide_title">How backup works</string>
+    <string name="backup_guide_summary">Read this before switching phones</string>
+    <string name="backup_guide_message">URMIX keeps your library on this device only, without any account. Before switching phones or reinstalling, tap Export data and save the file somewhere safe (for example your Telegram Saved Messages). On the new phone, open this same screen and tap Import data, then pick that file. Importing replaces the playlists, liked songs, history and search on this device. Old ZIP backup files can still be imported.</string>
+    <string name="backup_export_complete">Backup saved</string>
+    <string name="backup_import_success">Backup restored, restarting…</string>
+    <string name="backup_import_failed">Import failed: %1$s</string>
+    <string name="backup_import_invalid_file">That file is not a valid URMIX backup</string>
+    <string name="backup_import_version_unsupported">Unsupported backup version: %1$d</string>
+    <string name="backup_import_legacy_zip_warning">Old ZIP backup: the whole database and subscriptions will be replaced. Continue?</string>
     <!-- Players -->
     <string name="caption_none">No Captions</string>
     <string name="resize_fit">Fit</string>
