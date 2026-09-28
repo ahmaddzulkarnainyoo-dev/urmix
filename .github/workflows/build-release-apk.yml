@@ -1,4 +1,7 @@
-name: "Build unsigned release APK on main"
+name: "Build unsigned release APK on main (sanity check only)"
+
+# FASE 6 §7.2 note: real releases go through release.yml (signed + published).
+# This stays as an unsigned R8/shrinking sanity build on demand.
 
 on:
   workflow_dispatch:

@@ -113,6 +113,24 @@ object RemoteConfigRepository {
     }
 
     /**
+     * FASE 6 §7.3: update-gate evaluation entry point. The app's own version
+     * comes from the package; the bundled extractor version is resolved from
+     * [extractorVersion] so unit tests can override it.
+     */
+    fun getUpdateState(context: Context): UpdateGate.UpdateState {
+        val config = getCachedConfig(context) ?: return UpdateGate.UpdateState.UP_TO_DATE
+        return UpdateGate.evaluate(
+            installedAppVersion = BuildConfig.VERSION_NAME,
+            requiredAppVersion = config.appVersion,
+            forceUpdate = config.forceUpdate,
+            installedExtractorVersion = runCatching { extractorVersion() }.getOrNull(),
+            minExtractorVersion = config.minExtractorVersion
+        )
+    }
+
+    private fun extractorVersion(): String? = BuildConfig.EXTRACTOR_VERSION
+
+    /**
      * True only when a *cached* config demands a blocking forced update and the
      * installed app version is older than the required app_version.
      */

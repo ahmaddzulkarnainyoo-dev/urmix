@@ -4,7 +4,28 @@
  */
 
 import com.android.build.api.dsl.ApplicationExtension
+import java.io.FileInputStream
+import java.util.Properties
 import java.util.regex.Pattern
+
+val releaseKeystoreProps: Properties = Properties().also { props ->
+    val file = rootProject.file("keystore.properties")
+    if (file.exists()) {
+        FileInputStream(file).use { props.load(it) }
+    }
+}
+
+fun releaseKeystoreValue(name: String, envName: String): String? {
+    val gradleValue = providers.gradleProperty(name).orNull?.takeIf { it.isNotBlank() }
+    if (gradleValue != null) {
+        return gradleValue
+    }
+    val envValue = providers.environmentVariable(envName).orNull?.takeIf { it.isNotBlank() }
+    if (envValue != null) {
+        return envValue
+    }
+    return releaseKeystoreProps.getProperty(name)?.takeIf { it.isNotBlank() }
+}
 
 plugins {
     alias(libs.plugins.android.application)
@@ -53,7 +74,42 @@ configure<ApplicationExtension> {
         versionName = URMIX_VERSION_NAME
         System.getProperty("versionNameSuffix")?.let { versionNameSuffix = it }
 
+        // FASE 6 §7.3: bundled extractor version for the min_extractor_version
+        // gate (catalog teamnewpipe-newpipe-extractor, e.g. "v0.26.5").
+        buildConfigField(
+            "String",
+            "EXTRACTOR_VERSION",
+            "\"" + libs.versions.teamnewpipe.newpipe.extractor.get().trimStart('v') + "\""
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        // FASE 6 §7.1: one consistent release keystore. Created only when all
+        // four values resolve (gradle -P > env > keystore.properties); without
+        // them the release build keeps the previous unsigned behaviour so
+        // debug/CI builds never break. The keystore itself is git-ignored.
+        val keystoreFile = releaseKeystoreValue("storeFile", "URMIX_KEYSTORE_PATH")
+        val keystorePassword = releaseKeystoreValue("storePassword", "URMIX_KEYSTORE_PASSWORD")
+        val keyAliasValue = releaseKeystoreValue("keyAlias", "URMIX_KEY_ALIAS")
+        val keyPasswordValue = releaseKeystoreValue("keyPassword", "URMIX_KEY_PASSWORD")
+        if (keystoreFile != null && keystorePassword != null
+            && keyAliasValue != null && keyPasswordValue != null
+        ) {
+            create("release") {
+                storeFile = rootProject.file(keystoreFile)
+                storePassword = keystorePassword
+                keyAlias = keyAliasValue
+                keyPassword = keyPasswordValue
+            }
+        } else {
+            logger.warn(
+                "FASE 6 §7.1: release signing not configured " +
+                    "(storeFile/storePassword/keyAlias/keyPassword); " +
+                    "assembleRelease will be unsigned."
+            )
+        }
     }
 
     buildTypes {
@@ -71,6 +127,7 @@ configure<ApplicationExtension> {
         }
 
         release {
+            signingConfig = signingConfigs.findByName("release")
             System.getProperty("packageSuffix")?.let { suffix ->
                 applicationIdSuffix = suffix
                 resValue("string", "app_name", "URMIX $suffix")

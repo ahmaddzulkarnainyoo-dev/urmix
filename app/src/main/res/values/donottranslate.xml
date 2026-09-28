@@ -9,6 +9,7 @@
     <string name="hash_channel_id">urmixHash</string>
     <string name="error_report_channel_id">urmixErrorReport</string>
     <string name="streams_notification_channel_id" translatable="false">urmixNewStreams</string>
+    <string name="donation_notification_channel_id" translatable="false">urmixDonation</string>
     <string name="guru_meditation">Guru Meditation.</string>
     <string name="empty_view_no_videos">@string/no_videos</string>
     <string name="empty_view_no_comments">@string/no_comments</string>

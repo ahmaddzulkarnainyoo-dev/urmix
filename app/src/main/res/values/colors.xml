@@ -99,4 +99,7 @@
     <!-- URMIX offline banner (FASE 5 §12.2) -->
     <color name="urmix_offline_banner_background">#1F1F1F</color>
 
+    <!-- URMIX update banner (FASE 6 §7.3) — non-blocking soft-update notice -->
+    <color name="urmix_update_banner_background">#1A2E22</color>
+
 </resources>

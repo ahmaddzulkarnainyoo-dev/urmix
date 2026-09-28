@@ -129,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int ORDER = 0;
     public static final String KEY_IS_IN_BACKGROUND = "is_in_background";
+    /** FASE 6 §6: intent extra that opens the donation sheet on launch. */
+    public static final String EXTRA_SHOW_DONATION_SHEET = "show_donation_sheet";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor sharedPrefEditor;
@@ -199,6 +201,36 @@ public class MainActivity extends AppCompatActivity {
         }
 
         MigrationManager.showUserInfoIfPresent(this);
+
+        // FASE 6 §6/§7.3: donation sheet deep-link + non-blocking soft-update
+        // banner. MainActivity is singleTask, so onNewIntent re-checks too.
+        handleDonationSheetIntent(getIntent());
+        maybeShowSoftUpdateBanner();
+    }
+
+    private void handleDonationSheetIntent(@Nullable final Intent intent) {
+        if (intent != null && intent.getBooleanExtra(EXTRA_SHOW_DONATION_SHEET, false)) {
+            intent.removeExtra(EXTRA_SHOW_DONATION_SHEET);
+            new com.winatra.urmix.donation.DonationBottomSheetDialogFragment()
+                    .show(getSupportFragmentManager(),
+                            com.winatra.urmix.donation.DonationBottomSheetDialogFragment.TAG);
+        }
+    }
+
+    private void maybeShowSoftUpdateBanner() {
+        final View root = findViewById(android.R.id.content);
+        if (!(root instanceof ViewGroup)) {
+            return;
+        }
+        final ViewGroup content = (ViewGroup) root;
+        final View banner = getLayoutInflater().inflate(
+                R.layout.view_soft_update_banner, content, false);
+        content.addView(banner);
+        final com.winatra.urmix.view.SoftUpdateBannerHelper helper =
+                new com.winatra.urmix.view.SoftUpdateBannerHelper(this, banner);
+        if (!helper.showIfNeeded()) {
+            content.removeView(banner);
+        }
     }
 
     @Override
@@ -371,7 +403,9 @@ public class MainActivity extends AppCompatActivity {
                 NavigationHelper.openSettings(this);
                 break;
             case ITEM_ID_DONATION:
-                ShareUtils.openUrlInBrowser(this, getString(R.string.donation_url));
+                new com.winatra.urmix.donation.DonationBottomSheetDialogFragment()
+                        .show(getSupportFragmentManager(),
+                                com.winatra.urmix.donation.DonationBottomSheetDialogFragment.TAG);
                 break;
             case ITEM_ID_ABOUT:
                 NavigationHelper.openAbout(this);
@@ -559,6 +593,8 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         setIntent(intent);
         handleIntent(intent);
+        // FASE 6 §6: honour the donation-sheet deep-link on warm relaunch too.
+        handleDonationSheetIntent(intent);
     }
 
     @Override

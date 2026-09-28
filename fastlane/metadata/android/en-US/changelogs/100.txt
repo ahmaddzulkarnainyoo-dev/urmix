@@ -1,0 +1,9 @@
+URMIX v1.0.0 — initial WINATRA release.
+
+- Audio-first home (Made For You, Trending Audio, Podcasting).
+- Background playback with audio-only extraction + fallback.
+- Local library with JSON export/import backup.
+- Bounded image + HTTP caches, offline banners, memory hygiene.
+- WINATRA remote config: force/soft update gate + daily support prompt.
+
+Full changelog mirrors the in-app announcement for this release.

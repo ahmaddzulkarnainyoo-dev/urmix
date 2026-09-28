@@ -13,6 +13,11 @@ captures/
 app/debug/
 app/release/
 
+# Release signing material (FASE 6 §7.1) — keystore stays outside the repo
+keystore.properties
+*.jks
+*.keystore
+
 # vscode / eclipse files
 *.classpath
 *.project

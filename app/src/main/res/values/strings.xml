@@ -122,6 +122,18 @@
     <string name="clear_app_cache_summary">Remove stored thumbnails, images and cached web responses</string>
     <string name="clear_app_cache_complete_notice">Cache cleared</string>
     <string name="clear_app_cache_failed_notice">Some caches could not be cleared</string>
+    <!-- URMIX soft-update banner (FASE 6 §7.3): dismissible, non-blocking -->
+    <string name="soft_update_banner_message">A new URMIX version is available.</string>
+    <string name="soft_update_banner_update">Update</string>
+    <string name="soft_update_banner_dismiss">Later</string>
+    <string name="dismissed_update_version_key" translatable="false">dismissed_update_version</string>
+    <!-- URMIX donation notification channel (FASE 6 §6) -->
+    <string name="donation_notification_channel_name">Support URMIX</string>
+    <string name="donation_notification_channel_description">Daily reminders to support URMIX development</string>
+    <string name="donation_notification_title">Support URMIX</string>
+    <string name="donation_notification_dismiss">Dismiss</string>
+    <string name="donation_sheet_open">Open</string>
+    <string name="donation_sheet_fallback_message">Support URMIX development via Saweria.</string>
     <string name="auto_queue_title">Auto-enqueue next stream</string>
     <string name="auto_queue_summary">Continue ending (non-repeating) playback queue by appending a related stream</string>
     <string name="auto_queue_toggle">Auto-enqueuing</string>

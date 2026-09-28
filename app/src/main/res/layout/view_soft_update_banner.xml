@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- URMIX soft-update banner (FASE 6 §7.3): dismissible, non-blocking notice.
+     Mirrors view_offline_banner.xml; shown only for UpdateGate.SOFT_UPDATE. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/soft_update_banner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="12dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="12dp"
+    android:background="@color/urmix_update_banner_background"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <com.winatra.urmix.views.NewPipeTextView
+        android:id="@+id/soft_update_banner_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="@string/soft_update_banner_message"
+        android:textColor="@color/urmix_text_primary"
+        android:textSize="13sp" />
+
+    <Button
+        android:id="@+id/soft_update_banner_update"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="0dp"
+        android:text="@string/soft_update_banner_update"
+        android:textColor="@color/urmix_accent" />
+
+    <Button
+        android:id="@+id/soft_update_banner_dismiss"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="0dp"
+        android:text="@string/soft_update_banner_dismiss"
+        android:textColor="@color/urmix_text_secondary" />
+</LinearLayout>
