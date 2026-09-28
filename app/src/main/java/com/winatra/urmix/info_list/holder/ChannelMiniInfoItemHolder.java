@@ -87,6 +87,12 @@ public class ChannelMiniInfoItemHolder extends InfoItemHolder {
         }
     }
 
+    @Override
+    public void disposeArtworkRequests() {
+        // FASE 5 §12.3: a recycled row must not keep downloading its avatar.
+        CoilHelper.disposeRequests(itemThumbnailView);
+    }
+
     /**
      * Returns max number of allowed lines for the description field.
      * @param content additional detail content (video / sub count)

@@ -15,6 +15,7 @@ import com.winatra.urmix.error.ErrorUtil;
 import com.winatra.urmix.error.ReCaptchaActivity;
 import com.winatra.urmix.error.UserAction;
 import com.winatra.urmix.local.history.HistoryRecordManager;
+import com.winatra.urmix.util.CacheCleaner;
 import com.winatra.urmix.util.InfoCache;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -23,6 +24,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class HistorySettingsFragment extends BasePreferenceFragment {
     private String cacheWipeKey;
+    private String clearAppCacheKey;
     private String viewsHistoryClearKey;
     private String playbackStatesClearKey;
     private String searchHistoryClearKey;
@@ -34,6 +36,7 @@ public class HistorySettingsFragment extends BasePreferenceFragment {
         addPreferencesFromResourceRegistry();
 
         cacheWipeKey = getString(R.string.metadata_cache_wipe_key);
+        clearAppCacheKey = getString(R.string.clear_app_cache_key);
         viewsHistoryClearKey = getString(R.string.clear_views_history_key);
         playbackStatesClearKey = getString(R.string.clear_playback_states_key);
         searchHistoryClearKey = getString(R.string.clear_search_history_key);
@@ -62,6 +65,14 @@ public class HistorySettingsFragment extends BasePreferenceFragment {
             InfoCache.getInstance().clearCache();
             Toast.makeText(requireContext(),
                     R.string.metadata_cache_wipe_complete_notice, Toast.LENGTH_SHORT).show();
+        } else if (preference.getKey().equals(clearAppCacheKey)) {
+            // FASE 5 §12.1: empty the bounded image + HTTP caches as well, not
+            // just the metadata cache, so the caches are actually user-manageable.
+            final boolean cleared = CacheCleaner.clearAll(requireContext());
+            Toast.makeText(requireContext(),
+                    cleared ? R.string.clear_app_cache_complete_notice
+                            : R.string.clear_app_cache_failed_notice,
+                    Toast.LENGTH_SHORT).show();
         } else if (preference.getKey().equals(viewsHistoryClearKey)) {
             openDeleteWatchHistoryDialog(requireContext(), recordManager, disposables);
         } else if (preference.getKey().equals(playbackStatesClearKey)) {

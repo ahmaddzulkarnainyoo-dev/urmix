@@ -173,7 +173,10 @@ class FeedFragment : BaseStateFragment<FeedState>() {
         offlineBanner = OfflineBannerHelper(feedBinding.offlineBanner.root) { reloadContent() }
         networkObserver = NetworkStateObserver(
             requireContext().applicationContext,
-            onOnline = { reloadContent() }
+            onOnline = { reloadContent() },
+            // FASE 5 §12.2: raise the banner as soon as connectivity is lost so the
+            // user knows why the refresh failed, not only when a load errored.
+            onOffline = { offlineBanner.show() }
         )
         networkObserver.start()
         if (!networkObserver.isOnline) {
@@ -319,8 +322,12 @@ class FeedFragment : BaseStateFragment<FeedState>() {
         // Ensure that all animations are canceled
         tryGetNewItemsLoadedButton()?.clearAnimation()
 
-        networkObserver.stop()
-        offlineBanner.dispose()
+        if (::networkObserver.isInitialized) {
+            networkObserver.stop()
+        }
+        if (::offlineBanner.isInitialized) {
+            offlineBanner.dispose()
+        }
 
         feedBinding.itemsList.adapter = null
         _feedBinding = null
@@ -483,6 +490,7 @@ class FeedFragment : BaseStateFragment<FeedState>() {
                 hideLoading()
                 false
             }
+
             // FASE 5 §12.2: while offline, keep the cached feed visible and
             // raise the banner instead of the blocking error panel.
             !networkObserver.isOnline -> {
@@ -490,6 +498,7 @@ class FeedFragment : BaseStateFragment<FeedState>() {
                 offlineBanner.show()
                 true
             }
+
             else -> {
                 showError(ErrorInfo(errorState.error, UserAction.REQUESTED_FEED, "Loading feed"))
                 true

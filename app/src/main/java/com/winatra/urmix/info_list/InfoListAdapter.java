@@ -340,6 +340,16 @@ public class InfoListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    @Override
+    public void onViewRecycled(@NonNull final RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        // FASE 5 §12.3: stop the artwork download of the recycled row, so a long
+        // list does not keep every off-screen image request alive.
+        if (holder instanceof InfoItemHolder) {
+            ((InfoItemHolder) holder).disposeArtworkRequests();
+        }
+    }
+
     public GridLayoutManager.SpanSizeLookup getSpanSizeLookup(final int spanCount) {
         return new GridLayoutManager.SpanSizeLookup() {
             @Override

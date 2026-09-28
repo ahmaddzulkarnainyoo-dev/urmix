@@ -20,7 +20,12 @@ public final class OkioInterop {
         // no instance
     }
 
-    /** @return the {@link Path} for {@code file}. */
+    /**
+     * Converts a {@link File} to the okio {@link Path} Coil's disk cache expects.
+     *
+     * @param file the directory whose {@link Path} is returned
+     * @return the {@link Path} for {@code file}
+     */
     public static Path pathOf(final File file) {
         return Path.Companion.get(file);
     }

@@ -112,6 +112,12 @@ public class StreamMiniInfoItemHolder extends InfoItemHolder {
     }
 
     @Override
+    public void disposeArtworkRequests() {
+        // FASE 5 §12.3: a recycled row must not keep downloading its thumbnail.
+        CoilHelper.disposeRequests(itemThumbnailView);
+    }
+
+    @Override
     public void updateState(final InfoItem infoItem,
                             final HistoryRecordManager historyRecordManager) {
         final StreamInfoItem item = (StreamInfoItem) infoItem;

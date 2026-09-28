@@ -59,10 +59,13 @@ class HomeFragment : Fragment() {
         setupCarousel(binding.homeMadeForYouList, madeForYouAdapter)
         setupCarousel(binding.homeTrendingList, trendingAdapter)
         setupCarousel(binding.homePodcastList, podcastAdapter)
-        offlineBanner = OfflineBannerHelper(binding.offlineBanner) { reloadContent() }
+        offlineBanner = OfflineBannerHelper(binding.offlineBanner.root) { reloadContent() }
         networkObserver = NetworkStateObserver(
             requireContext().applicationContext,
-            onOnline = { reloadContent() }
+            onOnline = { reloadContent() },
+            // FASE 5 §12.2: show the banner the moment connectivity is lost, so
+            // the cached sections are explained instead of looking broken.
+            onOffline = { showOfflineBanner() }
         )
         networkObserver.start()
         binding.homeLoading.visibility = View.VISIBLE
@@ -71,21 +74,27 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        networkObserver.stop()
-        offlineBanner.dispose()
+        // Guarded: the view can be torn down before the observer/banner were
+        // created if view creation failed halfway through.
+        if (::networkObserver.isInitialized) {
+            networkObserver.stop()
+        }
+        if (::offlineBanner.isInitialized) {
+            offlineBanner.dispose()
+        }
         disposables.clear()
         _binding = null
         super.onDestroyView()
     }
 
     fun showOfflineBanner() {
-        if (_binding != null) {
+        if (_binding != null && ::offlineBanner.isInitialized) {
             offlineBanner.show()
         }
     }
 
     fun hideOfflineBanner() {
-        if (_binding != null) {
+        if (_binding != null && ::offlineBanner.isInitialized) {
             offlineBanner.hide()
         }
     }

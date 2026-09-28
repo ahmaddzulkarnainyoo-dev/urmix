@@ -138,4 +138,10 @@ public class LocalPlaylistStreamItemHolder extends LocalItemHolder {
             return false;
         };
     }
+
+    @Override
+    public void disposeArtworkRequests() {
+        // FASE 5 §12.3: a recycled row must not keep downloading its thumbnail.
+        CoilHelper.disposeRequests(itemThumbnailView);
+    }
 }

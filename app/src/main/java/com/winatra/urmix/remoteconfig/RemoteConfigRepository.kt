@@ -19,6 +19,7 @@ import android.util.Log
 import com.grack.nanojson.JsonObject
 import com.grack.nanojson.JsonParser
 import com.winatra.urmix.BuildConfig
+import com.winatra.urmix.DownloaderImpl
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import okhttp3.OkHttpClient
@@ -45,8 +46,29 @@ object RemoteConfigRepository {
 
     private val cachedConfig = AtomicReference<RemoteConfig?>(null)
 
-    private val httpClient by lazy {
+    /**
+     * Client used when the shared Downloader client is not available yet, e.g.
+     * in unit tests or before App.onCreate() finished its NewPipe.init() call.
+     */
+    private val fallbackClient by lazy {
         OkHttpClient.Builder()
+            .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .build()
+    }
+
+    /**
+     * FASE 5 §12.1: request the remote config through the shared OkHttp client so
+     * the payload lands in the bounded HTTP response cache and can be served from
+     * disk while the device is offline (see HostCachePolicy, which whitelists the
+     * Supabase host, and OfflineCacheInterceptor, which forces the cache lookup).
+     *
+     * The shared client already carries the cache and both interceptors, so only
+     * the strict remote-config timeouts are re-applied on top of it.
+     */
+    private fun httpClient(): OkHttpClient {
+        val shared = DownloaderImpl.getInstance()?.client ?: return fallbackClient
+        return shared.newBuilder()
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build()
@@ -106,8 +128,7 @@ object RemoteConfigRepository {
     fun getEffectiveUpdateUrl(context: Context): String = getCachedConfig(context)?.updateUrl ?: DEFAULT_UPDATE_URL
 
     /** Epoch millis of the last successful remote fetch, or 0 when never fetched. */
-    fun getLastSuccessfulFetchMillis(context: Context): Long =
-        prefs(context).getLong(KEY_LAST_FETCH_MILLIS, 0L)
+    fun getLastSuccessfulFetchMillis(context: Context): Long = prefs(context).getLong(KEY_LAST_FETCH_MILLIS, 0L)
 
     /**
      * True when the cached config is missing or older than [maxAgeMillis].
@@ -149,7 +170,7 @@ object RemoteConfigRepository {
 
     private fun fetchConfigJson(): String? {
         val request = Request.Builder().url(REMOTE_CONFIG_URL).build()
-        httpClient.newCall(request).execute().use { response ->
+        httpClient().newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 if (BuildConfig.DEBUG) {
                     Log.w(TAG, "Remote config request failed: HTTP " + response.code)

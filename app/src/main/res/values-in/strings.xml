@@ -543,6 +543,10 @@
     <string name="clear_cookie_summary">Hapus kuki yang disimpan oleh URMIX saat Anda memecahkan reCAPTCHA</string>
     <string name="recaptcha_cookies_cleared">Kuki reCAPTCHA telah dihapus</string>
     <string name="clear_cookie_title">Hapus kuki reCAPTCHA</string>
+    <string name="clear_app_cache_title">Hapus data cache</string>
+    <string name="clear_app_cache_summary">Hapus thumbnail, gambar, dan respons web yang tersimpan</string>
+    <string name="clear_app_cache_complete_notice">Cache dihapus</string>
+    <string name="clear_app_cache_failed_notice">Sebagian cache tidak bisa dihapus</string>
     <string name="youtube_restricted_mode_enabled_summary">YouTube menyediakan \"Mode Terbatas\" yang menyembunyikan konten dewasa</string>
     <string name="show_age_restricted_content_summary">Menampilkan konten yang mungkin tidak cocok untuk anak-anak karena memiliki batasan umur (seperti 18+)</string>
     <string name="notification_colorize_summary">Minta Android menyesuaikan warna notifikasi sesuai dengan warna utama di thumbnail (perhatikan bahwa ini tidak tersedia di semua perangkat)</string>

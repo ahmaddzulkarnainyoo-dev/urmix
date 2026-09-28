@@ -164,6 +164,11 @@ object CoilHelper {
      * Active image requests keyed by their target ImageView (FASE 5 §12.3).
      * A WeakHashMap keeps detached views collectable; enqueueing a new request
      * for the same view cancels the previous one so callbacks never stack up.
+     *
+     * Main-thread only: every entry is written by [loadImageDefault] and removed
+     * by [disposeRequests], both of which are called from view/fragment callbacks
+     * (`onBindViewHolder`, `onViewRecycled`, `onDestroyView`). `WeakHashMap` is
+     * not thread-safe, so any future background caller must synchronize here.
      */
     private val activeRequests = WeakHashMap<ImageView, Disposable>()
 

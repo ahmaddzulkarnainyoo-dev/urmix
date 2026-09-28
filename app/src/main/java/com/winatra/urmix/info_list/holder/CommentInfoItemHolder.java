@@ -172,6 +172,12 @@ public class CommentInfoItemHolder extends InfoItemHolder {
         });
     }
 
+    @Override
+    public void disposeArtworkRequests() {
+        // FASE 5 §12.3: a recycled comment must not keep downloading its avatar.
+        CoilHelper.disposeRequests(itemThumbnailView);
+    }
+
     private void openCommentAuthor(@NonNull final CommentsInfoItem item) {
         NavigationHelper.openCommentAuthorIfPresent((FragmentActivity) itemBuilder.getContext(),
                 item);

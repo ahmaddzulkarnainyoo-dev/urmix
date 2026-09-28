@@ -23,16 +23,24 @@ class NetworkStateObserver @JvmOverloads constructor(
 ) {
     companion object {
         private const val TAG = "NetworkStateObserver"
-        private const val RETRY_DEBOUNCE_MILLIS = 1000L
     }
 
     private val appContext: Context = context.applicationContext
     private val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
 
-    /** Gates the first onAvailable event so we don't retry while already online. */
-    private var lastKnownOnline: Boolean = NetworkUtils.isOnline(appContext)
+    /**
+     * Pure debounce gate: only surfaces real state changes and throttles
+     * online retries. Kept as a field so tests can reason about the same
+     * rules through [NetworkStateMachine].
+     */
+    private val stateMachine = NetworkStateMachine(NetworkUtils.isOnline(appContext))
 
-    private var lastRetryAtMillis: Long = 0L
+    /** Last connectivity verdict; mirrors what the banner currently shows. */
+    private var lastKnownOnline: Boolean
+        get() = stateMachine.lastKnownOnline
+        set(value) {
+            stateMachine.onStateChanged(value)
+        }
 
     /** Non-null while registered; close() from onDestroyView unregisters. */
     var handle: AutoCloseable? = null
@@ -78,15 +86,12 @@ class NetworkStateObserver @JvmOverloads constructor(
 
     private fun postStateChange(online: Boolean) {
         mainHandler.post {
-            val changed = online != lastKnownOnline
-            lastKnownOnline = online
-            if (!changed) {
+            if (!stateMachine.onStateChanged(online)) {
                 return@post
             }
             if (online) {
                 val now = android.os.SystemClock.uptimeMillis()
-                if (now - lastRetryAtMillis >= RETRY_DEBOUNCE_MILLIS) {
-                    lastRetryAtMillis = now
+                if (stateMachine.shouldRetryOnline(now)) {
                     onOnline.run()
                 }
             } else {

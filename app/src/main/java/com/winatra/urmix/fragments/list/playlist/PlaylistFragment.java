@@ -183,6 +183,10 @@ public class PlaylistFragment extends BaseListInfoFragment<StreamInfoItem, Playl
 
     @Override
     public void onDestroyView() {
+        // FASE 5 §12.3: cancel the header artwork request of the destroyed view.
+        if (headerBinding != null) {
+            CoilHelper.disposeRequests(headerBinding.uploaderAvatarView);
+        }
         headerBinding = null;
         playlistControlBinding = null;
 

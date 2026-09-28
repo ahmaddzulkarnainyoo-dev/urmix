@@ -36,16 +36,13 @@ object CacheConfig {
 
     /** Coil disk cache size in bytes. */
     @JvmStatic
-    fun imageDiskCacheBytes(isLowRamDevice: Boolean): Long =
-        (if (isLowRamDevice) IMAGE_DISK_CACHE_LOW_RAM_MIB else IMAGE_DISK_CACHE_MIB) * BYTES_PER_MIB
+    fun imageDiskCacheBytes(isLowRamDevice: Boolean): Long = (if (isLowRamDevice) IMAGE_DISK_CACHE_LOW_RAM_MIB else IMAGE_DISK_CACHE_MIB) * BYTES_PER_MIB
 
     /** Shared OkHttp response cache size in bytes. */
     @JvmStatic
-    fun httpCacheBytes(isLowRamDevice: Boolean): Long =
-        (if (isLowRamDevice) HTTP_CACHE_LOW_RAM_MIB else HTTP_CACHE_MIB) * BYTES_PER_MIB
+    fun httpCacheBytes(isLowRamDevice: Boolean): Long = (if (isLowRamDevice) HTTP_CACHE_LOW_RAM_MIB else HTTP_CACHE_MIB) * BYTES_PER_MIB
 
     /** Coil memory cache share of the total app memory. */
     @JvmStatic
-    fun memoryCachePercent(isLowRamDevice: Boolean): Double =
-        if (isLowRamDevice) MEMORY_CACHE_PERCENT_LOW_RAM else MEMORY_CACHE_PERCENT_NORMAL
+    fun memoryCachePercent(isLowRamDevice: Boolean): Double = if (isLowRamDevice) MEMORY_CACHE_PERCENT_LOW_RAM else MEMORY_CACHE_PERCENT_NORMAL
 }

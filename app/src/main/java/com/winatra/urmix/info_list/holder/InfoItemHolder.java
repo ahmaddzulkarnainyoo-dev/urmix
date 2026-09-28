@@ -43,4 +43,11 @@ public abstract class InfoItemHolder extends RecyclerView.ViewHolder {
 
     public void updateState(final InfoItem infoItem,
                             final HistoryRecordManager historyRecordManager) { }
+
+    /**
+     * FASE 5 §12.3: cancels the pending Coil artwork request of this holder.
+     * Called from {@code onViewRecycled}; holders without artwork inherit this
+     * no-op so the adapter needs no per-type bookkeeping.
+     */
+    public void disposeArtworkRequests() { }
 }

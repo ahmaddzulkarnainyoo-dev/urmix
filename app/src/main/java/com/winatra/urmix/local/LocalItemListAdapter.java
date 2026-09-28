@@ -183,6 +183,16 @@ public class LocalItemListAdapter extends RecyclerView.Adapter<RecyclerView.View
         notifyDataSetChanged();
     }
 
+    @Override
+    public void onViewRecycled(@NonNull final RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        // FASE 5 §12.3: stop the artwork download of the recycled row, so a long
+        // list does not keep every off-screen image request alive.
+        if (holder instanceof LocalItemHolder) {
+            ((LocalItemHolder) holder).disposeArtworkRequests();
+        }
+    }
+
     public void setItemViewMode(final ItemViewMode itemViewMode) {
         this.itemViewMode = itemViewMode;
     }

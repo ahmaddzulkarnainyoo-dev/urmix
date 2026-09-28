@@ -229,6 +229,13 @@ public class ChannelFragment extends BaseStateFragment<ChannelInfo>
 
     @Override
     public void onDestroyView() {
+        // FASE 5 §12.3: cancel the header banner/avatar requests of the destroyed
+        // view so a backgrounded channel screen stops fetching artwork.
+        if (binding != null) {
+            CoilHelper.disposeRequests(binding.channelBannerImage);
+            CoilHelper.disposeRequests(binding.channelAvatarView);
+            CoilHelper.disposeRequests(binding.subChannelAvatarView);
+        }
         super.onDestroyView();
         if (menuProvider != null) {
             activity.removeMenuProvider(menuProvider);

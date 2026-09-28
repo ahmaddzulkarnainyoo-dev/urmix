@@ -52,19 +52,16 @@ object HostCachePolicy {
 
     /** Classifies [host] (null-safe, subdomain-aware). */
     @JvmStatic
-    fun policyFor(host: String?): Policy =
-        if (host != null && matchesAny(host, CACHEABLE_HOSTS)) {
-            Policy.CACHEABLE
-        } else {
-            // NO_STORE_HOSTS and every unknown host: never store.
-            Policy.NO_STORE
-        }
+    fun policyFor(host: String?): Policy = if (host != null && matchesAny(host, CACHEABLE_HOSTS)) {
+        Policy.CACHEABLE
+    } else {
+        // NO_STORE_HOSTS and every unknown host: never store.
+        Policy.NO_STORE
+    }
 
     /** True when [host] belongs to a known extractor/CDN host (diagnostics). */
     @JvmStatic
-    fun isExtractorHost(host: String?): Boolean =
-        host != null && matchesAny(host, NO_STORE_HOSTS)
+    fun isExtractorHost(host: String?): Boolean = host != null && matchesAny(host, NO_STORE_HOSTS)
 
-    private fun matchesAny(host: String, domains: Set<String>): Boolean =
-        domains.any { domain -> host == domain || host.endsWith(".$domain") }
+    private fun matchesAny(host: String, domains: Set<String>): Boolean = domains.any { domain -> host == domain || host.endsWith(".$domain") }
 }

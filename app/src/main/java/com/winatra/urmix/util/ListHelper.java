@@ -5,15 +5,14 @@ import static org.schabi.newpipe.extractor.ServiceList.YouTube;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.net.ConnectivityManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.winatra.urmix.R;
+import com.winatra.urmix.util.network.NetworkUtils;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.AudioTrackType;
@@ -725,13 +724,9 @@ public final class ListHelper {
      * @return {@code true} if connected to a metered network
      */
     public static boolean isMeteredNetwork(@NonNull final Context context) {
-        final ConnectivityManager manager =
-                ContextCompat.getSystemService(context, ConnectivityManager.class);
-        if (manager == null || manager.getActiveNetworkInfo() == null) {
-            return false;
-        }
-
-        return manager.isActiveNetworkMetered();
+        // FASE 5 §12.2: delegate to the single connectivity implementation in
+        // NetworkUtils so the deprecated getActiveNetworkInfo() is no longer used.
+        return NetworkUtils.isMetered(context);
     }
 
     /**

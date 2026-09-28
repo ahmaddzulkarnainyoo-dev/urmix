@@ -158,4 +158,10 @@ public class LocalStatisticStreamItemHolder extends LocalItemHolder {
             ViewUtils.animate(itemProgressView, false, 500);
         }
     }
+
+    @Override
+    public void disposeArtworkRequests() {
+        // FASE 5 §12.3: a recycled row must not keep downloading its thumbnail.
+        CoilHelper.disposeRequests(itemThumbnailView);
+    }
 }
