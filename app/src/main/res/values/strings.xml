@@ -505,6 +505,11 @@
     <!-- URMIX FASE 4: manual library backup (blueprint v2 §5.2) -->
     <string name="liked_songs_playlist_name">Liked Songs</string>
     <string name="liked_songs_playlist_summary">Special playlist for tracks you like</string>
+    <!-- URMIX Phase C: mini-player Like (heart) button -->
+    <string name="like_song">Like</string>
+    <string name="unlike_song">Unlike</string>
+    <string name="like_added">Added to Liked Songs</string>
+    <string name="like_removed">Removed from Liked Songs</string>
     <string name="backup_preview_title">Confirm import</string>
     <string name="backup_preview_message">Found %1$d liked tracks, %2$d playlists and %3$d history entries. Overwrite current data now?</string>
     <string name="backup_guide">Backup guide</string>

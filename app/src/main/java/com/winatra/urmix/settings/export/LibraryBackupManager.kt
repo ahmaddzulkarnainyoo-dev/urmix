@@ -57,7 +57,7 @@ internal fun playlistEntityFromBackup(
     )
 }
 
-internal fun defaultPlaylistsOf(
+fun defaultPlaylistsOf(
     database: AppDatabase
 ): List<PlaylistMetadataEntry> {
     return database.playlistStreamDAO().getPlaylistMetadata()
@@ -161,7 +161,7 @@ internal fun readLikedUid(context: Context): Long {
         .getLong(BackupSchema.LIKED_PLAYLIST_UID_PREF, -1L)
 }
 
-internal fun saveLikedUid(context: Context, uid: Long) {
+fun saveLikedUid(context: Context, uid: Long) {
     context.getSharedPreferences(BackupSchema.PREFS_FILE_NAME, Context.MODE_PRIVATE)
         .edit().putLong(BackupSchema.LIKED_PLAYLIST_UID_PREF, uid).apply()
 }
@@ -186,7 +186,7 @@ internal fun pickLikedUid(
  * If the stored UID no longer exists (e.g. after a legacy ZIP import that
  * replaced newpipe.db), fall back to finding the playlist by name.
  */
-internal fun resolveLikedUid(context: Context, database: AppDatabase): Long {
+fun resolveLikedUid(context: Context, database: AppDatabase): Long {
     val appContext = context.applicationContext
     val prefsUid = readLikedUid(appContext)
     val metas = try {

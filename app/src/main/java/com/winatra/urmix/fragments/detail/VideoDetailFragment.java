@@ -91,6 +91,7 @@ import com.winatra.urmix.fragments.list.videos.RelatedItemsFragment;
 import com.winatra.urmix.ktx.AnimationType;
 import com.winatra.urmix.local.dialog.PlaylistDialog;
 import com.winatra.urmix.local.history.HistoryRecordManager;
+import com.winatra.urmix.local.playlist.LikedSongsManager;
 import com.winatra.urmix.local.playlist.LocalPlaylistFragment;
 import com.winatra.urmix.player.Player;
 import com.winatra.urmix.player.PlayerIntentType;
@@ -541,6 +542,9 @@ public final class VideoDetailFragment
 
             setOverlayPlayPauseImage(isPlayerAvailable() && player.isPlaying());
         });
+        // URMIX Phase C: Like (heart) button on the mini-player bar toggles the
+        // current track in the reserved "Liked Songs" playlist.
+        binding.overlayLikeButton.setOnClickListener(v -> toggleLikedForCurrentStream());
     }
 
     private View.OnClickListener makeOnClickListener(final Consumer<StreamInfo> consumer) {
@@ -2457,6 +2461,7 @@ public final class VideoDetailFragment
         binding.overlayChannelTextView.setText(isEmpty(uploader) ? "" : uploader);
         binding.overlayThumbnail.setImageDrawable(null);
         CoilHelper.INSTANCE.loadDetailsThumbnail(binding.overlayThumbnail, thumbnails);
+        refreshOverlayLikeButton();
     }
 
     private void setOverlayPlayPauseImage(final boolean playerIsPlaying) {
@@ -2489,7 +2494,68 @@ public final class VideoDetailFragment
         binding.overlayButtonsLayout.setClickable(enable);
         binding.overlayPlayQueueButton.setClickable(enable);
         binding.overlayPlayPauseButton.setClickable(enable);
+        binding.overlayLikeButton.setClickable(enable);
         binding.overlayCloseButton.setClickable(enable);
+    }
+
+    // URMIX Phase C: mini-player Like (heart) state — mirrors the reserved
+    // "Liked Songs" playlist (blueprint v2 §5.1). All DB work runs on a worker
+    // thread; icon updates are posted back to the main thread.
+    private void setOverlayLikeImage(final boolean liked) {
+        if (binding == null) {
+            return;
+        }
+        binding.overlayLikeButton.setImageResource(
+                liked ? R.drawable.ic_heart_liked : R.drawable.ic_favorite);
+        binding.overlayLikeButton.setContentDescription(
+                getString(liked ? R.string.unlike_song : R.string.like_song));
+    }
+
+    private void refreshOverlayLikeButton() {
+        if (binding == null || currentInfo == null
+                || currentInfo.getUrl() == null || currentInfo.getUrl().isEmpty()) {
+            if (binding != null) {
+                setOverlayLikeImage(false);
+            }
+            return;
+        }
+        final String streamUrl = currentInfo.getUrl();
+        disposables.add(io.reactivex.rxjava3.core.Single.fromCallable(
+                        () -> LikedSongsManager.isLiked(requireContext(), streamUrl))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(liked -> {
+                    if (binding != null && currentInfo != null
+                            && streamUrl.equals(currentInfo.getUrl())) {
+                        setOverlayLikeImage(liked);
+                    }
+                }, throwable -> {
+                    if (DEBUG) {
+                        Log.w(TAG, "Could not refresh like state", throwable);
+                    }
+                }));
+    }
+
+    private void toggleLikedForCurrentStream() {
+        if (isLoading.get() || currentInfo == null) {
+            return;
+        }
+        final StreamInfo info = currentInfo;
+        disposables.add(LikedSongsManager.toggleMaybe(
+                        requireContext().getApplicationContext(), info)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(newLiked -> {
+                    setOverlayLikeImage(newLiked);
+                    Toast.makeText(requireContext(),
+                            newLiked ? R.string.like_added : R.string.like_removed,
+                            Toast.LENGTH_SHORT).show();
+                }, throwable -> ErrorUtil.showSnackbar(this,
+                        new ErrorInfo(throwable, UserAction.SOMETHING_ELSE,
+                                "Toggling liked state")),
+                    () -> Toast.makeText(requireContext(),
+                            R.string.general_error,
+                            Toast.LENGTH_SHORT).show()));
     }
 
     // helpers to check the state of player and playerService

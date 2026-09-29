@@ -695,6 +695,15 @@
                 android:src="@drawable/ic_play_arrow" />
 
             <ImageButton
+                android:id="@+id/overlay_like_button"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/like_song"
+                android:scaleType="center"
+                android:src="@drawable/ic_favorite" />
+
+            <ImageButton
                 android:id="@+id/overlay_close_button"
                 android:layout_width="48dp"
                 android:layout_height="match_parent"
