@@ -18,6 +18,11 @@ keystore.properties
 *.jks
 *.keystore
 
+# Local-only push helpers — never commit auth/scratch scripts
+_push_all.bat
+_cred_reject.ps1
+push_main.log
+
 # vscode / eclipse files
 *.classpath
 *.project
