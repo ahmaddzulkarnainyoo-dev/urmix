@@ -50,6 +50,7 @@ public final class LikedSongsManager {
     /**
      * Resolve the reserved Liked Songs playlist UID (self-healing, mirrors export/import).
      *
+     * @param context any context; its application context is used internally
      * @return playlist UID or -1 when there is no Liked Songs playlist yet
      */
     @WorkerThread
@@ -67,6 +68,8 @@ public final class LikedSongsManager {
     /**
      * Check whether the given stream URL is already in the Liked Songs playlist.
      *
+     * @param context any context; its application context is used internally
+     * @param streamUrl stream URL to look up; null or empty means "not liked"
      * @return true when liked, false otherwise (or when Liked Songs does not exist / on error)
      */
     @WorkerThread
@@ -106,6 +109,8 @@ public final class LikedSongsManager {
      * playlist when needed and persisting its UID). When it is already liked,
      * its join row is removed; orphaned stream rows are cleaned up.</p>
      *
+     * @param context any context; its application context is used internally
+     * @param info stream to like/unlike
      * @return a Maybe emitting the new liked state (true = now liked);
      *         empty when the toggle failed
      */

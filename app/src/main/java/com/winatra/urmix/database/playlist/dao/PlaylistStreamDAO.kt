@@ -35,8 +35,7 @@ interface PlaylistStreamDAO : BasicDAO<PlaylistStreamEntity> {
     fun deleteBatch(playlistId: Long)
 
     // URMIX Phase C: targeted unlike — remove a single stream from a playlist
-    @Query("DELETE FROM playlist_stream_join WHERE playlist_id = :playlistId"
-        + " AND stream_id = :streamId")
+    @Query("DELETE FROM playlist_stream_join WHERE playlist_id = :playlistId AND stream_id = :streamId")
     fun deleteByStreamId(playlistId: Long, streamId: Long): Int
 
     @Query("SELECT COALESCE(MAX(join_index), -1) FROM playlist_stream_join WHERE playlist_id = :playlistId")
