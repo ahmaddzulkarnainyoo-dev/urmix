@@ -38,7 +38,7 @@
 | default branch | `main` (bukan `tmp-mini-probe`) | ✅ `gh repo edit --default-branch main` |
 | branch probe `tmp-mini-probe` | dihapus dari remote | ✅ `git push urmix --delete …` |
 | `build.yml` (push→main) | run green | ✅ run `36897778394` (komit `3fddb1b48`; `:app:assembleDebug` + Upload APK sukses) |
-| `ci.yml` (push→main) | run green | ⚠️ run `36897778255`: `build-and-test-jvm` ✅ (ktlint + checkstyle + unit test) tetapi `test-android` ❌ — emulator CI `adb: device offline` + boot timeout 600s (infra, bukan kode) |
+| `ci.yml` (push→main) | run green | ⚠️ `build-and-test-jvm` ✅ (ktlint + checkstyle + unit test) di run `36897778255` & `36901004258`; `test-android` ❌ — **akar masalah nyata**: schema Room hilang (lihat §A1, DIPERBAIKI) + emulator flake `adb: device offline` |
 | `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ❌ run `36894095254` — gagal di step *Restore release keystore from secrets*: `missing KEYSTORE_BASE64` (prasyarat §B, bukan kegagalan kode) |
 
 > Fix gaya `3fddb1b48` (unblock Build/CI): ktlint `PlaylistStreamDAO.kt` (`@Query` wrapping) +
@@ -55,6 +55,29 @@
 > Setelah auth OK: `post_auth_push.bat` (cek shallow → push base bila perlu →
 > push `main` → push `v1.0.0` → `git ls-remote`). Komit dokumentasi setelah
 > `70d06cc4a` tidak mengubah tag rilis.
+
+## A1. Akar masalah `test-android` (RESOLVED) — schema Room tidak ikut rename paket
+
+- Gejala (run `36901004258`, emulator API 35 x86_64 **berhasil boot**): ketiga test
+  `DatabaseMigrationTest.migrateDatabaseFrom{2to3,7to8,8to9}` gagal dengan
+  `java.io.FileNotFoundException: Cannot find the schema file in the assets folder … Missing file: com.winatra.urmix.database.AppDatabase/{2,8}.json`.
+- Penyebab: `MigrationTestHelper` membaca asset `"<canonicalName AppDatabase>/<versi>.json"`.
+  Saat FASE 2 memindahkan `AppDatabase` ke paket `com.winatra.urmix.database`, ksp
+  hanya mengekspor `9.json` ke direktori baru, sedangkan schema historis
+  (`2.json`–`8.json`) tetap di direktori lama
+  `app/schemas/org.schabi.newpipe.database.AppDatabase/` → tak terjangkau helper.
+- Perbaikan: `git mv app/schemas/org.schabi.newpipe.database.AppDatabase/{2..8}.json`
+  → `app/schemas/com.winatra.urmix.database.AppDatabase/`, lalu hapus `9.json`
+  upstream yang jadi orphan. Kini 2–9 berada di satu direktori sesuai paket kelas DB.
+- Bukti statis: `9.json` lama vs baru identik secara semantik (fork hanya
+  menghilangkan field default `"notNull": false` / `"foreignKeys": []`); 12 tabel
+  v9 sama; kolom v8 (`playlists`: `uid,name,is_thumbnail_permanent,thumbnail_stream_id`,
+  `remote_playlists`: `service_id,name,url,…`) cocok dengan `insert` di test;
+  seluruh JSON valid (punya `createSql` per entitas).
+- Validasi runtime: **CI** (lihat kolom `ci.yml` §A). Build lokal
+  `:app:connectedDebugAndroidTest` tidak bisa dipakai di mesin ini: RAM 3,7 GB
+  (0,3 GB bebas) → daemon Gradle (`org.gradle.jvmargs=-Xmx4096M`) di-kill OS
+  (`hs_err_pid*.log`; kini di-gitignore).
 
 ## B. GitHub Secrets (7) — wajib ada di repo `ahmaddzulkarnainyoo-dev/urmix`
 

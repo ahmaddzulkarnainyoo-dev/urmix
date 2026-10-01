@@ -25,6 +25,10 @@ push_main.log
 post_auth_push.bat
 *.bundle
 
+# JVM crash dumps (Gradle/Kotlin daemon OOM on low-RAM machines)
+hs_err_pid*.log
+replay_pid*.log
+
 # vscode / eclipse files
 *.classpath
 *.project
