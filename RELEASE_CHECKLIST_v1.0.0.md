@@ -31,14 +31,18 @@
 
 | Item | Expected remote state | Verified |
 |---|---|---|
-| `main` | memuat komit rilis `70d06cc4a` (= tag `v1.0.0`) | ✅ `git ls-remote urmix`, 2026-10-01 |
+| `main` | `70d06cc4a` (komit rilis) + `3fddb1b48` (fix gaya ktlint/checkstyle) | ✅ `git ls-remote urmix`, 2026-10-01 |
 | tag `v1.0.0` | points to `70d06cc4a` | ✅ `git ls-remote urmix`, 2026-10-01 |
 | default branch | `main` (bukan `tmp-mini-probe`) | ✅ `gh repo edit --default-branch main` |
 | branch probe `tmp-mini-probe` | dihapus dari remote | ✅ `git push urmix --delete …` |
-| `build.yml` (push→main) | run green | ⏳ run `36894063950` |
-| `ci.yml` (push→main) | run green | ⏳ run `36894064050` |
-| `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ❌ run `36894095254` — gagal di step *Restore release keystore from secrets*: `missing KEYSTORE_BASE64` (7 secret §B belum diisi) |
+| `build.yml` (push→main) | run green | ✅ run `36897778394` (komit `3fddb1b48`; `:app:assembleDebug` + Upload APK sukses) |
+| `ci.yml` (push→main) | run green | ⚠️ run `36897778255`: `build-and-test-jvm` ✅ (ktlint + checkstyle + unit test) tetapi `test-android` ❌ — emulator CI `adb: device offline` + boot timeout 600s (infra, bukan kode) |
+| `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ❌ run `36894095254` — gagal di step *Restore release keystore from secrets*: `missing KEYSTORE_BASE64` (prasyarat §B, bukan kegagalan kode) |
 
+> Fix gaya `3fddb1b48` (unblock Build/CI): ktlint `PlaylistStreamDAO.kt` (`@Query` wrapping) +
+> checkstyle `LikedSongsManager` (`@param context` / `streamUrl` / `info`).
+> Divalidasi lokal: `gradlew :app:runCheckstyle :app:runKtlint` → BUILD SUCCESSFUL.
+>
 > Bukti push sukses: `* [new branch] 00acf2f31 -> main` (base: 146.772 objek /
 > 12.242 komit NewPipe master, ~83 MiB) → `00acf2f31..70d06cc4a main -> main`
 > (15 komit URMIX, 598 delta) → `* [new tag] v1.0.0 -> v1.0.0`.
