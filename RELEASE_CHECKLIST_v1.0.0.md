@@ -1,6 +1,7 @@
-# URMIX Release Checklist — `v1.0.0` (FASE 6 §10 + blueprint §10)
+# URMIX Release Checklist — `v1.0.0` (FASE 6 §10 + blueprint §10 + Phase C)
 
-> Komit rilis: `08fade509` — `feat(release): FASE 6 §6/§7/§10`
+> Komit rilis: `d932f439b` — Phase C included
+> (`feat(library): Like button + Liked Songs manager`, manifest cleanup)
 > Pipeline rilis: `.github/workflows/release.yml` (trigger: push tag `v*`,
 > fallback manual `workflow_dispatch` + input `tag`).
 
@@ -8,8 +9,8 @@
 
 | Item | Expected remote state | Verified |
 |---|---|---|
-| `main` | commit `08fade509` | ☐ via `git ls-remote urmix` |
-| tag `v1.0.0` | points to `08fade509` | ☐ via `git ls-remote urmix` |
+| `main` | commit `d932f439b` | ☐ via `git ls-remote urmix` |
+| tag `v1.0.0` | points to `d932f439b` | ☐ via `git ls-remote urmix` |
 | `build.yml` (push→main) | run green | ☐ Actions tab |
 | `ci.yml` (push→main) | run green | ☐ Actions tab |
 | `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ☐ Actions tab |
@@ -17,8 +18,8 @@
 > Preflight non-interaktif gagal (`repository not found` / 401): berarti
 > perlu sign-in GitHub interaktif sebagai `winatra`
 > (`gh auth login -h github.com` atau Credential Manager). Setelah auth OK,
-> jalankan: `git push urmix main` → `git push urmix v1.0.0` →
-> `git ls-remote urmix`.
+> jalankan satu perintah: `post_auth_push.bat` (push `main` → push `v1.0.0`
+> → `git ls-remote` verifikasi).
 
 ## B. GitHub Secrets (7) — wajib ada di repo `Winatra/urmix`
 
@@ -62,3 +63,16 @@ instalasi lama tanpa uninstall; fingerprint diverifikasi otomatis oleh step
 - [ ] Notifikasi donasi max 1x/hari, bisa di-dismiss
 - [ ] GitHub Release `v1.0.0` ada + asset `URMIX_v1.0.0.apk` + changelog
 - [ ] File APK yang SAMA terkirim ke Telegram group (caption = changelog)
+
+## D2. QA Phase C — mini-player Like/Unlike (blueprint §5.1)
+
+- [ ] Tap heart di mini-player → toast "Added to Liked Songs", icon jadi hijau
+- [ ] Tap lagi → toast "Removed from Liked Songs", icon kembali putih
+- [ ] Pindah track → status heart refresh sesuai state liked track baru
+  (`updateOverlayData` → `refreshOverlayLikeButton`, stale-check by URL)
+- [ ] Track yang di-like muncul di library "Liked Songs" (UID prefs
+  `urmix_liked_songs_playlist_uid`, self-heal by name)
+- [ ] "Liked Songs" ikut tereksport sebagai `liked_tracks` di
+  `urmix_backup_YYYYMMDD.json` (FASE 4 §5.2)
+- [ ] DB error saat toggle → toast/snackbar, player tidak crash, icon tidak
+  berubah palsu (Maybe empty path + `isAdded()` guard)

@@ -2519,9 +2519,12 @@ public final class VideoDetailFragment
             }
             return;
         }
+        // Capture the context NOW on the main thread — requireContext() inside
+        // the worker lambda would throw if the fragment is detached by then.
+        final Context queryContext = requireContext().getApplicationContext();
         final String streamUrl = currentInfo.getUrl();
         disposables.add(io.reactivex.rxjava3.core.Single.fromCallable(
-                        () -> LikedSongsManager.isLiked(requireContext(), streamUrl))
+                        () -> LikedSongsManager.isLiked(queryContext, streamUrl))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(liked -> {
@@ -2541,21 +2544,34 @@ public final class VideoDetailFragment
             return;
         }
         final StreamInfo info = currentInfo;
-        disposables.add(LikedSongsManager.toggleMaybe(
-                        requireContext().getApplicationContext(), info)
+        // Capture the context NOW on the main thread — requireContext() inside
+        // the worker lambda would throw if the fragment is detached by then.
+        final Context toggleContext = requireContext().getApplicationContext();
+        disposables.add(LikedSongsManager.toggleMaybe(toggleContext, info)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(newLiked -> {
+                    if (!isAdded()) {
+                        return;
+                    }
                     setOverlayLikeImage(newLiked);
                     Toast.makeText(requireContext(),
                             newLiked ? R.string.like_added : R.string.like_removed,
                             Toast.LENGTH_SHORT).show();
-                }, throwable -> ErrorUtil.showSnackbar(this,
-                        new ErrorInfo(throwable, UserAction.SOMETHING_ELSE,
-                                "Toggling liked state")),
-                    () -> Toast.makeText(requireContext(),
-                            R.string.general_error,
-                            Toast.LENGTH_SHORT).show()));
+                }, throwable -> {
+                    if (!isAdded()) {
+                        return;
+                    }
+                    ErrorUtil.showSnackbar(this,
+                            new ErrorInfo(throwable, UserAction.SOMETHING_ELSE,
+                                    "Toggling liked state"));
+                }, () -> {
+                    if (isAdded()) {
+                        Toast.makeText(requireContext(),
+                                R.string.general_error,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }));
     }
 
     // helpers to check the state of player and playerService

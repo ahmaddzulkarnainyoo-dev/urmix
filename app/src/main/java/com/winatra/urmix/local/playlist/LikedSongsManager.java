@@ -34,6 +34,11 @@ import java.util.List;
 public final class LikedSongsManager {
     private static final String TAG = "LikedSongsManager";
 
+    // Serializes like/unlike toggles so two rapid taps cannot create
+    // duplicate "Liked Songs" playlists (both chains could otherwise see
+    // likedUid < 0 and each create the reserved playlist).
+    private static final Object TOGGLE_LOCK = new Object();
+
     private LikedSongsManager() {
     }
 
@@ -108,6 +113,9 @@ public final class LikedSongsManager {
     @NonNull
     public static Maybe<Boolean> toggleMaybe(@NonNull final Context context,
                                              @NonNull final StreamInfo info) {
+        if (info.getUrl() == null || info.getUrl().isEmpty()) {
+            return Maybe.empty();
+        }
         return Maybe.fromCallable(() -> toggleBlocking(context, info));
     }
 
@@ -115,6 +123,18 @@ public final class LikedSongsManager {
     @Nullable
     static Boolean toggleBlocking(@NonNull final Context context,
                                   @NonNull final StreamInfo info) {
+        if (info.getUrl() == null || info.getUrl().isEmpty()) {
+            return null;
+        }
+        synchronized (TOGGLE_LOCK) {
+            return toggleLocked(context, info);
+        }
+    }
+
+    @WorkerThread
+    @Nullable
+    private static Boolean toggleLocked(@NonNull final Context context,
+                                        @NonNull final StreamInfo info) {
         if (info.getUrl() == null || info.getUrl().isEmpty()) {
             return null;
         }

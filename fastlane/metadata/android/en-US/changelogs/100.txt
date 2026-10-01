@@ -3,6 +3,8 @@ URMIX v1.0.0 — initial WINATRA release.
 - Audio-first home (Made For You, Trending Audio, Podcasting).
 - Background playback with audio-only extraction + fallback.
 - Local library with JSON export/import backup.
+- Like/Heart button on the mini-player: tap to add/remove the current
+  track in the local "Liked Songs" playlist (included in JSON backup).
 - Bounded image + HTTP caches, offline banners, memory hygiene.
 - WINATRA remote config: force/soft update gate + daily support prompt.
 

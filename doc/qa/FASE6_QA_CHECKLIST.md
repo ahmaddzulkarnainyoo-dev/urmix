@@ -13,6 +13,9 @@ before every Telegram release. Device items are release blockers.
 | 6 | Export → import on another device → identical | auto | `BackupJsonRoundTripTest`, `ImportAllCombinationsTest` | | |
 | 7 | APK installs over old version (§7.1 signing) | auto + manual device | `apksigner verify --print-certs` fingerprint matches `SIGNER_SHA256_HEX`; device install-over keeps local data | | |
 | 8 | Donation notif max 1x/day, dismissible | auto + manual | `DonationPromptGateTest`; device: appears ≤1/day, swipe/Dismiss clears with no side effects | | |
+| 9 | Mini-player Like/Unlike toggle (§5.1) | manual device | play track → tap heart → toast `like_added`, icon turns `ic_heart_liked` (green); tap again → `like_removed`, icon back to `ic_favorite`; switch track → heart refreshes via `updateOverlayData → refreshOverlayLikeButton` | | |
+| 10 | Liked Songs persists in library + backup | manual device + auto | liked tracks visible in "Liked Songs" playlist (UID pref `urmix_liked_songs_playlist_uid`); export shows them under `liked_tracks` in `urmix_backup_YYYYMMDD.json`; rapid double-tap does not duplicate the playlist (TOGGLE_LOCK) | | |
+| 11 | Like toggle survives config change / fallback | manual device | rotate device mid-query → no crash (`Context` pre-captured, `isAdded()` guards, `binding` null-checks); DB failure → `general_error` toast, no fake icon change | | |
 
 ## Automated gate (attach logs)
 
