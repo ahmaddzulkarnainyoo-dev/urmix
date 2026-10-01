@@ -23,6 +23,7 @@ _push_all.bat
 _cred_reject.ps1
 push_main.log
 post_auth_push.bat
+*.bundle
 
 # vscode / eclipse files
 *.classpath

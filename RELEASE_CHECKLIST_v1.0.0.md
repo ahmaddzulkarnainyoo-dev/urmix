@@ -1,27 +1,56 @@
 # URMIX Release Checklist — `v1.0.0` (FASE 6 §10 + blueprint §10 + Phase C)
 
-> Komit rilis: `d932f439b` — Phase C included
-> (`feat(library): Like button + Liked Songs manager`, manifest cleanup)
+> Komit rilis: `70d06cc4a` — Phase C included
+> (`feat(library): Like button + Liked Songs manager`, manifest cleanup).
+> Riwayat: `d932f439b` (retag v1.0.0) → `f98bbbfbc` (harden Like toggle)
+> → `70d06cc4a` (helper lokal gitignored). Tag `v1.0.0` = `70d06cc4a`.
 > Pipeline rilis: `.github/workflows/release.yml` (trigger: push tag `v*`,
 > fallback manual `workflow_dispatch` + input `tag`).
 
-## A. Push state (`Winatra/urmix`)
+## A0. Akar masalah push lama (RESOLVED) — shallow clone
+
+- Gejala: `remote: fatal: did not receive expected object 14401c532ff…` +
+  `error: remote unpack failed: index-pack failed` pada **semua** percobaan push
+  (HTTPS, `protocol.version=0`, `--no-thin`, clone bersih, repack, pump-pack
+  terisolasi). Objek `14401c…` **tidak ada** di lokal (`git cat-file -t 14401c…`
+  → *could not get object info*), jadi bukan korupsi pack lokal.
+- Penyebab: `e:\urmix` adalah **shallow clone** — `.git/shallow` =
+  `00acf2f318b…` (NewPipe master, "Bump NewPipe version to 0.29.1"); commit itu
+  punya `parent 14401c532ff…` yang belum pernah diunduh. Saat push riwayat
+  shallow, receive-pack GitHub merekonstruksi ancestry, meminta objek parent
+  boundary tsb, lalu gagal. Bukti pembanding: push repo **non-shallow**
+  1-komit (`tmp-mini-probe`) **BERHASIL** di repo yang sama.
+- Perbaikan (terbukti 2026-10-01): `git fetch --unshallow origin` — instan,
+  karena objek NewPipe sudah ada lokal dan hanya penanda shallow yang salah —
+  lalu push bertahap: base `00acf2f` → `main` → tag `v1.0.0`.
+- **Preflight wajib**: `git rev-parse --is-shallow-repository` harus `false`
+  sebelum push. `post_auth_push.bat` (lokal, gitignored) sudah otomatis
+  menjalankan `git fetch --unshallow origin` bila mendeteksi repo shallow.
+
+## A. Push state (`ahmaddzulkarnainyoo-dev/urmix`)
 
 | Item | Expected remote state | Verified |
 |---|---|---|
-| `main` | commit `d932f439b` | ☐ via `git ls-remote urmix` |
-| tag `v1.0.0` | points to `d932f439b` | ☐ via `git ls-remote urmix` |
-| `build.yml` (push→main) | run green | ☐ Actions tab |
-| `ci.yml` (push→main) | run green | ☐ Actions tab |
-| `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ☐ Actions tab |
+| `main` | memuat komit rilis `70d06cc4a` (= tag `v1.0.0`) | ✅ `git ls-remote urmix`, 2026-10-01 |
+| tag `v1.0.0` | points to `70d06cc4a` | ✅ `git ls-remote urmix`, 2026-10-01 |
+| default branch | `main` (bukan `tmp-mini-probe`) | ✅ `gh repo edit --default-branch main` |
+| branch probe `tmp-mini-probe` | dihapus dari remote | ✅ `git push urmix --delete …` |
+| `build.yml` (push→main) | run green | ⏳ run `36894063950` |
+| `ci.yml` (push→main) | run green | ⏳ run `36894064050` |
+| `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ❌ run `36894095254` — gagal di step *Restore release keystore from secrets*: `missing KEYSTORE_BASE64` (7 secret §B belum diisi) |
 
-> Preflight non-interaktif gagal (`repository not found` / 401): berarti
-> perlu sign-in GitHub interaktif sebagai `winatra`
-> (`gh auth login -h github.com` atau Credential Manager). Setelah auth OK,
-> jalankan satu perintah: `post_auth_push.bat` (push `main` → push `v1.0.0`
-> → `git ls-remote` verifikasi).
+> Bukti push sukses: `* [new branch] 00acf2f31 -> main` (base: 146.772 objek /
+> 12.242 komit NewPipe master, ~83 MiB) → `00acf2f31..70d06cc4a main -> main`
+> (15 komit URMIX, 598 delta) → `* [new tag] v1.0.0 -> v1.0.0`.
+> Auth sudah tersedia via `gh`, jadi `gh auth login` interaktif tidak perlu.
 
-## B. GitHub Secrets (7) — wajib ada di repo `Winatra/urmix`
+> Preflight non-interaktif gagal (`repository not found` / 401): perlu sign-in
+> GitHub interaktif (`gh auth login -h github.com` atau Credential Manager).
+> Setelah auth OK: `post_auth_push.bat` (cek shallow → push base bila perlu →
+> push `main` → push `v1.0.0` → `git ls-remote`). Komit dokumentasi setelah
+> `70d06cc4a` tidak mengubah tag rilis.
+
+## B. GitHub Secrets (7) — wajib ada di repo `ahmaddzulkarnainyoo-dev/urmix`
 
 | # | Secret | Dipakai di | Status |
 |---|---|---|---|
