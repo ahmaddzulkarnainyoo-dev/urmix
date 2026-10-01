@@ -5,9 +5,17 @@
 > (`feat(library): Like button + Liked Songs manager`, manifest cleanup).
 > Riwayat: `d932f439b` (retag v1.0.0) → `f98bbbfbc` (harden Like toggle)
 > → `70d06cc4a` (helper lokal gitignored) → `3fddb1b48` (fix gaya ktlint/checkstyle)
-> → docs (dokumen checklist ini). Tag `v1.0.0` = tip `main`.
+> → docs (dokumen checklist ini) → `10743c21f` (fix schema Room §A1 + gitignore
+> crash dump; **CI hijau total**). Tag `v1.0.0` = tip `main` = `10743c21f`.
+> Komit dokumentasi setelah itu (mis. tabel §B di bawah) memindahkan tip
+> `main`, tetapi tag rilis `v1.0.0` **tetap** `10743c21f`: `release.yml`
+> selalu checkout **tag**, bukan tip `main`, jadi isi rilis tidak berubah.
 > Pipeline rilis: `.github/workflows/release.yml` (trigger: push tag `v*`,
 > fallback manual `workflow_dispatch` + input `tag`).
+> Catatan filter: `ci.yml` meng-`paths-ignore` `doc/**` dan `README.md`,
+> `build.yml` **tanpa** `paths-ignore`, dan `RELEASE_CHECKLIST_v1.0.0.md`
+> tidak termasuk daftar abaikan — jadi komit dokumen ini tetap memicu
+> Build + CI penuh (dipakai sebagai re-validasi, bukan regresi).
 
 ## A0. Akar masalah push lama (RESOLVED) — shallow clone
 
@@ -33,12 +41,12 @@
 
 | Item | Expected remote state | Verified |
 |---|---|---|
-| `main` | `70d06cc4a` (komit rilis) + `3fddb1b48` (fix gaya ktlint/checkstyle) | ✅ `git ls-remote urmix`, 2026-10-01 |
-| tag `v1.0.0` | = tip `main` (dipindah dari `70d06cc4a` via `git tag -f` + `push --force`, sebelum GitHub Release/asset ada) | ✅ `git ls-remote urmix` |
+| `main` | tip `10743c21f` (`70d06cc4a` → `3fddb1b48` → `10743c21f` fix schema Room, §A1) | ✅ `git ls-remote urmix`, 2026-10-02 |
+| tag `v1.0.0` | = tip `main` = `10743c21f` (dipindah via `git tag -f` + `push --force`, sebelum GitHub Release/asset ada) | ✅ `git ls-remote urmix` |
 | default branch | `main` (bukan `tmp-mini-probe`) | ✅ `gh repo edit --default-branch main` |
 | branch probe `tmp-mini-probe` | dihapus dari remote | ✅ `git push urmix --delete …` |
-| `build.yml` (push→main) | run green | ✅ run `36897778394` (komit `3fddb1b48`; `:app:assembleDebug` + Upload APK sukses) |
-| `ci.yml` (push→main) | run green | ⚠️ `build-and-test-jvm` ✅ (ktlint + checkstyle + unit test) di run `36897778255` & `36901004258`; `test-android` ❌ — **akar masalah nyata**: schema Room hilang (lihat §A1, DIPERBAIKI) + emulator flake `adb: device offline` |
+| `build.yml` (push→main) | run green | ✅ run `36897778394` (komit `3fddb1b48`) · ✅ run `36907319052` (komit `10743c21f`; job *Build URMIX Android app (debug)* ✅ 3m27s, artifact `urmix-apk`) |
+| `ci.yml` (push→main) | run green | ✅ run `36907318999` (komit `10743c21f`) — **FULLY GREEN**: `build-and-test-jvm` ✅ 8m39s (ktlint + checkstyle + unit) · `test-android (35, x86_64)` ✅ 6m2s · `test-android (23, x86)` ✅ 7m25s (emulator `Boot completed in 32436 ms`, `BUILD SUCCESSFUL in 4m 30s`, 25/25 test instrumented). Akar masalah = schema Room (lihat §A1), bukan hanya flake emulator |
 | `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ❌ run `36894095254` — gagal di step *Restore release keystore from secrets*: `missing KEYSTORE_BASE64` (prasyarat §B, bukan kegagalan kode) |
 
 > Fix gaya `3fddb1b48` (unblock Build/CI): ktlint `PlaylistStreamDAO.kt` (`@Query` wrapping) +
@@ -78,6 +86,12 @@
   `:app:connectedDebugAndroidTest` tidak bisa dipakai di mesin ini: RAM 3,7 GB
   (0,3 GB bebas) → daemon Gradle (`org.gradle.jvmargs=-Xmx4096M`) di-kill OS
   (`hs_err_pid*.log`; kini di-gitignore).
+- **Validasi CI 2026-10-02** (run `36907318999` @ `10743c21f`): kedua leg
+  `test-android` hijau — API 35 (x86_64) ✅ 6m2s, API 23 (x86) ✅ 7m25s;
+  emulator `Boot completed in 32436 ms`, `BUILD SUCCESSFUL in 4m 30s`
+  (25/25 test instrumented, termasuk `DatabaseMigrationTest` 2→3 / 7→8 / 8→9).
+  `build-and-test-jvm` ✅ 8m39s; `sonar` *skipped* (tanpa `SONAR_TOKEN`).
+  Build debug paralel: run `36907319052` ✅ (3m27s).
 
 ## B. GitHub Secrets (7) — wajib ada di repo `ahmaddzulkarnainyoo-dev/urmix`
 
@@ -95,6 +109,48 @@ Cek: repo **Settings → Secrets and variables → Actions**. Catatan §7.1:
 APK release harus ditandatangani keystore yang SAMA agar update menimpa
 instalasi lama tanpa uninstall; fingerprint diverifikasi otomatis oleh step
 `Verify signature pins the §7.1 keystore`.
+
+### B1. Jalur pembuatan secret (sudah diuji lokal 2026-10-02)
+
+Skrip generator (di **luar** repo, tidak ikut commit):
+`C:\Users\ahmad\.urmix\release\setup_release_keystore.ps1`
+
+Perilaku: preflight `keytool` + `JAVA_HOME` → password (input tersembunyi) →
+`keytool -genkeypair` (RSA 4096 / JKS / 3650 hari / alias `urmix-release`) →
+self-check entri `PrivateKeyEntry` → `-exportcert` + SHA-256 DER →
+silang-cek `keytool -printcert` → tulis `e:\urmix\keystore.properties`
+(git-ignored) → `.jks.b64` satu baris → `gh secret set` 7 secret →
+verifikasi `gh secret list` → checklist backup.
+
+**Bukti self-test lokal (folder `%TEMP%`, `-SkipSecrets`): `exit 0`.**
+Rantai yang diverifikasi: entri `PrivateKeyEntry` ✅;
+`SIGNER_SHA256_HEX` = `286570549e63e87460c07d0a07c3f489b794d6b93eaa96cca1e2302aa3dfed31`
+cocok dengan `keytool -printcert`
+(`28:65:70:54:…:DF:ED:31`) ✅; `keystore.properties` ✅; base64 5100 char ✅.
+
+**Bukti pin `release.yml` cocok** (step *Verify signature pins the §7.1
+keystore*, baris `grep -qi "$SIGNER_SHA256_HEX" "$RUNNER_TEMP/certs.txt"`):
+APK debug CI (`urmix-apk` @ `10743c21f`) ditandatangani ulang dengan kunci uji
+sekali-pakai, lalu `apksigner verify --print-certs` (build-tools 36.0.0)
+mencetak:
+
+```text
+Signer #1 certificate SHA-256 digest: 5361bd49eb9f347f4af76e3126d4f0f29a9b32f8621ddf25ffda41725dbec661
+```
+
+nilai itu **identik** dengan hash DER hasil ekspor
+(`(Get-FileHash cert.der -Algorithm SHA256).Hash.ToLowerInvariant()`).
+Kesimpulan: apksigner mencetak hex huruf kecil **tanpa titik dua**, sama
+persis dengan spesifikasi `doc/RELEASE.md` §2 → `grep -qi` pasti cocok.
+(Nilai `5361bd49…`/`2865705…` di atas hanya kunci uji, bukan kunci rilis.)
+
+Alternatif tanpa skrip: `KEYSTORE_BASE64` = isi `.jks.b64`, sisanya nilai
+literal (`KEY_ALIAS` = `urmix-release`). Verifikasi nama kapan saja:
+`gh secret list --repo ahmaddzulkarnainyoo-dev/urmix` (harus 7 baris).
+
+Jika step *Verify signature pins* gagal setelah rilis pertama: salin token
+persis dari `certs.txt` pada log run itu, lalu
+`gh secret set SIGNER_SHA256_HEX --repo ahmaddzulkarnainyoo-dev/urmix --body='<token>'`.
 
 ## C. Supabase (`urmix_config`) — payload siap insert
 

@@ -17,6 +17,7 @@ app/release/
 keystore.properties
 *.jks
 *.keystore
+*.jks.b64
 
 # Local-only push helpers — never commit auth/scratch scripts
 _push_all.bat

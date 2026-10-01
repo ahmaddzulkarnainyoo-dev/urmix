@@ -9,6 +9,17 @@
 - Fingerprint the certificate once and store it as the `SIGNER_SHA256_HEX`
   secret — `release.yml` refuses to publish on mismatch:
   `apksigner verify --print-certs app-*.apk | grep -i sha-256`.
+- Derivation (verified 2026-10-02 against build-tools 36.0.0): export the
+  certificate and hash the DER bytes —
+  `keytool -exportcert -keystore urmix-release.jks -alias urmix-release -file cert.der`
+  then SHA-256 of `cert.der` (Windows:
+  `(Get-FileHash cert.der -Algorithm SHA256).Hash.ToLowerInvariant()`).
+  apksigner prints the same value as
+  `Signer #1 certificate SHA-256 digest: <hex>` — lowercase, **no colons** —
+  so the derived secret and the CI `certs.txt` are byte-comparable and
+  `grep -qi` matches.
+- Generator: `setup_release_keystore.ps1` (kept outside the repo) does steps
+  above and registers all 7 secrets.
 
 ## 2. GitHub secrets (all required by release.yml)
 
