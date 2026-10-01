@@ -47,7 +47,7 @@
 | branch probe `tmp-mini-probe` | dihapus dari remote | ✅ `git push urmix --delete …` |
 | `build.yml` (push→main) | run green | ✅ run `36897778394` (komit `3fddb1b48`) · ✅ run `36907319052` (komit `10743c21f`; job *Build URMIX Android app (debug)* ✅ 3m27s, artifact `urmix-apk`) |
 | `ci.yml` (push→main) | run green | ✅ run `36907318999` (komit `10743c21f`) — **FULLY GREEN**: `build-and-test-jvm` ✅ 8m39s (ktlint + checkstyle + unit) · `test-android (35, x86_64)` ✅ 6m2s · `test-android (23, x86)` ✅ 7m25s (emulator `Boot completed in 32436 ms`, `BUILD SUCCESSFUL in 4m 30s`, 25/25 test instrumented). Akar masalah = schema Room (lihat §A1), bukan hanya flake emulator |
-| `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ❌ run `36894095254` — gagal di step *Restore release keystore from secrets*: `missing KEYSTORE_BASE64` (prasyarat §B, bukan kegagalan kode) |
+| `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ❌ run `36907345654` (tag `v1.0.0` @ `10743c21f`, 2026-10-02) — gagal di step *Restore release keystore from secrets*: `missing KEYSTORE_BASE64`, keempat env keystore kosong (`KEYSTORE_BASE64`/`KEYSTORE_PASSWORD`/`KEY_ALIAS`/`KEY_PASSWORD`), `Process completed with exit code 1`. Blocker tunggal = §B (0/7 secret), bukan kode |
 
 > Fix gaya `3fddb1b48` (unblock Build/CI): ktlint `PlaylistStreamDAO.kt` (`@Query` wrapping) +
 > checkstyle `LikedSongsManager` (`@param context` / `streamUrl` / `info`).
@@ -104,6 +104,10 @@
 | 5 | `SIGNER_SHA256_HEX` | `release.yml` → pin signer §7.1 (gagal publish bila mismatch) | ☐ |
 | 6 | `TELEGRAM_BOT_TOKEN` | `release.yml` → kirim APK ke Telegram | ☐ |
 | 7 | `TELEGRAM_CHAT_ID` | `release.yml` → `chat_id` tujuan | ☐ |
+
+Status terverifikasi 2026-10-02: **0/7** — `gh secret list --repo
+ahmaddzulkarnainyoo-dev/urmix` kosong dan
+`gh api …/actions/secrets --jq .total_count` = `0`.
 
 Cek: repo **Settings → Secrets and variables → Actions**. Catatan §7.1:
 APK release harus ditandatangani keystore yang SAMA agar update menimpa
