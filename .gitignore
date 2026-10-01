@@ -22,6 +22,7 @@ keystore.properties
 _push_all.bat
 _cred_reject.ps1
 push_main.log
+post_auth_push.bat
 
 # vscode / eclipse files
 *.classpath
