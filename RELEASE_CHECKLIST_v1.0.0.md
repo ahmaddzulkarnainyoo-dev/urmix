@@ -1,9 +1,11 @@
 # URMIX Release Checklist — `v1.0.0` (FASE 6 §10 + blueprint §10 + Phase C)
 
-> Komit rilis: `70d06cc4a` — Phase C included
+> Komit rilis: `70d06cc4a` (komit rilis awal; tag `v1.0.0` dipindahkan ke tip `main` —
+> lihat tabel §A — agar tag == main == CI hijau, sebelum ada GitHub Release/asset).
 > (`feat(library): Like button + Liked Songs manager`, manifest cleanup).
 > Riwayat: `d932f439b` (retag v1.0.0) → `f98bbbfbc` (harden Like toggle)
-> → `70d06cc4a` (helper lokal gitignored). Tag `v1.0.0` = `70d06cc4a`.
+> → `70d06cc4a` (helper lokal gitignored) → `3fddb1b48` (fix gaya ktlint/checkstyle)
+> → docs (dokumen checklist ini). Tag `v1.0.0` = tip `main`.
 > Pipeline rilis: `.github/workflows/release.yml` (trigger: push tag `v*`,
 > fallback manual `workflow_dispatch` + input `tag`).
 
@@ -32,7 +34,7 @@
 | Item | Expected remote state | Verified |
 |---|---|---|
 | `main` | `70d06cc4a` (komit rilis) + `3fddb1b48` (fix gaya ktlint/checkstyle) | ✅ `git ls-remote urmix`, 2026-10-01 |
-| tag `v1.0.0` | points to `70d06cc4a` | ✅ `git ls-remote urmix`, 2026-10-01 |
+| tag `v1.0.0` | = tip `main` (dipindah dari `70d06cc4a` via `git tag -f` + `push --force`, sebelum GitHub Release/asset ada) | ✅ `git ls-remote urmix` |
 | default branch | `main` (bukan `tmp-mini-probe`) | ✅ `gh repo edit --default-branch main` |
 | branch probe `tmp-mini-probe` | dihapus dari remote | ✅ `git push urmix --delete …` |
 | `build.yml` (push→main) | run green | ✅ run `36897778394` (komit `3fddb1b48`; `:app:assembleDebug` + Upload APK sukses) |
