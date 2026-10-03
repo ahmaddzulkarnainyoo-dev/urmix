@@ -9,7 +9,10 @@
 > crash dump; **CI hijau total**) → `1d99eb2b0` → `27ed7026a` → `87d2b91f7`
 > (docs §A/§B1: bukti run tip + re-validasi probe + paritas nama secret).
 > Tag `v1.0.0` = `10743c21f`; tip `main` saat checklist ini ditulis =
-> `87d2b91f7` (komit dokumen ini menambah satu komit docs lagi di atasnya).
+> `76229c030` (komit dokumen ini menambah satu komit docs lagi di atasnya;
+> pengejaran hash tip sengaja dihentikan di sini — hasil run setiap push
+> terlihat di tab Actions repo, dan pola "komit docs = re-validasi penuh"
+> sudah terdokumentasi di §A).
 > Komit dokumentasi setelah tag memindahkan tip `main`, tetapi tag rilis
 > `v1.0.0` **tetap** `10743c21f`: `release.yml` selalu checkout **tag**,
 > bukan tip `main`, jadi isi rilis tidak berubah.
@@ -44,7 +47,7 @@
 
 | Item | Expected remote state | Verified |
 |---|---|---|
-| `main` | tip `87d2b91f7` (`70d06cc4a` → `3fddb1b48` → `10743c21f` fix schema Room §A1 → docs `1d99eb2b0` → `27ed7026a` → docs `87d2b91f7`) | ✅ `git ls-remote urmix`, 2026-10-03 |
+| `main` | tip `76229c030` (`70d06cc4a` → `3fddb1b48` → `10743c21f` fix schema Room §A1 → docs `1d99eb2b0` → `27ed7026a` → `87d2b91f7` → `76229c030`) | ✅ `git ls-remote urmix`, 2026-10-03. Komit docs yang memuat baris ini menambah tepat satu komit di atas `76229c030`; hash tip tidak dikejar lagi (lihat blok atas) |
 | tag `v1.0.0` | = tip `main` = `10743c21f` (dipindah via `git tag -f` + `push --force`, sebelum GitHub Release/asset ada) | ✅ `git ls-remote urmix` |
 | default branch | `main` (bukan `tmp-mini-probe`) | ✅ `gh repo edit --default-branch main` |
 | branch probe `tmp-mini-probe` | dihapus dari remote | ✅ `git push urmix --delete …` |
