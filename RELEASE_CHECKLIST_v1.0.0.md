@@ -7,15 +7,15 @@
 > → `70d06cc4a` (helper lokal gitignored) → `3fddb1b48` (fix gaya ktlint/checkstyle)
 > → docs (dokumen checklist ini) → `10743c21f` (fix schema Room §A1 + gitignore
 > crash dump; **CI hijau total**) → `1d99eb2b0` → `27ed7026a` → `87d2b91f7`
-> (docs §A/§B1: bukti run tip + re-validasi probe + paritas nama secret).
-> Tag `v1.0.0` = `10743c21f`; tip `main` saat checklist ini ditulis =
-> `76229c030` (komit dokumen ini menambah satu komit docs lagi di atasnya;
-> pengejaran hash tip sengaja dihentikan di sini — hasil run setiap push
-> terlihat di tab Actions repo, dan pola "komit docs = re-validasi penuh"
-> sudah terdokumentasi di §A).
-> Komit dokumentasi setelah tag memindahkan tip `main`, tetapi tag rilis
-> `v1.0.0` **tetap** `10743c21f`: `release.yml` selalu checkout **tag**,
-> bukan tip `main`, jadi isi rilis tidak berubah.
+> → `76229c030` → `f2b710517` (docs §A/§B1: bukti run tip + re-validasi probe
+> + paritas nama secret) → `67972f038` (**fix rilis #1**, §A2) → `6fa4fc3e5`
+> (**fix rilis #2**, §A2).
+> `v1.0.0` **DIRILIS** 2026-10-03 dari tag = `6fa4fc3e5` (run `37133111052`,
+> seluruh step hijau; APK terverifikasi ditandatangani keystore §7.1 dan sudah
+> terkirim ke Telegram → §A/§A2).
+> Komit dokumentasi setelah rilis hanya memindahkan tip `main`; tag rilis tidak
+> ikut berubah, dan `release.yml` selalu checkout **tag**, jadi isi rilis tetap
+> = `6fa4fc3e5`.
 > Pipeline rilis: `.github/workflows/release.yml` (trigger: push tag `v*`,
 > fallback manual `workflow_dispatch` + input `tag`).
 > Catatan filter: `ci.yml` meng-`paths-ignore` `doc/**` dan `README.md`,
@@ -47,13 +47,13 @@
 
 | Item | Expected remote state | Verified |
 |---|---|---|
-| `main` | tip `76229c030` (`70d06cc4a` → `3fddb1b48` → `10743c21f` fix schema Room §A1 → docs `1d99eb2b0` → `27ed7026a` → `87d2b91f7` → `76229c030`) | ✅ `git ls-remote urmix`, 2026-10-03. Komit docs yang memuat baris ini menambah tepat satu komit di atas `76229c030`; hash tip tidak dikejar lagi (lihat blok atas) |
-| tag `v1.0.0` | = tip `main` = `10743c21f` (dipindah via `git tag -f` + `push --force`, sebelum GitHub Release/asset ada) | ✅ `git ls-remote urmix` |
+| `main` | tip `6fa4fc3e5` (`10743c21f` fix schema Room §A1 → docs `1d99eb2b0` → `27ed7026a` → `87d2b91f7` → `76229c030` → `f2b710517` → `67972f038` fix rilis #1 → `6fa4fc3e5` fix rilis #2) | ✅ `git ls-remote urmix`, 2026-10-03; komit docs yang memuat baris ini menambah satu komit di atasnya (hash tip tidak dikejar lagi) |
+| tag `v1.0.0` | = `6fa4fc3e5` (dipindah 2× via `git tag -f` + `push --force`: `10743c21f` → `67972f038` fix BuildConfig → `6fa4fc3e5` fix apksigner; selalu **sebelum** ada GitHub Release, jadi tidak ada asset rilis yang salah) | ✅ `git ls-remote urmix`, 2026-10-03 |
 | default branch | `main` (bukan `tmp-mini-probe`) | ✅ `gh repo edit --default-branch main` |
 | branch probe `tmp-mini-probe` | dihapus dari remote | ✅ `git push urmix --delete …` |
-| `build.yml` (push→main) | run green | ✅ run `36897778394` (komit `3fddb1b48`) · ✅ run `36907319052` (komit `10743c21f`; job *Build URMIX Android app (debug)* ✅ 3m27s, artifact `urmix-apk`) · ✅ run `36917248458` (komit `1d99eb2b0`, ✅ 4m16s) · ✅ run `36917619584` (komit `27ed7026a`, ✅ 3m39s) · ✅ run `37116714843` (komit `87d2b91f7`, ✅ 3m49s) |
-| `ci.yml` (push→main) | run green | ✅ run `36907318999` (komit `10743c21f`) — **FULLY GREEN**: `build-and-test-jvm` ✅ 8m39s (ktlint + checkstyle + unit) · `test-android (35, x86_64)` ✅ 6m2s · `test-android (23, x86)` ✅ 7m25s (emulator `Boot completed in 32436 ms`, `BUILD SUCCESSFUL in 4m 30s`, 25/25 test instrumented). Akar masalah = schema Room (lihat §A1), bukan hanya flake emulator · ✅ run `36917248171` (komit `1d99eb2b0`, ✅ 7m2s) · ✅ run `36917619614` (komit `27ed7026a`, ✅ 7m8s: `build-and-test-jvm` ✅ 7m2s · `test-android (23)` ✅ 6m33s · `test-android (35)` ✅ 6m35s · `sonar` skipped tanpa `SONAR_TOKEN`) — jadi seluruh komit docs ikut tervalidasi penuh · ✅ run `37116714857` (komit `87d2b91f7`, ✅ 8m22s: `build-and-test-jvm` ✅ 8m19s · `test-android (23)` ✅ 5m49s · `test-android (35)` ✅ 5m8s · `sonar` skipped) |
-| `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ❌ run `36907345654` (tag `v1.0.0` @ `10743c21f`, 2026-10-02) — gagal di step *Restore release keystore from secrets*: `missing KEYSTORE_BASE64`, keempat env keystore kosong (`KEYSTORE_BASE64`/`KEYSTORE_PASSWORD`/`KEY_ALIAS`/`KEY_PASSWORD`), `Process completed with exit code 1`. Blocker tunggal = §B (0/7 secret), bukan kode |
+| `build.yml` (push→main) | run green | ✅ run `36897778394` (komit `3fddb1b48`) · ✅ run `36907319052` (komit `10743c21f`; job *Build URMIX Android app (debug)* ✅ 3m27s, artifact `urmix-apk`) · ✅ run `36917248458` (komit `1d99eb2b0`, ✅ 4m16s) · ✅ run `36917619584` (komit `27ed7026a`, ✅ 3m39s) · ✅ run `37116714843` (komit `87d2b91f7`, ✅ 3m49s) · ✅ run `37131855015` (komit `67972f038`, ✅ 7m31s) · ✅ run `37133108153` (komit `6fa4fc3e5`, ✅ 2m57s) |
+| `ci.yml` (push→main) | run green | ✅ run `36907318999` (komit `10743c21f`) — **FULLY GREEN**: `build-and-test-jvm` ✅ 8m39s (ktlint + checkstyle + unit) · `test-android (35, x86_64)` ✅ 6m2s · `test-android (23, x86)` ✅ 7m25s (emulator `Boot completed in 32436 ms`, `BUILD SUCCESSFUL in 4m 30s`, 25/25 test instrumented). Akar masalah = schema Room (lihat §A1), bukan hanya flake emulator · ✅ run `36917248171` (komit `1d99eb2b0`, ✅ 7m2s) · ✅ run `36917619614` (komit `27ed7026a`, ✅ 7m8s: `build-and-test-jvm` ✅ 7m2s · `test-android (23)` ✅ 6m33s · `test-android (35)` ✅ 6m35s · `sonar` skipped tanpa `SONAR_TOKEN`) — jadi seluruh komit docs ikut tervalidasi penuh · ✅ run `37116714857` (komit `87d2b91f7`, ✅ 8m22s: `build-and-test-jvm` ✅ 8m19s · `test-android (23)` ✅ 5m49s · `test-android (35)` ✅ 5m8s · `sonar` skipped) · ✅ run `37131855010` (komit `67972f038`, ✅ 8m40s) · ✅ run `37133108146` (komit `6fa4fc3e5`, ✅ 8m40s) |
+| `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ✅ **run `37133111052`** (tag `v1.0.0` @ `6fa4fc3e5`, 2026-10-03, 5m6s) — **SEMUA STEP HIJAU**: *Restore release keystore from secrets* ✅ · *Build signed release APK* ✅ · *Verify signature pins the §7.1 keystore* ✅ · *Rename APK + resolve changelog* ✅ · *Publish GitHub Release* ✅ · *Publish to Telegram* ✅ · *Upload APK artifact (backup)* ✅. Hasil: GitHub Release `v1.0.0` (`isDraft=false`) + asset `URMIX_v1.0.0.apk` (11.522.829 byte; sha256 `4bed064d…5cde` = unduhan lokal), Telegram `ok:true` `message_id` 2131 di supergroup *WINATRA.OFFICIAL* (`file_name=URMIX_v1.0.0.apk`). Bukti pin: APK rilis diunduh & diverifikasi lokal dengan `apksigner` (build-tools 36.0.0) → `Signer #1 certificate SHA-256 digest: c767c5aa…c3bdb` = `SIGNER_SHA256_HEX` §B persis ✓. Riwayat gagal (sebelum fix, lihat §A2): run `36907345654` (0/7 secret) dan `37131880889` (apksigner tak ada di PATH) |
 
 > Fix gaya `3fddb1b48` (unblock Build/CI): ktlint `PlaylistStreamDAO.kt` (`@Query` wrapping) +
 > checkstyle `LikedSongsManager` (`@param context` / `streamUrl` / `info`).
@@ -99,21 +99,91 @@
   `build-and-test-jvm` ✅ 8m39s; `sonar` *skipped* (tanpa `SONAR_TOKEN`).
   Build debug paralel: run `36907319052` ✅ (3m27s).
 
+## A2. Akar masalah rilis pertama (RESOLVED) — 2 bug nyata di luar kode fitur
+
+Keduanya **hanya** muncul di jalur rilis (`clean assembleRelease` di runner CI),
+tidak pernah di Build/CI debug, jadi lolos dari semua gate sebelumnya.
+
+### A2.1 `Unresolved reference 'BuildConfig'` (release variant) — run `37131880889`
+
+- Gejala: *Build signed release APK* gagal;
+  `e: …/shared/src/commonMain/…/TopAppBar.kt:19:37 Unresolved reference 'BuildConfig'`
+  (+5 error serupa di `AboutPage.kt`), `CompilationErrorException`.
+- Akar masalah: `shared/build.gradle.kts` membuat `BuildConfig.kt` lewat `Sync`
+  yang sumbernya `resources.text.fromString(...)`. Sumber TextResource
+  dimaterialisasi di dalam direktori build, sedangkan `release.yml` menjalankan
+  **`clean assembleRelease`** dalam satu invokasi → berkas sumber itu terhapus
+  sebelum eksekusi → task berstatus **`NO-SOURCE`** (tetap "sukses" tetapi tidak
+  menghasilkan apa pun) → `commonMain` kehilangan `BuildConfig`. Build/CI debug
+  tidak pernah memakai `clean`, jadi selalu hijau.
+- Perbaikan (`67972f038`): task menulis berkasnya sendiri di `doLast` dengan
+  `outputs.dir(build/generated/kotlin)`, dan `commonMain` memakai
+  `buildConfigGenerator.map { it.outputs.files.singleFile }`.
+- Bukti reproduksi + verifikasi **lokal** (mesin ini; task-nya ringan sehingga
+  aman di RAM 3,7 GB): `gradlew :shared:clean :shared:buildConfigGenerator`
+  → **sebelum**: `NO-SOURCE`, berkas tidak ada (`Test-Path` = `False`);
+  **sesudah**: task dieksekusi, `BUILD SUCCESSFUL`, berkas ada berisi `package
+  com.winatra.urmix.shared.app` / `VERSION_NAME = "1.0.0"` / `APP_NAME =
+  "URMIX"`, configuration cache tersimpan tanpa masalah.
+
+### A2.2 `apksigner: command not found` di runner — run `37131880889`
+
+- Gejala: *Build signed release APK* ✅ (APK sudah ditandatangani!), tetapi
+  *Verify signature pins the §7.1 keystore* ❌:
+  `…/…sh: line 2: apksigner: command not found` →
+  `signer fingerprint mismatch — refusing to publish`. Jadi **bukan** mismatch
+  sidik jari, murni masalah tooling.
+- Akar masalah: `apksigner` ada di `$ANDROID_HOME/build-tools/<versi>/` dan
+  **tidak** diekspor ke `PATH` pada image runner GitHub.
+- Perbaikan (`6fa4fc3e5`): step pin mencari `apksigner` secara eksplisit
+  (`$APKSIGNER` override → `PATH` → `$ANDROID_HOME`/`$ANDROID_SDK_ROOT`/
+  `/usr/local/lib/android/sdk`/`$HOME/Android/Sdk`, ambil build-tools terbaru
+  via `sort -V`), punya fallback **tanpa SDK** (`keytool -printcert -jarfile`,
+  hanya butuh JDK), menerima bentuk bertitik-dua (`tr -d ':'`), dan pemilihan
+  berkas APK mengabaikan `*-unsigned`.
+- Validasi: `python -c "yaml.safe_load"` → YAML sah (9 step); `bash -n` → 0;
+  8/8 tes logika `test_pin_logic.sh` (resolusi SDK ×4 termasuk override dan
+  fallback kosong; pencocokan sidik jari ×4 termasuk bentuk keytool bertitik-dua
+  serta penolakan kunci yang salah).
+- Verifikasi akhir pada rilis nyata (run `37133111052`): step pin ✅, lalu APK
+  hasil rilis **diunduh lokal** dan diperiksa `apksigner verify --print-certs`
+  (build-tools 36.0.0) → `Signer #1 certificate SHA-256 digest: c767c5aa…c3bdb`
+  = `SIGNER_SHA256_HEX` §B → **APK rilis benar ditandatangani keystore §7.1**
+  (update akan menimpa instalasi lama tanpa uninstall).
+
 ## B. GitHub Secrets (7) — wajib ada di repo `ahmaddzulkarnainyoo-dev/urmix`
 
 | # | Secret | Dipakai di | Status |
 |---|---|---|---|
-| 1 | `KEYSTORE_BASE64` | `release.yml` → restore `.jks` | ☐ |
-| 2 | `KEYSTORE_PASSWORD` | `release.yml` → `storePassword` | ☐ |
-| 3 | `KEY_ALIAS` | `release.yml` → `keyAlias` | ☐ |
-| 4 | `KEY_PASSWORD` | `release.yml` → `keyPassword` | ☐ |
-| 5 | `SIGNER_SHA256_HEX` | `release.yml` → pin signer §7.1 (gagal publish bila mismatch) | ☐ |
-| 6 | `TELEGRAM_BOT_TOKEN` | `release.yml` → kirim APK ke Telegram | ☐ |
-| 7 | `TELEGRAM_CHAT_ID` | `release.yml` → `chat_id` tujuan | ☐ |
+| 1 | `KEYSTORE_BASE64` | `release.yml` → restore `.jks` | ✅ 2026-10-03 |
+| 2 | `KEYSTORE_PASSWORD` | `release.yml` → `storePassword` | ✅ 2026-10-03 |
+| 3 | `KEY_ALIAS` | `release.yml` → `keyAlias` (`urmix-release`) | ✅ 2026-10-03 |
+| 4 | `KEY_PASSWORD` | `release.yml` → `keyPassword` | ✅ 2026-10-03 |
+| 5 | `SIGNER_SHA256_HEX` | `release.yml` → pin signer §7.1 (gagal publish bila mismatch) | ✅ 2026-10-03 |
+| 6 | `TELEGRAM_BOT_TOKEN` | `release.yml` → kirim APK ke Telegram | ✅ 2026-10-03 |
+| 7 | `TELEGRAM_CHAT_ID` | `release.yml` → `chat_id` tujuan | ✅ 2026-10-03 |
 
-Status terverifikasi 2026-10-02: **0/7** — `gh secret list --repo
-ahmaddzulkarnainyoo-dev/urmix` kosong dan
-`gh api …/actions/secrets --jq .total_count` = `0`.
+Status terverifikasi 2026-10-03: **7/7** — `gh secret list --repo
+ahmaddzulkarnainyoo-dev/urmix` menampilkan ketujuh nama (terdaftar
+2026-10-03 14:53:21–14:53:28 UTC) dan
+`gh api …/actions/secrets --jq .total_count` = `7`.
+
+Pendaftaran dijalankan oleh `setup_release_keystore.ps1` (via runner lokal
+`run_setup_now.ps1`), yang sekaligus membuat material rilis di **luar** repo:
+
+- keystore `C:\Users\ahmad\.urmix\release\urmix-release.jks` (RSA 4096 / JKS /
+  3650 hari / alias `urmix-release`), salinan satu-baris `.jks.b64` (5100 char),
+  sertifikat `.der`, dan `e:\urmix\keystore.properties` (git-ignored).
+- `SIGNER_SHA256_HEX` =
+  `c767c5aab7934e28cd04dbbcfef915c788b8c26f860b552d21875ad6c44c3bdb`, silang-cek
+  `keytool -printcert` (awalan `C7:67:C5:AA:…`, 64 hexa = 32 byte).
+- Password keystore + sidik jari dicatat di
+  `C:\Users\ahmad\.urmix\release\SECRETS_BACKUP.txt` — **pindahkan ke password
+  manager lalu hapus berkas itu**, dan simpan `.jks` permanen (kehilangan key =
+  user wajib uninstall → data lokal hilang).
+- Catatan keamanan: `TELEGRAM_BOT_TOKEN` sempat dikirim lewat chat; bila chat itu
+  tersimpan/dibagikan, rotasi token di BotFather lalu
+  `gh secret set TELEGRAM_BOT_TOKEN …` ulang (rilis tidak perlu diulang).
 
 Cek: repo **Settings → Secrets and variables → Actions**. Catatan §7.1:
 APK release harus ditandatangani keystore yang SAMA agar update menimpa
@@ -203,8 +273,12 @@ persis dari `certs.txt` pada log run itu, lalu
 - [ ] Export → import backup di device lain → data identik (FASE 4)
 - [ ] APK baru install menimpa versi lama tanpa uninstall (signing §7.1)
 - [ ] Notifikasi donasi max 1x/hari, bisa di-dismiss
-- [ ] GitHub Release `v1.0.0` ada + asset `URMIX_v1.0.0.apk` + changelog
-- [ ] File APK yang SAMA terkirim ke Telegram group (caption = changelog)
+- [x] GitHub Release `v1.0.0` ada + asset `URMIX_v1.0.0.apk` + changelog —
+      ✅ 2026-10-03 (run `37133111052`): `isDraft=false`, asset 11.522.829 byte
+      (sha256 `4bed064d…5cde`), body = `fastlane/…/changelogs/100.txt`
+- [x] File APK yang SAMA terkirim ke Telegram group (caption = changelog) —
+      ✅ Telegram `ok:true`, `message_id` 2131, supergroup *WINATRA.OFFICIAL*,
+      `file_name=URMIX_v1.0.0.apk`; sha256 unduhan lokal = sha256 asset rilis
 
 ## D2. QA Phase C — mini-player Like/Unlike (blueprint §5.1)
 
