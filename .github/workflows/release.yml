@@ -49,11 +49,44 @@ jobs:
         env:
           SIGNER_SHA256_HEX: ${{ secrets.SIGNER_SHA256_HEX }}
         run: |
-          APK=$(echo app/build/outputs/apk/release/*.apk | head -n1)
-          apksigner verify --print-certs "$APK" | tee "$RUNNER_TEMP/certs.txt"
+          APK=$(ls -1 app/build/outputs/apk/release/*.apk | grep -v -- '-unsigned' | head -n1)
           test -n "$SIGNER_SHA256_HEX" || { echo "missing SIGNER_SHA256_HEX"; exit 1; }
-          grep -qi "$SIGNER_SHA256_HEX" "$RUNNER_TEMP/certs.txt" || {
-            echo "signer fingerprint mismatch — refusing to publish"; exit 1; }
+
+          # apksigner lives inside the SDK build-tools directory and is NOT on
+          # PATH on GitHub runners, so resolve it explicitly:
+          # $APKSIGNER override > PATH > known SDK roots (latest build-tools).
+          APKSIGNER="${APKSIGNER:-$(command -v apksigner || true)}"
+          if [ -z "$APKSIGNER" ]; then
+            for root in "$ANDROID_HOME" "$ANDROID_SDK_ROOT" \
+                        /usr/local/lib/android/sdk "$HOME/Android/Sdk"; do
+              [ -n "$root" ] && [ -d "$root/build-tools" ] || continue
+              APKSIGNER=$(find "$root/build-tools" -maxdepth 2 -type f \
+                -name 'apksigner*' | sort -V | tail -n1)
+              [ -n "$APKSIGNER" ] && break
+            done
+          fi
+          echo "apksigner: ${APKSIGNER:-<not found>}"
+
+          if [ -n "$APKSIGNER" ]; then
+            "$APKSIGNER" verify --print-certs "$APK" | tee "$RUNNER_TEMP/certs.txt"
+          else
+            # Fallback that needs no SDK: the v1 signature certificate via JDK.
+            echo "build-tools candidates:"
+            ls -d "${ANDROID_HOME:-/usr/local/lib/android/sdk}"/build-tools/* 2>/dev/null || true
+            keytool -printcert -jarfile "$APK" | tee "$RUNNER_TEMP/certs.txt"
+          fi
+
+          # keytool prints "SHA256: AA:BB:…" whereas SIGNER_SHA256_HEX is bare
+          # lowercase hex (grep -qi already ignores case), so also try without
+          # colons before refusing to publish.
+          if grep -qi "$SIGNER_SHA256_HEX" "$RUNNER_TEMP/certs.txt"; then
+            echo "signer fingerprint matches SIGNER_SHA256_HEX"
+          elif tr -d ':' < "$RUNNER_TEMP/certs.txt" | grep -qi "$SIGNER_SHA256_HEX"; then
+            echo "signer fingerprint matches SIGNER_SHA256_HEX (colons stripped)"
+          else
+            echo "signer fingerprint mismatch — refusing to publish"
+            exit 1
+          fi
 
       - name: "Rename APK + resolve changelog"
         id: pkg
@@ -66,7 +99,7 @@ jobs:
             | grep -oE '[0-9]+')
           CHANGELOG="fastlane/metadata/android/en-US/changelogs/$CODE.txt"
           test -f "$CHANGELOG" || { echo "missing $CHANGELOG"; exit 1; }
-          APK=$(echo app/build/outputs/apk/release/*.apk | head -n1)
+          APK=$(ls -1 app/build/outputs/apk/release/*.apk | grep -v -- '-unsigned' | head -n1)
           OUT="app/build/outputs/apk/release/URMIX_v$VERSION.apk"
           mv "$APK" "$OUT"
           echo "apk=$OUT" >> "$GITHUB_OUTPUT"
