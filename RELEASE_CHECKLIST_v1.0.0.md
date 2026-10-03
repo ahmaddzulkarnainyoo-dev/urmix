@@ -6,10 +6,12 @@
 > Riwayat: `d932f439b` (retag v1.0.0) → `f98bbbfbc` (harden Like toggle)
 > → `70d06cc4a` (helper lokal gitignored) → `3fddb1b48` (fix gaya ktlint/checkstyle)
 > → docs (dokumen checklist ini) → `10743c21f` (fix schema Room §A1 + gitignore
-> crash dump; **CI hijau total**). Tag `v1.0.0` = tip `main` = `10743c21f`.
-> Komit dokumentasi setelah itu (mis. tabel §B di bawah) memindahkan tip
-> `main`, tetapi tag rilis `v1.0.0` **tetap** `10743c21f`: `release.yml`
-> selalu checkout **tag**, bukan tip `main`, jadi isi rilis tidak berubah.
+> crash dump; **CI hijau total**) → `1d99eb2b0` → `27ed7026a` (docs §B).
+> Tag `v1.0.0` = `10743c21f`; tip `main` saat checklist ini ditulis =
+> `27ed7026a` (komit dokumen ini menambah satu komit docs lagi di atasnya).
+> Komit dokumentasi setelah tag memindahkan tip `main`, tetapi tag rilis
+> `v1.0.0` **tetap** `10743c21f`: `release.yml` selalu checkout **tag**,
+> bukan tip `main`, jadi isi rilis tidak berubah.
 > Pipeline rilis: `.github/workflows/release.yml` (trigger: push tag `v*`,
 > fallback manual `workflow_dispatch` + input `tag`).
 > Catatan filter: `ci.yml` meng-`paths-ignore` `doc/**` dan `README.md`,
@@ -41,12 +43,12 @@
 
 | Item | Expected remote state | Verified |
 |---|---|---|
-| `main` | tip `10743c21f` (`70d06cc4a` → `3fddb1b48` → `10743c21f` fix schema Room, §A1) | ✅ `git ls-remote urmix`, 2026-10-02 |
+| `main` | tip `27ed7026a` (`70d06cc4a` → `3fddb1b48` → `10743c21f` fix schema Room §A1 → docs `1d99eb2b0` → `27ed7026a`) | ✅ `git ls-remote urmix`, 2026-10-02 |
 | tag `v1.0.0` | = tip `main` = `10743c21f` (dipindah via `git tag -f` + `push --force`, sebelum GitHub Release/asset ada) | ✅ `git ls-remote urmix` |
 | default branch | `main` (bukan `tmp-mini-probe`) | ✅ `gh repo edit --default-branch main` |
 | branch probe `tmp-mini-probe` | dihapus dari remote | ✅ `git push urmix --delete …` |
-| `build.yml` (push→main) | run green | ✅ run `36897778394` (komit `3fddb1b48`) · ✅ run `36907319052` (komit `10743c21f`; job *Build URMIX Android app (debug)* ✅ 3m27s, artifact `urmix-apk`) |
-| `ci.yml` (push→main) | run green | ✅ run `36907318999` (komit `10743c21f`) — **FULLY GREEN**: `build-and-test-jvm` ✅ 8m39s (ktlint + checkstyle + unit) · `test-android (35, x86_64)` ✅ 6m2s · `test-android (23, x86)` ✅ 7m25s (emulator `Boot completed in 32436 ms`, `BUILD SUCCESSFUL in 4m 30s`, 25/25 test instrumented). Akar masalah = schema Room (lihat §A1), bukan hanya flake emulator |
+| `build.yml` (push→main) | run green | ✅ run `36897778394` (komit `3fddb1b48`) · ✅ run `36907319052` (komit `10743c21f`; job *Build URMIX Android app (debug)* ✅ 3m27s, artifact `urmix-apk`) · ✅ run `36917248458` (komit `1d99eb2b0`, ✅ 4m16s) · ✅ run `36917619584` (komit `27ed7026a`, ✅ 3m39s) |
+| `ci.yml` (push→main) | run green | ✅ run `36907318999` (komit `10743c21f`) — **FULLY GREEN**: `build-and-test-jvm` ✅ 8m39s (ktlint + checkstyle + unit) · `test-android (35, x86_64)` ✅ 6m2s · `test-android (23, x86)` ✅ 7m25s (emulator `Boot completed in 32436 ms`, `BUILD SUCCESSFUL in 4m 30s`, 25/25 test instrumented). Akar masalah = schema Room (lihat §A1), bukan hanya flake emulator · ✅ run `36917248171` (komit `1d99eb2b0`, ✅ 7m2s) · ✅ run `36917619614` (komit `27ed7026a`, ✅ 7m8s: `build-and-test-jvm` ✅ 7m2s · `test-android (23)` ✅ 6m33s · `test-android (35)` ✅ 6m35s · `sonar` skipped tanpa `SONAR_TOKEN`) — jadi seluruh komit docs ikut tervalidasi penuh |
 | `release.yml` (push tag `v1*` / dispatch) | run green, APK signed + published | ❌ run `36907345654` (tag `v1.0.0` @ `10743c21f`, 2026-10-02) — gagal di step *Restore release keystore from secrets*: `missing KEYSTORE_BASE64`, keempat env keystore kosong (`KEYSTORE_BASE64`/`KEYSTORE_PASSWORD`/`KEY_ALIAS`/`KEY_PASSWORD`), `Process completed with exit code 1`. Blocker tunggal = §B (0/7 secret), bukan kode |
 
 > Fix gaya `3fddb1b48` (unblock Build/CI): ktlint `PlaylistStreamDAO.kt` (`@Query` wrapping) +
@@ -147,6 +149,15 @@ nilai itu **identik** dengan hash DER hasil ekspor
 Kesimpulan: apksigner mencetak hex huruf kecil **tanpa titik dua**, sama
 persis dengan spesifikasi `doc/RELEASE.md` §2 → `grep -qi` pasti cocok.
 (Nilai `5361bd49…`/`2865705…` di atas hanya kunci uji, bukan kunci rilis.)
+
+**Re-validasi probe 2026-10-02 (setelah pengerasan skrip):** APK debug CI yang
+sama ditandatangani ulang dengan kunci uji sekali-pakai **kedua**
+(`SIGNER_SHA256_HEX` =
+`716c24bea6e3827208ebb61a91c8fa5d87284bf2f02ecfa75427c0adb29f2695`) → skrip
+`exit 0`, baris `Signer #1 certificate SHA-256 digest: 716c24be…b29f2695`
+terbaca, self-check menyatakan `grep -qi` **WILL match**, dan tidak ada sisa
+file probe. Keluaran APK re-sign kini ditulis ke `%TEMP%` (bukan di sebelah
+APK masukan) supaya lokasi APK yang read-only tidak menggagalkan probe.
 
 Alternatif tanpa skrip: `KEYSTORE_BASE64` = isi `.jks.b64`, sisanya nilai
 literal (`KEY_ALIAS` = `urmix-release`). Verifikasi nama kapan saja:
