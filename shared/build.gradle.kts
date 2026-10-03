@@ -13,9 +13,14 @@ plugins {
     alias(libs.plugins.about.libraries)
 }
 
-// Better than adding a third-party dependency for something as simple as this
-// https://stackoverflow.com/a/74771876/8446131
-val buildConfigGenerator by tasks.registering(Sync::class) {
+// Writes the BuildConfig.kt that commonMain compiles. Deliberately NOT a
+// Copy/Sync of `resources.text.fromString(...)`: that text resource is
+// materialised inside a build directory, so running `clean` in the same
+// invocation (what release.yml does: `clean assembleRelease`) wipes it and the
+// task silently resolves NO-SOURCE, leaving `BuildConfig` unresolved in the
+// release variant only. Writing the file from doLast is deterministic and
+// survives `clean`.
+val buildConfigGenerator by tasks.registering {
     val buildConfigPackage = URMIX_APPLICATION_ID_SHARED
     val rawClass = """
         package $buildConfigPackage
@@ -25,11 +30,13 @@ val buildConfigGenerator by tasks.registering(Sync::class) {
             const val APP_NAME = "URMIX"
         }
     """.trimIndent()
-    from(resources.text.fromString(rawClass)) {
-        rename { "BuildConfig.kt" }
-        into(buildConfigPackage.replace(".", "/"))
+    val outputDir = layout.buildDirectory.dir("generated/kotlin")
+    outputs.dir(outputDir)
+    doLast {
+        val target = outputDir.get().asFile.resolve(buildConfigPackage.replace(".", "/"))
+        target.mkdirs()
+        target.resolve("BuildConfig.kt").writeText(rawClass)
     }
-    into(layout.buildDirectory.dir("generated/kotlin/"))
 }
 
 kotlin {
@@ -101,7 +108,7 @@ kotlin {
 
     sourceSets {
         commonMain {
-            kotlin.srcDir(buildConfigGenerator.map { it.destinationDir })
+            kotlin.srcDir(buildConfigGenerator.map { it.outputs.files.singleFile })
             dependencies {
                 implementation(libs.jetbrains.compose.runtime)
                 implementation(libs.jetbrains.compose.foundation)
