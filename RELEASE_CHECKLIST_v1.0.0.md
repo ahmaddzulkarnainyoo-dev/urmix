@@ -1,27 +1,12 @@
 # URMIX Release Checklist — `v1.0.0` (FASE 6 §10 + blueprint §10 + Phase C)
 
-> Komit rilis: `70d06cc4a` (komit rilis awal; tag `v1.0.0` dipindahkan ke tip `main` —
-> lihat tabel §A — agar tag == main == CI hijau, sebelum ada GitHub Release/asset).
-> (`feat(library): Like button + Liked Songs manager`, manifest cleanup).
-> Riwayat: `d932f439b` (retag v1.0.0) → `f98bbbfbc` (harden Like toggle)
-> → `70d06cc4a` (helper lokal gitignored) → `3fddb1b48` (fix gaya ktlint/checkstyle)
-> → docs (dokumen checklist ini) → `10743c21f` (fix schema Room §A1 + gitignore
-> crash dump; **CI hijau total**) → `1d99eb2b0` → `27ed7026a` → `87d2b91f7`
-> → `76229c030` → `f2b710517` (docs §A/§B1: bukti run tip + re-validasi probe
-> + paritas nama secret) → `67972f038` (**fix rilis #1**, §A2) → `6fa4fc3e5`
-> (**fix rilis #2**, §A2).
-> `v1.0.0` **DIRILIS** 2026-10-03 dari tag = `6fa4fc3e5` (run `37133111052`,
-> seluruh step hijau; APK terverifikasi ditandatangani keystore §7.1 dan sudah
-> terkirim ke Telegram → §A/§A2).
-> Komit dokumentasi setelah rilis hanya memindahkan tip `main`; tag rilis tidak
-> ikut berubah, dan `release.yml` selalu checkout **tag**, jadi isi rilis tetap
-> = `6fa4fc3e5`.
-> Pipeline rilis: `.github/workflows/release.yml` (trigger: push tag `v*`,
-> fallback manual `workflow_dispatch` + input `tag`).
-> Catatan filter: `ci.yml` meng-`paths-ignore` `doc/**` dan `README.md`,
-> `build.yml` **tanpa** `paths-ignore`, dan `RELEASE_CHECKLIST_v1.0.0.md`
-> tidak termasuk daftar abaikan — jadi komit dokumen ini tetap memicu
-> Build + CI penuh (dipakai sebagai re-validasi, bukan regresi).
+> Komit rilis: `7f7f6ffbe` (`feat: P0 remote config`, versi 1.0.1, code 101;
+> tag `v1.0.1` menunjuk commit ini; GitHub Release `v1.0.1` TERBIT 2026-10-05,
+> run `37275407682`, 13/13 hijau; APK `URMIX_v1.0.1.apk` 11.522.797 byte,
+> sha256 `c8bde216…eee1add6`, Telegram msg 2138).
+> Riwayat rilis lama: `6fa4fc3e5` (v1.0.0, run `37133111052`, Telegram msg 2131,
+> sha256 `4bed064d…5cde`; lihat §D). Komit P0 remote config: `d7ac215df`
+> (dilipat ke `7f7f6ffbe`).
 
 ## A0. Akar masalah push lama (RESOLVED) — shallow clone
 
@@ -47,8 +32,9 @@
 
 | Item | Expected remote state | Verified |
 |---|---|---|
-| `main` | tip `6fa4fc3e5` (`10743c21f` fix schema Room §A1 → docs `1d99eb2b0` → `27ed7026a` → `87d2b91f7` → `76229c030` → `f2b710517` → `67972f038` fix rilis #1 → `6fa4fc3e5` fix rilis #2) | ✅ `git ls-remote urmix`, 2026-10-03; komit docs yang memuat baris ini menambah satu komit di atasnya (hash tip tidak dikejar lagi) |
-| tag `v1.0.0` | = `6fa4fc3e5` (dipindah 2× via `git tag -f` + `push --force`: `10743c21f` → `67972f038` fix BuildConfig → `6fa4fc3e5` fix apksigner; selalu **sebelum** ada GitHub Release, jadi tidak ada asset rilis yang salah) | ✅ `git ls-remote urmix`, 2026-10-03 |
+| `main` | tip `7f7f6ffbe` (P0 remote config + versi 1.0.1/code 101) | ✅ `git log`, 2026-10-05; komit docs menambah komit di atasnya (hash tip tidak dikejar lagi) |
+| tag `v1.0.1` | = `7f7f6ffbe` (annotation 2026-10-05; rilis TERBIT, run `37275407682`, 13/13 hijau; APK `URMIX_v1.0.1.apk` 11.522.797 byte sha256 `c8bde216…eee1add6`, Telegram msg 2138) | ✅ `git ls-remote urmix` + log run |
+| tag `v1.0.0` lama | = `6fa4fc3e5` (run `37133111052`, APK 11.522.829 byte sha256 `4bed064d…5cde`, Telegram msg 2131) | ✅ arsip, lihat §D |
 | default branch | `main` (bukan `tmp-mini-probe`) | ✅ `gh repo edit --default-branch main` |
 | branch probe `tmp-mini-probe` | dihapus dari remote | ✅ `git push urmix --delete …` |
 | `build.yml` (push→main) | run green | ✅ run `36897778394` (komit `3fddb1b48`) · ✅ run `36907319052` (komit `10743c21f`; job *Build URMIX Android app (debug)* ✅ 3m27s, artifact `urmix-apk`) · ✅ run `36917248458` (komit `1d99eb2b0`, ✅ 4m16s) · ✅ run `36917619584` (komit `27ed7026a`, ✅ 3m39s) · ✅ run `37116714843` (komit `87d2b91f7`, ✅ 3m49s) · ✅ run `37131855015` (komit `67972f038`, ✅ 7m31s) · ✅ run `37133108153` (komit `6fa4fc3e5`, ✅ 2m57s) |
@@ -151,7 +137,7 @@ tidak pernah di Build/CI debug, jadi lolos dari semua gate sebelumnya.
   = `SIGNER_SHA256_HEX` §B → **APK rilis benar ditandatangani keystore §7.1**
   (update akan menimpa instalasi lama tanpa uninstall).
 
-## B. GitHub Secrets (7) — wajib ada di repo `ahmaddzulkarnainyoo-dev/urmix`
+## B. GitHub Secrets (9) — wajib ada di repo `ahmaddzulkarnainyoo-dev/urmix`
 
 | # | Secret | Dipakai di | Status |
 |---|---|---|---|
@@ -162,11 +148,16 @@ tidak pernah di Build/CI debug, jadi lolos dari semua gate sebelumnya.
 | 5 | `SIGNER_SHA256_HEX` | `release.yml` → pin signer §7.1 (gagal publish bila mismatch) | ✅ 2026-10-03 |
 | 6 | `TELEGRAM_BOT_TOKEN` | `release.yml` → kirim APK ke Telegram | ✅ 2026-10-03 |
 | 7 | `TELEGRAM_CHAT_ID` | `release.yml` → `chat_id` tujuan | ✅ 2026-10-03 |
+| 8 | `URMIX_SUPABASE_URL` | `release.yml` → URL proyek Supabase produksi (`https://vbcfzjwhzfppmtqajgrj.supabase.co`) | ✅ 2026-10-05 |
+| 9 | `URMIX_SUPABASE_ANON_KEY` | `release.yml` → Publishable key (`sb_publishable_…`) | ✅ 2026-10-05 |
 
-Status terverifikasi 2026-10-03: **7/7** — `gh secret list --repo
-ahmaddzulkarnainyoo-dev/urmix` menampilkan ketujuh nama (terdaftar
-2026-10-03 14:53:21–14:53:28 UTC) dan
-`gh api …/actions/secrets --jq .total_count` = `7`.
+Status terverifikasi 2026-10-05: **9/9** — `gh secret list --repo
+ahmaddzulkarnainyoo-dev/urmix` menampilkan ketujuh nama FASE 6 (terdaftar
+2026-10-03 14:53:21–14:53:28 UTC) plus `URMIX_SUPABASE_URL` +
+`URMIX_SUPABASE_ANON_KEY` (diperbarui 2026-10-05 08:06:04 UTC) dan
+`gh api …/actions/secrets --jq .total_count` = `9`.
+(`URMIX_SUPABASE_*` di-set ulang lagi 2026-10-05 ~08:06 UTC untuk
+menyelaraskan timestamp; nilai sama — URL `...grj` + Publishable key.)
 
 Pendaftaran dijalankan oleh `setup_release_keystore.ps1` (via runner lokal
 `run_setup_now.ps1`), yang sekaligus membuat material rilis di **luar** repo:
@@ -233,18 +224,22 @@ terbaca, self-check menyatakan `grep -qi` **WILL match**, dan tidak ada sisa
 file probe. Keluaran APK re-sign kini ditulis ke `%TEMP%` (bukan di sebelah
 APK masukan) supaya lokasi APK yang read-only tidak menggagalkan probe.
 
-**Bukti paritas nama secret (2026-10-03):** skrip kini menegakkan
-`$expectedSecrets` (7 nama yang dideklarasikan) terhadap daftar yang
+**Bukti paritas nama secret (2026-10-03):** skrip menegakkan
+`$expectedSecrets` (7 nama FASE 6 yang dideklarasikan; **2 secret Supabase
+P0 `URMIX_SUPABASE_*` ditambahkan langsung via CLI, bukan via skrip**)
+terhadap daftar yang
 benar-benar didaftarkan (`Compare-Object`; meleset → `throw`), dan langkah
-verifikasi `gh secret list` memakai `$expectedSecrets` (bukan kunci hashtable).
-Diuji programatik: nama di skrip == nama di `release.yml` (pola
-`secrets.<NAMA>` yang diekstrak dari workflow) → **7 vs 7, drift = 0**; uji
+verifikasi `gh secret list` memakai `$expectedSecrets` (7 nama skrip + 2 Supabase;
+bukan kunci hashtable).
+Diuji programatik: 7 nama di skrip == 7 pola `secrets.<NAMA>` FASE 6 yang diekstrak
+dari workflow → **7 vs 7, drift = 0**; uji
 negatif `Compare-Object` (satu nama salah) → 2 selisih terdeteksi; self-test
 skrip ulang (`-SkipSecrets`) → `exit 0`.
 
 Alternatif tanpa skrip: `KEYSTORE_BASE64` = isi `.jks.b64`, sisanya nilai
 literal (`KEY_ALIAS` = `urmix-release`). Verifikasi nama kapan saja:
-`gh secret list --repo ahmaddzulkarnainyoo-dev/urmix` (harus 7 baris).
+`gh secret list --repo ahmaddzulkarnainyoo-dev/urmix` (harus 9 baris:
+7 FASE 6 + 2 Supabase).
 
 Jika step *Verify signature pins* gagal setelah rilis pertama: salin token
 persis dari `certs.txt` pada log run itu, lalu
@@ -252,11 +247,22 @@ persis dari `certs.txt` pada log run itu, lalu
 
 ## C. Supabase (`urmix_config`) — payload siap insert
 
+> Status 2026-10-05: **LIVE**. URL produksi `https://vbcfzjwhzfppmtqajgrj.supabase.co`
+> (ref benar `...grj`; ref `...gri` sebelumnya terbukti **NXDOMAIN**, 2026-10-05).
+> Endpoint `GET /rest/v1/urmix_config?select=*&order=config_schema_version.desc&limit=1`
+> dengan header `apikey` + `Authorization: Bearer <Publishable>` → **200 OK**,
+> array 1 objek `config_schema_version=1`, `app_version='1.0.0'`,
+> `force_update=false`, `updated_at='2026-10-05T07:19:44Z'`.
+> Secrets `URMIX_SUPABASE_URL` + `URMIX_SUPABASE_ANON_KEY` terpasang 2026-10-05
+> (set ulang 08:06:04 UTC, nilai sama); whitelist `HostCachePolicy.CACHEABLE_HOSTS` =
+> `winatra.supabase.co`, `vbcfzjwhzfppmtqajgrj.supabase.co` (plus `supabase/README.md`
+> diperbarui: menyebut Publishable key + URL produksi).
+
 - File: `supabase/urmix_config_seed.sql` (tabel `announcement` + `donation`
   dalam bentuk `jsonb`; kolom list podcast `text[]`).
 - Nilai ethics/pinned endpoint di `RemoteConfigRepository`:
-  - `REMOTE_CONFIG_URL = https://winatra.supabase.co/rest/v1/urmix_config?select=*`
-  - `DEFAULT_UPDATE_URL = https://winatra.com/urmix/download`
+  - `REMOTE_CONFIG_URL = https://vbcfzjwhzfppmtqajgrj.supabase.co/rest/v1/urmix_config?select=*&order=config_schema_version.desc&limit=1`
+  - `DEFAULT_UPDATE_URL = https://github.com/ahmaddzulkarnainyoo-dev/urmix/releases/latest`
 - App membaca **baris pertama** sebagai objek JSON flat; validasi URL hanya
   menerima `http(s)://`; fetch gagal → cache lokal dipakai, app tetap jalan
   (kecuali `shouldBlockStartup()` true → dialog force-update).
@@ -273,10 +279,17 @@ persis dari `certs.txt` pada log run itu, lalu
 - [ ] Export → import backup di device lain → data identik (FASE 4)
 - [ ] APK baru install menimpa versi lama tanpa uninstall (signing §7.1)
 - [ ] Notifikasi donasi max 1x/hari, bisa di-dismiss
-- [x] GitHub Release `v1.0.0` ada + asset `URMIX_v1.0.0.apk` + changelog —
+- [x] GitHub Release `v1.0.1` ada + asset `URMIX_v1.0.1.apk` + changelog —
+      ✅ 2026-10-05 (run `37275407682`): `isDraft=false`, 13/13 step hijau,
+      asset 11.522.797 byte (sha256 `c8bde216…eee1add6`),
+      body = `fastlane/…/changelogs/101.txt`
+- [x] File APK v1.0.1 yang SAMA terkirim ke Telegram group (caption = changelog) —
+      ✅ Telegram `ok:true`, `message_id` 2138, supergroup *WINATRA.OFFICIAL*,
+      `file_name=URMIX_v1.0.1.apk`
+- [x] GitHub Release `v1.0.0` ada + asset `URMIX_v1.0.0.apk` + changelog (arsip) —
       ✅ 2026-10-03 (run `37133111052`): `isDraft=false`, asset 11.522.829 byte
       (sha256 `4bed064d…5cde`), body = `fastlane/…/changelogs/100.txt`
-- [x] File APK yang SAMA terkirim ke Telegram group (caption = changelog) —
+- [x] File APK v1.0.0 yang SAMA terkirim ke Telegram group (arsip; caption = changelog) —
       ✅ Telegram `ok:true`, `message_id` 2131, supergroup *WINATRA.OFFICIAL*,
       `file_name=URMIX_v1.0.0.apk`; sha256 unduhan lokal = sha256 asset rilis
 

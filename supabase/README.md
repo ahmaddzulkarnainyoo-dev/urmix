@@ -21,13 +21,13 @@ kurasi carousel *Podcasting*, dan gerbang update (`force_update`,
 ## 1. Buat proyek Supabase
 
 1. Masuk ke <https://supabase.com/dashboard> → **New project**.
-2. **Nama proyek wajib `winatra`** → menghasilkan Project URL
-   `https://winatra.supabase.co`.
+2. Catat **Project URL** Anda, mis. `https://<ref>.supabase.co`
+   (proyek produksi URMIX: `https://vbcfzjwhzfppmtqajgrj.supabase.co`).
 
-   ⚠️ Nama ini penting: `HostCachePolicy.CACHEABLE_HOSTS` meng-allowlist host
-   `winatra.supabase.co` agar config tetap terbaca saat perangkat offline.
-   Kalau Anda memakai nama/ref lain (mis. `abcdefgh.supabase.co`), tambahkan
-   host itu ke `CACHEABLE_HOSTS` **dan** `HostCachePolicyTest` dulu.
+   ⚠️ Host ini penting: `HostCachePolicy.CACHEABLE_HOSTS` meng-allowlist host
+   Supabase aktif agar config tetap terbaca saat perangkat offline.
+   Kalau Project URL berubah (ref baru), tambahkan host itu ke
+   `CACHEABLE_HOSTS` **dan** `HostCachePolicyTest` dulu.
 3. Region: pilih terdekat dengan mayoritas pengguna (mis. Singapore).
 4. Simpan password database di password manager (tidak dipakai aplikasi).
 
@@ -35,8 +35,10 @@ kurasi carousel *Podcasting*, dan gerbang update (`force_update`,
 
 **Project Settings → API**:
 
-- **Project URL** → `https://winatra.supabase.co` (nilai `SUPABASE_URL`).
-- **Project API keys → `anon` / `public`** → salin (nilai `SUPABASE_ANON_KEY`).
+- **Project URL** → `https://vbcfzjwhzfppmtqajgrj.supabase.co` (nilai `SUPABASE_URL`).
+- **Project API keys → Publishable** (`sb_publishable_...`) → salin
+  (nilai `SUPABASE_ANON_KEY`). **Jangan** memakai `service_role` /
+  `sb_secret_...` di app.
 
 ## 3. Jalankan skema + seed
 
@@ -61,9 +63,9 @@ RLS aktif dengan policy baca untuk `anon`/`authenticated`, dan satu baris seed.
 
 ```bash
 curl -sS \
-  "https://winatra.supabase.co/rest/v1/urmix_config?select=*&order=config_schema_version.desc&limit=1" \
-  -H "apikey: <ANON_KEY>" \
-  -H "Authorization: Bearer <ANON_KEY>"
+  "https://vbcfzjwhzfppmtqajgrj.supabase.co/rest/v1/urmix_config?select=*&order=config_schema_version.desc&limit=1" \
+  -H "apikey: <PUBLISHABLE_KEY>" \
+  -H "Authorization: Bearer <PUBLISHABLE_KEY>"
 ```
 
 Respons yang benar: **array JSON berisi satu objek**
@@ -82,22 +84,22 @@ default**. Pilih salah satu cara:
 **a. `local.properties`** (gitignored, untuk build lokal):
 
 ```properties
-urmix.supabase.url=https://winatra.supabase.co
-urmix.supabase.anonKey=<ANON_KEY>
+urmix.supabase.url=https://vbcfzjwhzfppmtqajgrj.supabase.co
+urmix.supabase.anonKey=<PUBLISHABLE_KEY>
 ```
 
 **b. Environment variable** (dipakai CI):
 
 ```bash
-export URMIX_SUPABASE_URL="https://winatra.supabase.co"
-export URMIX_SUPABASE_ANON_KEY="<ANON_KEY>"
+export URMIX_SUPABASE_URL="https://vbcfzjwhzfppmtqajgrj.supabase.co"
+export URMIX_SUPABASE_ANON_KEY="<PUBLISHABLE_KEY>"
 ```
 
 **c. Property langsung** (sekali pakai):
 
 ```bash
-./gradlew assembleRelease -PurmixSupabaseUrl=https://winatra.supabase.co \
-  -PurmixSupabaseAnonKey=<ANON_KEY>
+./gradlew assembleRelease -PurmixSupabaseUrl=https://vbcfzjwhzfppmtqajgrj.supabase.co \
+  -PurmixSupabaseAnonKey=<PUBLISHABLE_KEY>
 ```
 
 **d. GitHub Actions** (agar APK rilis memuat config): tambahkan repository

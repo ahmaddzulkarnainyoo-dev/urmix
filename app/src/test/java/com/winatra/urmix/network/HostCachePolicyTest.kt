@@ -23,11 +23,11 @@ class HostCachePolicyTest {
     fun `the active supabase project host is cacheable`() {
         assertEquals(
             HostCachePolicy.Policy.CACHEABLE,
-            HostCachePolicy.policyFor("vbcfzjwhzfppmtqajgri.supabase.co")
+            HostCachePolicy.policyFor("vbcfzjwhzfppmtqajgrj.supabase.co")
         )
         assertEquals(
             HostCachePolicy.Policy.CACHEABLE,
-            HostCachePolicy.policyFor("api.vbcfzjwhzfppmtqajgri.supabase.co")
+            HostCachePolicy.policyFor("api.vbcfzjwhzfppmtqajgrj.supabase.co")
         )
     }
 
