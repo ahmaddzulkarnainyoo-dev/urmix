@@ -154,9 +154,9 @@ tidak pernah di Build/CI debug, jadi lolos dari semua gate sebelumnya.
 Status terverifikasi 2026-10-05: **9/9** — `gh secret list --repo
 ahmaddzulkarnainyoo-dev/urmix` menampilkan ketujuh nama FASE 6 (terdaftar
 2026-10-03 14:53:21–14:53:28 UTC) plus `URMIX_SUPABASE_URL` +
-`URMIX_SUPABASE_ANON_KEY` (diperbarui 2026-10-05 08:24:39 UTC) dan
+`URMIX_SUPABASE_ANON_KEY` (diperbarui 2026-10-05 08:40:26 UTC) dan
 `gh api …/actions/secrets --jq .total_count` = `9`.
-(`URMIX_SUPABASE_*` di-set ulang lagi 2026-10-05 ~08:24 UTC untuk
+(`URMIX_SUPABASE_*` di-set ulang lagi 2026-10-05 ~08:40 UTC untuk
 menyelaraskan nilai — URL `...grj` + Publishable key.)
 
 Pendaftaran dijalankan oleh `setup_release_keystore.ps1` (via runner lokal
@@ -254,7 +254,7 @@ persis dari `certs.txt` pada log run itu, lalu
 > array 1 objek `config_schema_version=1`, `app_version='1.0.0'`,
 > `force_update=false`, `updated_at='2026-10-05T07:19:44Z'`.
 > Secrets `URMIX_SUPABASE_URL` + `URMIX_SUPABASE_ANON_KEY` terpasang 2026-10-05
-> (set ulang 08:24:39 UTC, nilai benar); whitelist `HostCachePolicy.CACHEABLE_HOSTS` =
+> (set ulang 08:40:26 UTC, nilai benar); whitelist `HostCachePolicy.CACHEABLE_HOSTS` =
 > `winatra.supabase.co`, `vbcfzjwhzfppmtqajgrj.supabase.co` (plus `supabase/README.md`
 > diperbarui: menyebut Publishable key + URL produksi).
 
