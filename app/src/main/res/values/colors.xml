@@ -4,12 +4,13 @@
     <color name="contrastColor">@color/black</color>
     <color name="defaultIconTint">@color/black</color>
 
-    <color name="ic_launcher_background">#CD201F</color>
+    <color name="ic_launcher_background">#121212</color>
 
     <!-- URMIX brand palette (blueprint v2 §3.2) -->
     <color name="urmix_primary_background">#121212</color>
     <color name="urmix_card_surface">#181818</color>
-    <color name="urmix_accent">#1DB954</color>
+    <color name="urmix_accent">#1A56DB</color>
+    <color name="urmix_accent_pressed">#174EA6</color>
     <color name="urmix_text_primary">#FFFFFF</color>
     <color name="urmix_text_secondary">#B3B3B3</color>
 
@@ -19,7 +20,7 @@
     <!-- Light Theme -->
     <color name="light_background_color">#EEEEEE</color>
     <color name="light_dialog_background_color">#EEEEEE</color>
-    <color name="light_settings_accent_color">#e53935</color>
+    <color name="light_settings_accent_color">#1A56DB</color>
     <color name="light_separator_color">#32000000</color>
     <color name="light_ripple_color">#48868686</color>
     <color name="light_selected_color">#2a868686</color>
@@ -34,7 +35,7 @@
     <!-- Dark Theme — URMIX Spotify palette (blueprint v2 §3.2) -->
     <color name="dark_background_color">#121212</color>
     <color name="dark_dialog_background_color">#181818</color>
-    <color name="dark_settings_accent_color">#1DB954</color>
+    <color name="dark_settings_accent_color">#1A56DB</color>
     <color name="dark_separator_color">#0affffff</color>
     <color name="dark_ripple_color">#48ffffff</color>
     <color name="dark_selected_color">#2affffff</color>
@@ -59,7 +60,7 @@
     <!-- URMIX player surface tokens (blueprint v2 §3.1/§3.4) -->
     <color name="urmix_player_surface">#181818</color>
     <color name="urmix_progress_track">#535353</color>
-    <color name="urmix_progress_played">#1DB954</color>
+    <color name="urmix_progress_played">#1A56DB</color>
 
     <!-- Miscellaneous -->
     <color name="queue_background_color">@color/dark_queue_background_color</color>
