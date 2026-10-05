@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Inactive Track Ring -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#2A2A2A" stroke-width="16"/>
+
+  <!-- Active Deep Blue Arc -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#1A56DB" stroke-width="16" stroke-linecap="round" stroke-dasharray="750 381" stroke-dashoffset="90"/>
+
+  <!-- Inner Audio Waveform Motif -->
+  <g transform="translate(0, 0)">
+    <!-- Outer Left Bar -->
+    <rect x="178" y="234" width="12" height="44" rx="6" fill="#1A56DB"/>
+    <!-- Mid Left Bar -->
+    <rect x="214" y="216" width="12" height="80" rx="6" fill="#FFFFFF"/>
+    <!-- Center Bar -->
+    <rect x="250" y="196" width="12" height="120" rx="6" fill="#1A56DB"/>
+    <!-- Mid Right Bar -->
+    <rect x="286" y="216" width="12" height="80" rx="6" fill="#FFFFFF"/>
+    <!-- Outer Right Bar -->
+    <rect x="322" y="234" width="12" height="44" rx="6" fill="#1A56DB"/>
+  </g>
+</svg>

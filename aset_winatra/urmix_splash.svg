@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+  <defs>
+    <!-- Soft Deep Blue Radial Glow -->
+    <radialGradient id="blueGlow" cx="50%" cy="40%" r="45%">
+      <stop offset="0%" stop-color="#1A56DB" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#121212" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background Dark Charcoal -->
+  <rect width="1080" height="1920" fill="#121212"/>
+
+  <!-- Radial Glow Behind Logo -->
+  <circle cx="540" cy="760" r="550" fill="url(#blueGlow)"/>
+
+  <!-- Badge Lingkaran URMIX -->
+  <circle cx="540" cy="760" r="220" fill="#FFFFFF"/>
+  <circle cx="540" cy="760" r="220" fill="none" stroke="#1A56DB" stroke-width="12"/>
+
+  <!-- Ikon U Geometris + Play Button -->
+  <g transform="translate(540, 750)">
+    <path d="M -110,-100 L -110,20 C -110,90 110,90 110,20 L 110,-100 L 60,-100 L 60,20 C 60,50 -60,50 -60,20 L -60,-100 Z" fill="#1A56DB"/>
+    <polygon points="-18,-22 36,10 -18,42" fill="#FFFFFF"/>
+    <rect x="-138" y="-30" width="12" height="60" rx="6" fill="#1A56DB"/>
+    <rect x="126" y="-30" width="12" height="60" rx="6" fill="#1A56DB"/>
+  </g>
+
+  <!-- Judul URMIX -->
+  <text x="540" y="1120" font-family="Inter, Roboto, sans-serif" font-weight="900" font-size="76" fill="#FFFFFF" text-anchor="middle" letter-spacing="10">URMIX</text>
+
+  <!-- Tagline WINATRA -->
+  <text x="540" y="1185" font-family="Inter, Roboto, sans-serif" font-weight="700" font-size="28" fill="#FFFFFF" text-anchor="middle" letter-spacing="4">DEVELOPED BY WINATRA</text>
+
+  <!-- Sub-line Engine -->
+  <text x="540" y="1230" font-family="Inter, Roboto, sans-serif" font-weight="400" font-size="20" fill="#B3B3B3" text-anchor="middle" letter-spacing="2">Built on NewPipe Core</text>
+</svg>

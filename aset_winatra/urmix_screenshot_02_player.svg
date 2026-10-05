@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+  <defs>
+    <radialGradient id="glow2" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#1A56DB" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#121212" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="screenClip2">
+      <rect x="140" y="120" width="800" height="1500" rx="44"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1080" height="1920" fill="#121212"/>
+  <circle cx="540" cy="870" r="550" fill="url(#glow2)"/>
+
+  <rect x="136" y="116" width="808" height="1508" rx="48" fill="none" stroke="#2D2D2D" stroke-width="8"/>
+  <rect x="140" y="120" width="800" height="1500" rx="44" fill="#181818"/>
+
+  <g clip-path="url(#screenClip2)">
+    <!-- Status Bar -->
+    <rect x="140" y="120" width="800" height="40" fill="#141414"/>
+    <rect x="500" y="130" width="80" height="12" rx="6" fill="#2A2A2A"/>
+
+    <!-- Header Navigation -->
+    <path d="M 190,190 L 210,210 L 230,190" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <text x="540" y="205" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="20" fill="#B3B3B3" text-anchor="middle" letter-spacing="1">SEDANG MEMUTAR</text>
+    <circle cx="870" cy="200" r="4" fill="#FFFFFF"/>
+    <circle cx="870" cy="212" r="4" fill="#FFFFFF"/>
+    <circle cx="870" cy="188" r="4" fill="#FFFFFF"/>
+
+    <!-- Album Art Block -->
+    <rect x="220" y="260" width="640" height="640" rx="32" fill="#202020" stroke="#1A56DB" stroke-width="3"/>
+    <circle cx="540" cy="580" r="120" fill="#141414"/>
+    <circle cx="540" cy="580" r="120" fill="none" stroke="#1A56DB" stroke-width="6"/>
+    <g transform="translate(540, 575) scale(0.7)">
+      <path d="M -90,-85 L -90,15 C -90,75 90,75 90,15 L 90,-85 L 50,-85 L 50,15 C 50,40 -50,40 -50,15 L -50,-85 Z" fill="#1A56DB"/>
+      <polygon points="-15,-18 30,8 -15,34" fill="#FFFFFF"/>
+    </g>
+
+    <!-- Track Title & Heart Icon -->
+    <rect x="220" y="950" width="380" height="28" rx="6" fill="#FFFFFF"/>
+    <rect x="220" y="990" width="220" height="18" rx="4" fill="#1A56DB"/>
+    <path d="M 830,965 C 830,950 810,940 795,955 C 780,940 760,950 760,965 C 760,985 795,1005 795,1005 C 795,1005 830,985 830,965 Z" fill="#1A56DB"/>
+
+    <!-- Seekbar Progress -->
+    <rect x="220" y="1060" width="640" height="8" rx="4" fill="#333333"/>
+    <rect x="220" y="1060" width="410" height="8" rx="4" fill="#1A56DB"/>
+    <circle cx="630" cy="1064" r="14" fill="#FFFFFF"/>
+    <text x="220" y="1098" font-family="Inter, sans-serif" font-size="18" fill="#888888">2:45</text>
+    <text x="860" y="1098" font-family="Inter, sans-serif" font-size="18" fill="#888888" text-anchor="end">4:12</text>
+
+    <!-- Controls Row -->
+    <path d="M 230,1180 L 270,1220 M 230,1220 L 270,1180" fill="none" stroke="#888888" stroke-width="4" stroke-linecap="round"/>
+    <polygon points="390,1200 420,1180 420,1220" fill="#FFFFFF"/>
+    <rect x="380" y="1180" width="6" height="40" fill="#FFFFFF"/>
+    <circle cx="540" cy="1200" r="54" fill="#1A56DB"/>
+    <polygon points="530,1180 562,1200 530,1220" fill="#FFFFFF"/>
+    <polygon points="690,1200 660,1180 660,1220" fill="#FFFFFF"/>
+    <rect x="694" y="1180" width="6" height="40" fill="#FFFFFF"/>
+    <path d="M 810,1190 A 20 20 0 1 1 830,1210" fill="none" stroke="#1A56DB" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Bottom Options Bar -->
+    <rect x="220" y="1320" width="640" height="2" fill="#2A2A2A"/>
+    <rect x="220" y="1360" width="200" height="16" rx="4" fill="#555555"/>
+    <rect x="740" y="1360" width="120" height="16" rx="4" fill="#1A56DB"/>
+  </g>
+
+  <text x="540" y="1710" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="32" fill="#B3B3B3" text-anchor="middle" letter-spacing="1">Audio Player</text>
+</svg>

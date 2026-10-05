@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Background Dark Charcoal -->
+  <rect width="1024" height="1024" rx="216" fill="#121212"/>
+
+  <!-- Badge Lingkaran Gaya Winatra -->
+  <circle cx="512" cy="420" r="230" fill="#FFFFFF"/>
+  <circle cx="512" cy="420" r="230" fill="none" stroke="#1A56DB" stroke-width="12"/>
+
+  <!-- Ikon U Geometris + Play Button Integration -->
+  <g transform="translate(512, 410)">
+    <!-- Huruf U Deep Blue -->
+    <path d="M -120,-110 L -120,20 C -120,100 120,100 120,20 L 120,-110 L 65,-110 L 65,20 C 65,55 -65,55 -65,20 L -65,-110 Z" fill="#1A56DB"/>
+    
+    <!-- Simbol Play Button Putih di Tengah -->
+    <polygon points="-20,-25 40,10 -20,45" fill="#FFFFFF"/>
+
+    <!-- Aksen Waveform Kiri-Kanan -->
+    <rect x="-150" y="-35" width="14" height="70" rx="7" fill="#1A56DB"/>
+    <rect x="136" y="-35" width="14" height="70" rx="7" fill="#1A56DB"/>
+  </g>
+
+  <!-- Teks URMIX -->
+  <text x="512" y="775" font-family="Inter, Roboto, sans-serif" font-weight="900" font-size="84" fill="#FFFFFF" text-anchor="middle" letter-spacing="8">URMIX</text>
+
+  <!-- Tagline Winatra -->
+  <text x="512" y="835" font-family="Inter, Roboto, sans-serif" font-weight="600" font-size="26" fill="#B3B3B3" text-anchor="middle" letter-spacing="4">DEVELOPED BY WINATRA</text>
+</svg>

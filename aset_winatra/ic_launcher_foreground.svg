@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Android Adaptive Icon Foreground Layer (Transparent Background) -->
+  <!-- All elements scaled strictly within the 66x66dp safe zone (radius 312px at 512,512) -->
+
+  <g transform="translate(512, 512)">
+    <!-- Monogram U Geometris Deep Blue -->
+    <path d="M -180,-190 L -180,20 C -180,150 180,150 180,20 L 180,-190 L 95,-190 L 95,20 C 95,80 -95,80 -95,20 L -95,-190 Z" fill="#1A56DB"/>
+
+    <!-- Cutout / Play Button Putih di Tengah -->
+    <polygon points="-30,-40 50,15 -30,70" fill="#FFFFFF"/>
+
+    <!-- Aksen Gelombang Audio Samping -->
+    <rect x="-230" y="-60" width="22" height="120" rx="11" fill="#1A56DB"/>
+    <rect x="208" y="-60" width="22" height="120" rx="11" fill="#1A56DB"/>
+  </g>
+</svg>

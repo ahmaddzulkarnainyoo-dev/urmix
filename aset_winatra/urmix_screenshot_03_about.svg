@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+  <defs>
+    <radialGradient id="glow3" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#1A56DB" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#121212" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="screenClip3">
+      <rect x="140" y="120" width="800" height="1500" rx="44"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1080" height="1920" fill="#121212"/>
+  <circle cx="540" cy="870" r="550" fill="url(#glow3)"/>
+
+  <rect x="136" y="116" width="808" height="1508" rx="48" fill="none" stroke="#2D2D2D" stroke-width="8"/>
+  <rect x="140" y="120" width="800" height="1500" rx="44" fill="#181818"/>
+
+  <g clip-path="url(#screenClip3)">
+    <!-- Status Bar -->
+    <rect x="140" y="120" width="800" height="40" fill="#141414"/>
+    <rect x="500" y="130" width="80" height="12" rx="6" fill="#2A2A2A"/>
+
+    <!-- App Bar -->
+    <path d="M 180,195 L 200,215 L 220,195" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <text x="250" y="210" font-family="Inter, -apple-system, sans-serif" font-weight="700" font-size="28" fill="#FFFFFF">Tentang URMIX</text>
+
+    <!-- Top Team Header Card -->
+    <rect x="180" y="250" width="720" height="240" rx="24" fill="#202020" stroke="#1A56DB" stroke-width="2"/>
+    <circle cx="280" cy="370" r="60" fill="#141414"/>
+    <circle cx="280" cy="370" r="60" fill="none" stroke="#1A56DB" stroke-width="4"/>
+    <text x="370" y="340" font-family="Inter, -apple-system, sans-serif" font-weight="800" font-size="38" fill="#FFFFFF" letter-spacing="3">URMIX</text>
+    <rect x="370" y="360" width="210" height="22" rx="6" fill="#1A56DB"/>
+    <rect x="370" y="394" width="180" height="16" rx="4" fill="#777777"/>
+
+    <!-- Section: Tim Pengembang -->
+    <text x="180" y="540" font-family="Inter, -apple-system, sans-serif" font-weight="700" font-size="22" fill="#FFFFFF">Tim Pengembang</text>
+
+    <!-- Developer Card 1 -->
+    <rect x="180" y="570" width="720" height="110" rx="16" fill="#222222"/>
+    <circle cx="240" cy="625" r="36" fill="#181818" stroke="#1A56DB" stroke-width="3"/>
+    <circle cx="264" cy="645" r="12" fill="#1A56DB"/>
+    <polyline points="259,645 263,649 269,642" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    <rect x="300" y="605" width="200" height="20" rx="4" fill="#FFFFFF"/>
+    <rect x="300" y="633" width="140" height="14" rx="4" fill="#1A56DB"/>
+
+    <!-- Developer Card 2 -->
+    <rect x="180" y="696" width="720" height="110" rx="16" fill="#222222"/>
+    <circle cx="240" cy="751" r="36" fill="#181818" stroke="#1A56DB" stroke-width="3"/>
+    <circle cx="264" cy="771" r="12" fill="#1A56DB"/>
+    <polyline points="259,771 263,775 269,768" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    <rect x="300" y="731" width="180" height="20" rx="4" fill="#FFFFFF"/>
+    <rect x="300" y="759" width="120" height="14" rx="4" fill="#888888"/>
+
+    <!-- Section: Informasi Aplikasi -->
+    <text x="180" y="860" font-family="Inter, -apple-system, sans-serif" font-weight="700" font-size="22" fill="#FFFFFF">Informasi &amp; Lisensi</text>
+
+    <!-- Info Rows -->
+    <rect x="180" y="890" width="720" height="70" rx="12" fill="#222222"/>
+    <rect x="210" y="915" width="220" height="18" rx="4" fill="#CCCCCC"/>
+    <path d="M 860,920 L 870,925 L 860,930" fill="none" stroke="#666666" stroke-width="3"/>
+
+    <rect x="180" y="974" width="720" height="70" rx="12" fill="#222222"/>
+    <rect x="210" y="999" width="180" height="18" rx="4" fill="#CCCCCC"/>
+    <path d="M 860,1004 L 870,1009 L 860,1014" fill="none" stroke="#666666" stroke-width="3"/>
+
+    <rect x="180" y="1058" width="720" height="70" rx="12" fill="#222222"/>
+    <rect x="210" y="1083" width="240" height="18" rx="4" fill="#CCCCCC"/>
+    <path d="M 860,1088 L 870,1093 L 860,1098" fill="none" stroke="#666666" stroke-width="3"/>
+
+    <rect x="180" y="1142" width="720" height="70" rx="12" fill="#222222"/>
+    <rect x="210" y="1167" width="200" height="18" rx="4" fill="#CCCCCC"/>
+    <path d="M 860,1172 L 870,1177 L 860,1182" fill="none" stroke="#666666" stroke-width="3"/>
+
+    <!-- Footer Note -->
+    <text x="540" y="1520" font-family="Inter, -apple-system, sans-serif" font-weight="400" font-size="18" fill="#B3B3B3" text-anchor="middle" opacity="0.7">Built on NewPipe Core</text>
+  </g>
+
+  <text x="540" y="1710" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="32" fill="#B3B3B3" text-anchor="middle" letter-spacing="1">About</text>
+</svg>

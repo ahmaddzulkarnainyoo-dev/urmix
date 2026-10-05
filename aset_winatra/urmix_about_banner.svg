@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 540" width="1080" height="540">
+  <!-- URMIX About Page Header Banner (1080x540px) -->
+  <defs>
+    <!-- Subtle Radial Deep Blue Glow -->
+    <radialGradient id="bannerGlow" cx="25%" cy="50%" r="40%">
+      <stop offset="0%" stop-color="#1A56DB" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#121212" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background Charcoal Base -->
+  <rect width="1080" height="540" fill="#121212"/>
+
+  <!-- Radial Glow Behind Logo (Left Side) -->
+  <circle cx="270" cy="270" r="320" fill="url(#bannerGlow)"/>
+
+  <!-- URMIX Logo Mark (Centered-Left at X=270, Y=270) -->
+  <g id="logo-mark">
+    <circle cx="270" cy="270" r="110" fill="#FFFFFF"/>
+    <circle cx="270" cy="270" r="110" fill="none" stroke="#1A56DB" stroke-width="7"/>
+
+    <g transform="translate(270, 265) scale(0.62)">
+      <path d="M -90,-85 L -90,15 C -90,75 90,75 90,15 L 90,-85 L 50,-85 L 50,15 C 50,40 -50,40 -50,15 L -50,-85 Z" fill="#1A56DB"/>
+      <polygon points="-15,-18 30,8 -15,34" fill="#FFFFFF"/>
+      <rect x="-112" y="-25" width="10" height="50" rx="5" fill="#1A56DB"/>
+      <rect x="102" y="-25" width="10" height="50" rx="5" fill="#1A56DB"/>
+    </g>
+  </g>
+
+  <!-- Right Side Text Content Stack -->
+  <g id="header-text">
+    <!-- Title: URMIX -->
+    <text x="460" y="215" font-family="Inter, -apple-system, Roboto, sans-serif" font-weight="800" font-size="68" fill="#FFFFFF" letter-spacing="4">URMIX</text>
+
+    <!-- Subtitle: Developed by WINATRA -->
+    <text x="460" y="270" font-family="Inter, -apple-system, Roboto, sans-serif" font-weight="600" font-size="26" fill="#1A56DB" letter-spacing="1.5">Developed by WINATRA</text>
+
+    <!-- Footer Note: Built on NewPipe Core -->
+    <text x="460" y="312" font-family="Inter, -apple-system, Roboto, sans-serif" font-weight="400" font-size="19" fill="#B3B3B3" opacity="0.65" letter-spacing="1">Built on NewPipe Core</text>
+
+    <!-- Horizontal Divider Line -->
+    <line x1="460" y1="345" x2="940" y2="345" stroke="#1A56DB" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+  </g>
+</svg>

@@ -50,7 +50,7 @@ Config diambil dari Supabase setiap app dibuka. **Beda dari draft awal:** sekara
   "app_version": "1.0.0",
   "min_extractor_version": "0.24.0",
   "force_update": false,
-  "update_url": "https://winatra.com/urmix/download",
+  "update_url": "https://github.com/ahmaddzulkarnainyoo-dev/urmix/releases/latest",
   "announcement": {
     "active": true,
     "title": "URMIX Update v1.0",
@@ -101,24 +101,30 @@ Ubah dari "YouTube Video Grid" jadi "Spotify Audio Streamer Layout":
 | "Trending Audio" carousel | Trending page per-service NewPipe (`KioskFragment`/trending extractor) | Filter opsional berdasarkan durasi/kategori biar condong ke konten audio |
 | "Podcasting" carousel | **Fitur baru** — tidak ada di NewPipe native | Perlu didefinisikan sendiri (lihat §3.3) |
 
-### 3.2 Theme Palette
+Urutan section (v1.0.2): **Quick Play → Trending Audio → Made For You → Podcasting** (maksimal 10 kartu, satu baris) — homefeed harus menyerupai Spotify/YouTube Music (campuran audio, trending, rekomendasi), tidak didominasi konten podcast.
+
+### 3.2 Theme Palette (Revisi v1.0.2 — Deep Blue Identity)
 ```
 Primary Background : #121212
 Card Surface        : #181818
-Accent Brand         : #1DB954
+Accent Brand         : #1A56DB
 Text Primary         : #FFFFFF
 Text Secondary       : #B3B3B3 (tambahan — dibutuhkan buat subtitle/metadata track)
 ```
+
+Aturan v1.0.2 — **Deep Blue `#1A56DB` adalah aksen tunggal aplikasi**: ganti semua merah/hijau legasi NewPipe (`#e53935`, `#992722`, `#1DB954`, `#CD201F`) di `colors.xml`, `colors_services.xml` (semua service: YouTube, SoundCloud, PeerTube, dll), dan tema Compose (`Color.kt`). Ikon launcher serta toolbar/TopAppBar juga Deep Blue — tidak ada lagi elemen merah bawaan NewPipe di About atau screen mana pun.
 
 ### 3.3 "Podcasting" — Definisi Fitur Baru
 Karena NewPipe tidak punya konsep podcast bawaan, agent perlu treat ini sebagai kategori konten, bukan mesin baru:
 - Implementasi paling murah: kurasi channel/playlist YouTube tertentu yang berisi konten panjang (podcast) via `RemoteConfig` (daftar channel ID dikirim dari Supabase, sama seperti donation config) — jadi kurasi bisa diubah kapan saja tanpa update APK.
 - UI-nya reuse komponen carousel yang sama dengan "Trending", cuma sumber datanya beda channel/playlist list.
 
-### 3.4 Full Player Screen
+### 3.4 Full Player Screen — Audio-First (Revisi v1.0.2)
 - Expand dari mini player (swipe up / tap).
-- Cover art besar, judul, artist/channel, progress bar seekable, tombol shuffle/repeat/queue.
-- **Bukan wajib di v1:** lyrics, equalizer — bisa jadi fitur v2, tandai di roadmap (§9).
+- **Default: tampilan audio-first ala Spotify** — cover art besar rasio **9:16** sebagai tampilan utama memenuhi area atas; di bawahnya: judul track, nama channel/artist, progress bar seekable, dan kontrol Play/Pause, Prev/Next, Shuffle, Repeat, Queue, Like (heart).
+- **Sembunyikan semua elemen kaku ala YouTube:** jumlah view, jumlah subscriber, tombol Popup/Background/Download, tombol like/dislike YouTube (thumbs), serta tab komentar/related/deskripsi pada mode audio.
+- **Satu tombol toggle minimalis ("Tonton Video"):** saat aktif, surface video tampil menggantikan cover art; saat nonaktif kembali ke cover art. Toggle hanya mengubah visibility — jangan recreate player.
+- **Bukan wajib di v1:** lyrics, equalizer — bisa jadi fitur v2, tandai di roadmap (§11).
 
 ---
 
@@ -185,6 +191,7 @@ Karena data lokal-only, wajib ada jalan keluar biar user tidak kehilangan data s
 - Cek `SharedPreferences` (`last_donation_prompt_date`) supaya notifikasi **maksimal 1x per hari**.
 - Notifikasi non-intrusive, bisa di-dismiss tanpa konsekuensi apa pun (beda total dari `force_update` yang blocking — jangan sampai ketuker di implementasi).
 - Klik notifikasi → buka `DonationBottomSheetDialogFragment`, isinya dua opsi dari remote config: link Saweria (`saweria_url`) dan gambar QRIS (`qris_url`). Keduanya dark-themed sesuai palette §3.2.
+- `saweria_url` final: `https://saweria.co/winatra` (halaman donasi resmi WINATRA). URL widget alert (`saweria.co/widgets/alert?streamKey=...`) **tidak dipakai** di UI app.
 
 ---
 
@@ -219,6 +226,8 @@ NewPipe berlisensi GPLv3 — karena URMIX adalah derivative work, klausa transpa
 > Aplikasi ini menggunakan fondasi arsitektur dan engine open-source dari NewPipe Core.
 > WINATRA merancang ulang seluruh pengalaman UI/UX, tata kelola notifikasi, serta mengoptimalkan pemutaran fokus audio bergaya Spotify."
 
+**Header tim WINATRA (wajib, v1.0.2):** bagian paling atas halaman About menampilkan kartu tim — **@ahmddzlkrn** dan **@imamyahyaaaaa** — plus tautan Instagram resmi: https://www.instagram.com/winatra.official?stkn=cHRlc3A5eTFyM3N2
+
 Task untuk agent: pastikan file lisensi asli NewPipe (LICENSE, GPLv3) tetap ada di repo, dan halaman About punya link ke source code repo.
 
 ---
@@ -227,6 +236,7 @@ Task untuk agent: pastikan file lisensi asli NewPipe (LICENSE, GPLv3) tetap ada 
 
 - Package name baru (bukan `org.schabi.newpipe` bawaan) — sarankan: `com.winatra.urmix`.
 - Icon, nama app, dan seluruh string resource yang menyebut "NewPipe" sebagai product name diganti ke "URMIX" (kecuali di About section §8 yang memang harus menyebut kredit).
+- Nama resmi aplikasi murni **URMIX**; subtitle/tagline resmi: **"Developed by WINATRA"**. Kata "NewPipe" sebagai nama produk tidak boleh muncul di UI mana pun selain kartu atribusi §8.
 - Permission yang dibutuhkan:
   - `INTERNET` — extraction & remote config
   - `FOREGROUND_SERVICE` + `FOREGROUND_SERVICE_MEDIA_PLAYBACK` (Android 14+) — playback service §4.1
@@ -258,7 +268,18 @@ Karena tidak ada Play Store crash reporting otomatis dan tim kecil/zero-budget, 
 4. **Fase 4 — Library & Backup:** Room DB local library, export/import (§5).
 5. **Fase 5 — Monetization & Update Loop:** donation worker (§6), force/soft update lengkap dengan `min_extractor_version` (§1.2, §7.3).
 6. **Fase 6 — QA & Rilis:** jalankan checklist §10, build signed APK, publish ke GitHub + Telegram.
-7. **Backlog v2 (tidak wajib di v1):** lyrics, equalizer, download offline, podcast source yang lebih canggih.
+7. **FASE UI/UX v1.0.2 (evaluasi visual v1.0.1):** identitas Deep Blue `#1A56DB` (§3.2), player detail audio-first 9:16 + sembunyikan elemen kaku YouTube (§3.4), homefeed ala Spotify/YT Music (§3.1), header tim di About (§8), Saweria final (§6), dan **lokalisasi penuh Bahasa Indonesia** untuk seluruh string UI (Home, Player, About, Settings, Donasi) — wajib rilis v1.0.2.
+8. **Backlog v2 (tidak wajib di v1):** lyrics, equalizer, download offline, podcast source yang lebih canggih.
+
+---
+
+## 12. Lokalisasi — Bahasa Indonesia (Wajib v1.0.2)
+
+- Seluruh string UI (Home, Player, About, Settings, Donasi) wajib punya padanan Bahasa Indonesia di `res/values-in/strings.xml` sebelum rilis v1.0.2.
+- `res/values/strings.xml` (EN) tetap sebagai fallback; ID adalah bahasa utama pengguna.
+- Cakupan minimal: teks home carousel & greeting, tombol Like, banner update, dialog backup + panduan, halaman About + kartu tim, dialog donasi.
+- Compose layer (`composeResources`) mengikuti locale perangkat — key URMIX utama wajib punya nilai ID.
+- Verifikasi: key URMIX di `values-in/strings.xml` terisi 100% (diff terhadap `values/strings.xml`); lint `MissingTranslation` hijau di CI.
 
 ---
 

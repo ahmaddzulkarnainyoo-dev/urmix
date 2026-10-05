@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+  <defs>
+    <radialGradient id="glow1" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#1A56DB" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#121212" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="screenClip1">
+      <rect x="140" y="120" width="800" height="1500" rx="44"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1080" height="1920" fill="#121212"/>
+
+  <!-- Radial Glow Behind Phone -->
+  <circle cx="540" cy="870" r="550" fill="url(#glow1)"/>
+
+  <!-- Phone Frame Border -->
+  <rect x="136" y="116" width="808" height="1508" rx="48" fill="none" stroke="#2D2D2D" stroke-width="8"/>
+  <rect x="140" y="120" width="800" height="1500" rx="44" fill="#181818"/>
+
+  <!-- Phone Screen Content -->
+  <g clip-path="url(#screenClip1)">
+    <!-- Status Bar -->
+    <rect x="140" y="120" width="800" height="40" fill="#141414"/>
+    <rect x="500" y="130" width="80" height="12" rx="6" fill="#2A2A2A"/>
+
+    <!-- App Header Bar -->
+    <text x="180" y="210" font-family="Inter, -apple-system, sans-serif" font-weight="800" font-size="32" fill="#FFFFFF" letter-spacing="2">URMIX</text>
+    <circle cx="880" cy="200" r="18" fill="#262626"/>
+    <circle cx="820" cy="200" r="18" fill="#262626"/>
+
+    <!-- Greeting Banner Card -->
+    <rect x="180" y="250" width="720" height="160" rx="20" fill="#202020"/>
+    <rect x="210" y="280" width="220" height="24" rx="6" fill="#1A56DB"/>
+    <rect x="210" y="320" width="380" height="16" rx="4" fill="#666666"/>
+    <rect x="210" y="348" width="260" height="16" rx="4" fill="#444444"/>
+
+    <!-- Section Title 1 -->
+    <text x="180" y="460" font-family="Inter, -apple-system, sans-serif" font-weight="700" font-size="24" fill="#FFFFFF">Terakhir Diputar</text>
+
+    <!-- Carousel Cards Row -->
+    <rect x="180" y="490" width="220" height="220" rx="16" fill="#242424"/>
+    <rect x="180" y="660" width="220" height="50" rx="0" fill="#1D1D1D" opacity="0.9"/>
+    <rect x="196" y="676" width="140" height="14" rx="4" fill="#FFFFFF"/>
+
+    <rect x="430" y="490" width="220" height="220" rx="16" fill="#242424"/>
+    <rect x="430" y="660" width="220" height="50" rx="0" fill="#1D1D1D" opacity="0.9"/>
+    <rect x="446" y="676" width="120" height="14" rx="4" fill="#FFFFFF"/>
+
+    <rect x="680" y="490" width="220" height="220" rx="16" fill="#242424"/>
+    <rect x="680" y="660" width="220" height="50" rx="0" fill="#1D1D1D" opacity="0.9"/>
+    <rect x="696" y="676" width="130" height="14" rx="4" fill="#FFFFFF"/>
+
+    <!-- Section Title 2 -->
+    <text x="180" y="780" font-family="Inter, -apple-system, sans-serif" font-weight="700" font-size="24" fill="#FFFFFF">Rekomendasi Minggu Ini</text>
+
+    <!-- List Items -->
+    <rect x="180" y="810" width="720" height="90" rx="12" fill="#202020"/>
+    <rect x="196" y="825" width="60" height="60" rx="8" fill="#1A56DB"/>
+    <rect x="276" y="836" width="240" height="18" rx="4" fill="#FFFFFF"/>
+    <rect x="276" y="862" width="160" height="14" rx="4" fill="#777777"/>
+    <circle cx="860" cy="855" r="16" fill="#2A2A2A"/>
+
+    <rect x="180" y="916" width="720" height="90" rx="12" fill="#202020"/>
+    <rect x="196" y="931" width="60" height="60" rx="8" fill="#2A2A2A"/>
+    <rect x="276" y="942" width="280" height="18" rx="4" fill="#FFFFFF"/>
+    <rect x="276" y="968" width="180" height="14" rx="4" fill="#777777"/>
+    <circle cx="860" cy="961" r="16" fill="#2A2A2A"/>
+
+    <rect x="180" y="1022" width="720" height="90" rx="12" fill="#202020"/>
+    <rect x="196" y="1037" width="60" height="60" rx="8" fill="#2A2A2A"/>
+    <rect x="276" y="1048" width="200" height="18" rx="4" fill="#FFFFFF"/>
+    <rect x="276" y="1074" width="130" height="14" rx="4" fill="#777777"/>
+    <circle cx="860" cy="1067" r="16" fill="#2A2A2A"/>
+
+    <rect x="180" y="1128" width="720" height="90" rx="12" fill="#202020"/>
+    <rect x="196" y="1143" width="60" height="60" rx="8" fill="#2A2A2A"/>
+    <rect x="276" y="1154" width="260" height="18" rx="4" fill="#FFFFFF"/>
+    <rect x="276" y="1180" width="150" height="14" rx="4" fill="#777777"/>
+    <circle cx="860" cy="1173" r="16" fill="#2A2A2A"/>
+
+    <!-- Floating Mini Player -->
+    <rect x="160" y="1480" width="760" height="110" rx="18" fill="#141414" stroke="#1A56DB" stroke-width="2"/>
+    <rect x="180" y="1495" width="80" height="80" rx="10" fill="#1A56DB"/>
+    <rect x="280" y="1515" width="220" height="18" rx="4" fill="#FFFFFF"/>
+    <rect x="280" y="1543" width="140" height="14" rx="4" fill="#888888"/>
+    <rect x="160" y="1586" width="760" height="4" fill="#222222"/>
+    <rect x="160" y="1586" width="450" height="4" fill="#1A56DB"/>
+    <circle cx="860" cy="1535" r="22" fill="#1A56DB"/>
+    <polygon points="854,1525 870,1535 854,1545" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Caption Below Phone -->
+  <text x="540" y="1710" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="32" fill="#B3B3B3" text-anchor="middle" letter-spacing="1">Homefeed</text>
+</svg>
