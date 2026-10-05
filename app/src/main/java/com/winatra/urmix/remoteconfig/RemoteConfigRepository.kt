@@ -31,13 +31,24 @@ object RemoteConfigRepository {
 
     /**
      * Supabase REST endpoint which serves the WINATRA remote config.
-     * TODO(WINATRA): replace with the real Supabase endpoint (+ apikey header)
-     * before the first public release.
+     *
+     * P0 §1.2: the project URL and the public anon key are injected at build
+     * time (app/build.gradle.kts → SUPABASE_URL / SUPABASE_ANON_KEY, resolved
+     * from a gradle -P property, an environment variable or local.properties),
+     * so no project ref or key is hardcoded in this repository.
+     *
+     * PostgREST answers table queries with a JSON array, so the newest schema
+     * version is requested explicitly and only that first row is parsed.
      */
-    const val REMOTE_CONFIG_URL = "https://winatra.supabase.co/rest/v1/urmix_config?select=*"
+    val REMOTE_CONFIG_URL: String = BuildConfig.SUPABASE_URL +
+        "/rest/v1/urmix_config?select=*&order=config_schema_version.desc&limit=1"
 
-    /** Fallback URL used when the config does not provide an update_url. */
-    const val DEFAULT_UPDATE_URL = "https://winatra.com/urmix/download"
+    /**
+     * Fallback URL used when the config does not provide an update_url.
+     * Points at the public URMIX release page (asset: URMIX_vX.Y.Z.apk).
+     */
+    const val DEFAULT_UPDATE_URL =
+        "https://github.com/ahmaddzulkarnainyoo-dev/urmix/releases/latest"
 
     private const val PREFS_NAME = "urmix_remote_config"
     private const val KEY_CACHED_JSON = "cached_config_json"
@@ -187,8 +198,17 @@ object RemoteConfigRepository {
     }
 
     private fun fetchConfigJson(): String? {
-        val request = Request.Builder().url(REMOTE_CONFIG_URL).build()
-        httpClient().newCall(request).execute().use { response ->
+        val requestBuilder = Request.Builder().url(REMOTE_CONFIG_URL)
+
+        // Supabase's PostgREST gateway rejects requests without the project's
+        // public (anon) API key; the app never uses the service-role key.
+        val anonKey = BuildConfig.SUPABASE_ANON_KEY
+        if (anonKey.isNotEmpty()) {
+            requestBuilder.header("apikey", anonKey)
+            requestBuilder.header("Authorization", "Bearer " + anonKey)
+        }
+
+        httpClient().newCall(requestBuilder.build()).execute().use { response ->
             if (!response.isSuccessful) {
                 if (BuildConfig.DEBUG) {
                     Log.w(TAG, "Remote config request failed: HTTP " + response.code)
@@ -199,11 +219,12 @@ object RemoteConfigRepository {
         }
     }
 
-    private fun parseConfig(raw: String): RemoteConfig? {
+    /** Internal (not private) so unit tests can pin the payload parsing (P0 §1.2). */
+    internal fun parseConfig(raw: String): RemoteConfig? {
         return try {
-            val root: JsonObject = JsonParser.`object`().from(raw)
-            val announcementObject = root.getObject("announcement")
-            val donationObject = root.getObject("donation")
+            val root: JsonObject = parseRoot(raw) ?: return null
+            val announcementObject = optionalObject(root, "announcement")
+            val donationObject = optionalObject(root, "donation")
 
             val announcement = if (announcementObject == null) {
                 null
@@ -243,6 +264,46 @@ object RemoteConfigRepository {
             }
             null
         }
+    }
+
+    /**
+     * Unwraps the single config object from a raw payload. PostgREST answers
+     * table queries with a JSON array, while single-row (`.single()`) and
+     * hand-written fixtures are plain objects, so both envelopes are accepted.
+     *
+     * Never throws: malformed payloads (captive portals, HTML error pages,
+     * truncated bodies) are treated as "no config yet" so that the caller keeps
+     * serving its cached config instead of disturbing the user.
+     */
+    private fun parseRoot(raw: String): JsonObject? {
+        val trimmed = raw.trim()
+        if (trimmed.isEmpty()) {
+            return null
+        }
+        return try {
+            if (trimmed.startsWith("[")) {
+                val array = JsonParser.array().from(trimmed)
+                if (array.size == 0) null else array.getObject(0)
+            } else {
+                JsonParser.`object`().from(trimmed)
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    /**
+     * Returns the object stored under [key], or null when the key is absent (or
+     * holds something that is not an object). nanojson hands back an *empty*
+     * object for a missing key instead of null, so without this check a section
+     * such as `announcement` would always look "present".
+     */
+    private fun optionalObject(root: JsonObject, key: String): JsonObject? {
+        if (!root.containsKey(key)) {
+            return null
+        }
+        val value = root.getObject(key)
+        return if (value == null || value.size == 0) null else value
     }
 
     private fun readCache(context: Context): RemoteConfig? {

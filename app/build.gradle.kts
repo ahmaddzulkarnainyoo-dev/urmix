@@ -27,6 +27,32 @@ fun releaseKeystoreValue(name: String, envName: String): String? {
     return releaseKeystoreProps.getProperty(name)?.takeIf { it.isNotBlank() }
 }
 
+// P0 §1.2: WINATRA Supabase remote-config endpoint + public anon key.
+// Resolution order matches the signing values (gradle -P > environment
+// variable > local.properties > built-in default) so no project ref or key is
+// ever committed; a plain checkout still builds and relies on the cache.
+val urmixLocalProperties: Properties = Properties().also { props ->
+    val file = rootProject.file("local.properties")
+    if (file.exists()) {
+        FileInputStream(file).use { props.load(it) }
+    }
+}
+
+/** Canonical WINATRA Supabase project URL (override via urmixSupabaseUrl). */
+val urmixDefaultSupabaseUrl = "https://winatra.supabase.co"
+
+fun urmixConfigValue(name: String, envName: String, localKey: String): String? {
+    val gradleValue = providers.gradleProperty(name).orNull?.takeIf { it.isNotBlank() }
+    if (gradleValue != null) {
+        return gradleValue
+    }
+    val envValue = providers.environmentVariable(envName).orNull?.takeIf { it.isNotBlank() }
+    if (envValue != null) {
+        return envValue
+    }
+    return urmixLocalProperties.getProperty(localKey)?.takeIf { it.isNotBlank() }
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.android.legacy.kapt)
@@ -81,6 +107,21 @@ configure<ApplicationExtension> {
             "EXTRACTOR_VERSION",
             "\"" + libs.versions.teamnewpipe.newpipe.extractor.get().trimStart('v') + "\""
         )
+
+        // P0 §1.2: Supabase remote config. Injected at build time (see
+        // urmixConfigValue) so no project ref or key lives in the repository.
+        val supabaseUrl = urmixConfigValue(
+            "urmixSupabaseUrl",
+            "URMIX_SUPABASE_URL",
+            "urmix.supabase.url"
+        ) ?: urmixDefaultSupabaseUrl
+        val supabaseAnonKey = urmixConfigValue(
+            "urmixSupabaseAnonKey",
+            "URMIX_SUPABASE_ANON_KEY",
+            "urmix.supabase.anonKey"
+        ) ?: ""
+        buildConfigField("String", "SUPABASE_URL", "\"" + supabaseUrl.trimEnd('/') + "\"")
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"" + supabaseAnonKey + "\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

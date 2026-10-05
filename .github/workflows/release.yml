@@ -3,6 +3,9 @@ name: "URMIX release (signed APK + GitHub + Telegram)"
 # FASE 6 §7.2: manual release pipeline. Requires repository secrets:
 # KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD,
 # TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, plus SIGNER_SHA256_HEX to pin §7.1.
+# P0 §1.2 additionally consumes URMIX_SUPABASE_URL and URMIX_SUPABASE_ANON_KEY
+# (optional: when unset the APK is built with the default project URL and an
+# empty anon key, so the app simply keeps using its cached remote config).
 
 on:
   workflow_dispatch:
@@ -43,6 +46,9 @@ jobs:
             "$KEY_ALIAS" "$KEY_PASSWORD" > keystore.properties
 
       - name: "Build signed release APK"
+        env:
+          URMIX_SUPABASE_URL: ${{ secrets.URMIX_SUPABASE_URL }}
+          URMIX_SUPABASE_ANON_KEY: ${{ secrets.URMIX_SUPABASE_ANON_KEY }}
         run: ./gradlew clean assembleRelease --stacktrace
 
       - name: "Verify signature pins the §7.1 keystore"
