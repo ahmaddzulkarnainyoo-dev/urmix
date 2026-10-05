@@ -26,7 +26,7 @@ object HostCachePolicy {
     }
 
     /** Hosts whose responses may be stored and reused by the shared HTTP cache. */
-    private val CACHEABLE_HOSTS = setOf("winatra.supabase.co")
+    private val CACHEABLE_HOSTS = setOf("winatra.supabase.co", "vbcfzjwhzfppmtqajgri.supabase.co")
 
     /** Extractor / CDN hosts that must always bypass the shared HTTP cache. */
     private val NO_STORE_HOSTS = setOf(

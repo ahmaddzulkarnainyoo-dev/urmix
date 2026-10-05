@@ -20,6 +20,18 @@ class HostCachePolicyTest {
     }
 
     @Test
+    fun `the active supabase project host is cacheable`() {
+        assertEquals(
+            HostCachePolicy.Policy.CACHEABLE,
+            HostCachePolicy.policyFor("vbcfzjwhzfppmtqajgri.supabase.co")
+        )
+        assertEquals(
+            HostCachePolicy.Policy.CACHEABLE,
+            HostCachePolicy.policyFor("api.vbcfzjwhzfppmtqajgri.supabase.co")
+        )
+    }
+
+    @Test
     fun `subdomains of the whitelisted host are cacheable`() {
         assertEquals(
             HostCachePolicy.Policy.CACHEABLE,

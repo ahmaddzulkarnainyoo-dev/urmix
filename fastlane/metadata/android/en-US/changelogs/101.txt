@@ -1,0 +1,8 @@
+URMIX v1.0.1 — Supabase remote config live (P0).
+
+- WINATRA remote config now reads the production Supabase project URL and key
+  injected at build time (no project ref or key is bundled in source).
+- Fixed PostgREST envelope parsing: table responses arrive as a JSON array and
+  empty optional objects no longer look "present".
+- Remote config host whitelisted for the shared offline HTTP cache.
+- Housekeeping: versionCode 101.
