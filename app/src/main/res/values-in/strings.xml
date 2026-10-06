@@ -106,7 +106,7 @@
     <string name="settings_file_replacement_character_title">Karakter pengganti</string>
     <string name="charset_letters_and_digits">Huruf dan angka</string>
     <string name="charset_most_special_characters">Karakter spesial umum</string>
-    <string name="title_activity_about">Tentang NewPipe</string>
+    <string name="title_activity_about">Tentang URMIX</string>
     <string name="title_licenses">Lisensi Pihak-ketiga</string>
     <string name="copyright" formatted="true">© %1$s oleh %2$s di bawah %3$s</string>
     <string name="tab_about">Tentang &amp; FAQ</string>
@@ -874,4 +874,46 @@
     <string name="offline_banner_retry">Coba lagi</string>
     <string name="offline_search_unavailable">Pencarian butuh koneksi internet. Riwayat pencarianmu tetap tersedia.</string>
     <string name="offline_feed_cached_note">Menampilkan pembaruan tersimpan.</string>
+    <!-- URMIX v1.0.2 Bahasa Indonesia (blueprint v1.0.2 §12) -->
+    <string name="tab_urmix_home">Beranda</string>
+    <string name="home_greeting_morning">Selamat Pagi</string>
+    <string name="home_greeting_afternoon">Selamat Siang</string>
+    <string name="home_greeting_evening">Selamat Malam</string>
+    <string name="home_subtitle">Streaming fokus audio, didukung mesin NewPipe</string>
+    <string name="home_made_for_you">Dibuat Untukmu</string>
+    <string name="home_trending_audio">Audio Trending</string>
+    <string name="home_podcasting">Podcast</string>
+    <string name="home_empty">Belum ada apa-apa di sini — berlangganan, tonton, atau cek trending.</string>
+    <string name="urmix_attribution">URMIX dikembangkan oleh WINATRA. Aplikasi ini menggunakan fondasi arsitektur dan engine open-source dari NewPipe Core. WINATRA merancang ulang seluruh pengalaman UI/UX, tata kelola notifikasi, serta mengoptimalkan pemutaran fokus audio bergaya Spotify.</string>
+    <string name="liked_songs_playlist_name">Lagu Disukai</string>
+    <string name="liked_songs_playlist_summary">Playlist khusus untuk trek yang kamu sukai</string>
+    <string name="like_song">Suka</string>
+    <string name="unlike_song">Batal Suka</string>
+    <string name="like_added">Ditambahkan ke Lagu Disukai</string>
+    <string name="like_removed">Dihapus dari Lagu Disukai</string>
+    <string name="backup_preview_title">Konfirmasi impor</string>
+    <string name="backup_preview_message">Ditemukan %1$d trek disukai, %2$d playlist, dan %3$d entri riwayat. Timpa data saat ini sekarang?</string>
+    <string name="backup_guide">Panduan cadangan</string>
+    <string name="backup_guide_title">Cara kerja cadangan</string>
+    <string name="backup_guide_summary">Baca ini sebelum ganti HP</string>
+    <string name="backup_guide_message">URMIX menyimpan pustakamu hanya di perangkat ini, tanpa akun apa pun. Sebelum ganti HP atau instal ulang, ketuk Ekspor data dan simpan filenya di tempat aman (misalnya Pesan Tersimpan Telegram). Di HP baru, buka layar yang sama lalu ketuk Impor data dan pilih file itu. Impor akan menggantikan playlist, lagu disukai, riwayat, dan pencarian di perangkat ini. File ZIP cadangan lama masih bisa diimpor.</string>
+    <string name="backup_export_complete">Cadangan tersimpan</string>
+    <string name="backup_import_success">Cadangan dipulihkan, memulai ulang…</string>
+    <string name="backup_import_failed">Impor gagal: %1$s</string>
+    <string name="backup_import_invalid_file">File itu bukan cadangan URMIX yang valid</string>
+    <string name="backup_import_version_unsupported">Versi cadangan tidak didukung: %1$d</string>
+    <string name="backup_import_legacy_zip_warning">Cadangan ZIP lama: seluruh database dan langganan akan diganti. Lanjutkan?</string>
+    <string name="splash_tagline">Cara streaming yang mengutamakan audio.</string>
+    <string name="splash_footer_developer">Dikembangkan oleh WINATRA</string>
+    <string name="splash_footer_built_on">Dibangun di atas NewPipe Core</string>
+    <string name="force_update_dialog_title">Pembaruan diperlukan</string>
+    <string name="force_update_dialog_message">URMIX memerlukan pembaruan sebelum kamu bisa melanjutkan.&#10;&#10;Pasang versi terbaru agar tetap bisa menikmati URMIX.</string>
+    <string name="force_update_dialog_update">Perbarui</string>
+    <string name="force_update_dialog_exit">Keluar</string>
+    <string name="player_error_skipping_to_next">Trek ini tidak bisa diputar, lanjut ke trek berikutnya.</string>
+    <string name="player_error_check_for_updates">Beberapa trek gagal dimuat. Periksa pembaruan URMIX — ekstraktor mungkin sudah kedaluwarsa.</string>
+    <string name="player_error_restore_failed">Sesi pemutaran terakhir tidak bisa dipulihkan.</string>
+    <string name="winatra_team_title">Tim WINATRA</string>
+    <string name="winatra_team_members">@ahmddzlkrn dan @imamyahyaaaaa</string>
+    <string name="winatra_team_instagram">Instagram resmi WINATRA</string>
 </resources>
