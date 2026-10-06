@@ -905,6 +905,10 @@
     <string name="toggle_fullscreen">Toggle fullscreen</string>
     <string name="show_video">Show video</string>
     <string name="show_audio">Show audio cover</string>
+    <!-- URMIX WINATRA team header (blueprint v1.0.2 §8) -->
+    <string name="winatra_team_title">WINATRA Team</string>
+    <string name="winatra_team_members">@ahmddzlkrn and @imamyahyaaaaa</string>
+    <string name="winatra_team_instagram">Official WINATRA Instagram</string>
     <string name="toggle_screen_orientation">Toggle screen orientation</string>
     <string name="previous_stream">Previous stream</string>
     <string name="next_stream">Next stream</string>

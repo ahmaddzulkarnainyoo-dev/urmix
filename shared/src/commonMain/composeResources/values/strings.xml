@@ -36,6 +36,11 @@
     <string name="done">Done</string>
     <string name="not_available">Not available</string>
 
+    <!-- URMIX WINATRA team header (blueprint v1.0.2 §8) -->
+    <string name="winatra_team_title">Tim WINATRA</string>
+    <string name="winatra_team_members">@ahmddzlkrn dan @imamyahyaaaaa</string>
+    <string name="winatra_team_instagram">Instagram resmi WINATRA</string>
+
     <!-- SettingsHomeScreen -->
     <string name="settings">Settings</string>
     <string name="search">Search</string>

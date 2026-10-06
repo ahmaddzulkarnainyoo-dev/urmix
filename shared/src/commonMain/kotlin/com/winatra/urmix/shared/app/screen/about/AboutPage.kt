@@ -64,6 +64,9 @@ import com.winatra.urmix.shared.generated.resources.urmix_attribution
 import com.winatra.urmix.shared.generated.resources.view_on_github
 import com.winatra.urmix.shared.generated.resources.website_encouragement
 import com.winatra.urmix.shared.generated.resources.website_title
+import com.winatra.urmix.shared.generated.resources.winatra_team_instagram
+import com.winatra.urmix.shared.generated.resources.winatra_team_members
+import com.winatra.urmix.shared.generated.resources.winatra_team_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -140,6 +143,48 @@ fun AboutPageContent(
             }
         }
 
+        // URMIX WINATRA team header (blueprint v1.0.2 §8)
+        item {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spaceLarge),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(spaceLarge),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(Res.string.winatra_team_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(spaceXSmall))
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(Res.string.winatra_team_members),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(spaceXSmall))
+                    LinkListItem(
+                        link = Link(
+                            title = stringResource(Res.string.winatra_team_instagram),
+                            description = WINATRA_INSTAGRAM_URL,
+                            action = stringResource(Res.string.open_in_browser),
+                            url = WINATRA_INSTAGRAM_URL
+                        ),
+                        onAction = { onOpenUrl(WINATRA_INSTAGRAM_URL) }
+                    )
+                }
+            }
+        }
+
         // Links about NewPipe
         items(items = links, key = { link -> link.url }) { link ->
             LinkListItem(
@@ -152,12 +197,7 @@ fun AboutPageContent(
 
 @Composable
 private fun defaultLinks() = listOf(
-    Link(
-        title = stringResource(Res.string.faq_title),
-        description = stringResource(Res.string.faq_description),
-        action = stringResource(Res.string.faq),
-        url = Constants.URL_FAQ
-    ),
+    // v1.0.2: tombol WEBSITE/FAQ/PRIVACY di-hide — URL masih placeholder winatra.com.
     Link(
         title = stringResource(Res.string.contribution_title),
         description = stringResource(Res.string.contribution_encouragement),
@@ -169,20 +209,11 @@ private fun defaultLinks() = listOf(
         description = stringResource(Res.string.donation_encouragement),
         action = stringResource(Res.string.give_back),
         url = Constants.URL_DONATION
-    ),
-    Link(
-        title = stringResource(Res.string.website_title),
-        description = stringResource(Res.string.website_encouragement),
-        action = stringResource(Res.string.open_in_browser),
-        url = Constants.URL_WEBSITE
-    ),
-    Link(
-        title = stringResource(Res.string.privacy_policy_title),
-        description = stringResource(Res.string.privacy_policy_encouragement),
-        action = stringResource(Res.string.read_privacy_policy),
-        url = Constants.URL_PRIVACY
     )
 )
+
+private const val WINATRA_INSTAGRAM_URL =
+    "https://www.instagram.com/winatra.official?stkn=cHRlc3A5eTFyM3N2"
 
 @PreviewWrapper(ThemePreviewProvider::class)
 @PreviewLightDark

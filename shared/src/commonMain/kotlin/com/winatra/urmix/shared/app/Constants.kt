@@ -6,11 +6,12 @@
 package com.winatra.urmix.shared.app
 
 object Constants {
-    const val URL_GITHUB = "https://github.com/Winatra/URMIX"
+    const val URL_GITHUB = "https://github.com/ahmaddzulkarnainyoo-dev/urmix"
     const val URL_DONATION = "https://saweria.co/winatra"
-    const val URL_WEBSITE = "https://winatra.com/urmix"
-    const val URL_PRIVACY = "https://winatra.com/urmix/privacy"
-    const val URL_FAQ = "https://winatra.com/urmix/faq"
+    // v1.0.2: placeholder sampai URL asli siap — tombol WEBSITE/FAQ/PRIVACY di-hide di About.
+    const val URL_WEBSITE = "https://winatra.com"
+    const val URL_PRIVACY = "https://winatra.com"
+    const val URL_FAQ = "https://winatra.com"
 
     const val KEY_STREAMING_SERVICE = "service"
 }
