@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewWrapper
@@ -60,6 +61,7 @@ import com.winatra.urmix.shared.generated.resources.open_in_browser
 import com.winatra.urmix.shared.generated.resources.privacy_policy_encouragement
 import com.winatra.urmix.shared.generated.resources.privacy_policy_title
 import com.winatra.urmix.shared.generated.resources.read_privacy_policy
+import com.winatra.urmix.shared.generated.resources.urmix_about_banner
 import com.winatra.urmix.shared.generated.resources.urmix_attribution
 import com.winatra.urmix.shared.generated.resources.view_on_github
 import com.winatra.urmix.shared.generated.resources.website_encouragement
@@ -88,6 +90,17 @@ fun AboutPageContent(
         contentPadding = WindowInsets.navigationBars.asPaddingValues(),
         verticalArrangement = Arrangement.spacedBy(spaceXXSmall)
     ) {
+        item {
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp),
+                painter = painterResource(Res.drawable.urmix_about_banner),
+                contentDescription = BuildConfig.APP_NAME,
+                contentScale = ContentScale.Crop
+            )
+        }
+
         // Page Header
         item {
             Column(
