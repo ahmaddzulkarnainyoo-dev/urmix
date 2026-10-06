@@ -30,6 +30,15 @@ post_auth_push.bat
 hs_err_pid*.log
 replay_pid*.log
 
+# Local CI audit scratch (Batch A Blok 3) — never commit downloaded artifacts
+ci_artifact/
+test_out*.log
+style_gates.log
+style_gates.err
+snip_tmp.txt
+parity_tmp.py
+verify_tmp.py
+
 # vscode / eclipse files
 *.classpath
 *.project
