@@ -80,13 +80,12 @@ import com.winatra.urmix.player.seekbarpreview.SeekbarPreviewThumbnailHelper;
 import com.winatra.urmix.player.seekbarpreview.SeekbarPreviewThumbnailHolder;
 import com.winatra.urmix.util.DeviceUtils;
 import com.winatra.urmix.util.Localization;
-import com.winatra.urmix.util.NavigationHelper;
+import com.winatra.urmix.util.image.CoilHelper;
 import com.winatra.urmix.util.external_communication.KoreUtils;
 import com.winatra.urmix.util.external_communication.ShareUtils;
 import com.winatra.urmix.views.player.PlayerFastSeekOverlay;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -116,6 +115,8 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
     @Nullable
     private SurfaceHolderCallback surfaceHolderCallback;
     boolean surfaceIsSetup = false;
+    // URMIX audio-first (v1.0.2): default tampilkan cover art, video hanya bila toggle ON
+    private boolean showVideoSurface = false;
 
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -197,6 +198,25 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
 
     abstract BasePlayerGestureListener buildGestureListener();
 
+    /**
+     * URMIX audio-first (v1.0.2): default tampilkan cover art, video hanya bila toggle ON.
+     * Visibility-only swap — tidak recreate ExoPlayer.
+     */
+    protected void applyAudioFirstVisibility() {
+        final boolean showVideo = showVideoSurface;
+        binding.surfaceView.setVisibility(showVideo ? View.VISIBLE : View.GONE);
+        if (binding.albumArtFull != null) {
+            binding.albumArtFull.setVisibility(showVideo ? View.GONE : View.VISIBLE);
+        }
+        binding.fullScreenButton.setContentDescription(context.getString(
+                showVideo ? R.string.show_audio : R.string.show_video));
+    }
+
+    private void toggleVideoSurface() {
+        showVideoSurface = !showVideoSurface;
+        applyAudioFirstVisibility();
+    }
+
     protected void initListeners() {
         binding.qualityTextView.setOnClickListener(makeOnClickListener(this::onQualityClicked));
         binding.audioTrackTextView.setOnClickListener(
@@ -232,11 +252,8 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
             ShareUtils.copyToClipboard(context, player.getVideoUrlAtCurrentTime());
             return true;
         });
-        binding.fullScreenButton.setOnClickListener(makeOnClickListener(() -> {
-            player.setRecovery();
-            NavigationHelper.playOnMainPlayer(context,
-                    Objects.requireNonNull(player.getPlayQueue()), true);
-        }));
+        binding.fullScreenButton.setOnClickListener(
+                makeOnClickListener(this::toggleVideoSurface));
         binding.playWithKodi.setOnClickListener(makeOnClickListener(this::onPlayWithKodiClicked));
         binding.openInBrowser.setOnClickListener(makeOnClickListener(this::onOpenInBrowserClicked));
         binding.playerCloseButton.setOnClickListener(makeOnClickListener(() ->
@@ -1046,6 +1063,8 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
 
             binding.playbackEndTime.setVisibility(View.GONE);
             binding.playbackLiveSync.setVisibility(View.GONE);
+            applyAudioFirstVisibility();
+            CoilHelper.INSTANCE.loadThumbnail(binding.albumArtFull, info.getThumbnails());
 
             switch (info.getStreamType()) {
                 case AUDIO_STREAM:

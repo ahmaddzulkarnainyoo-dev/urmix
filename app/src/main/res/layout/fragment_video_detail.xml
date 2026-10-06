@@ -42,12 +42,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="12dp"
                         android:layout_marginEnd="24dp"
                         android:background="@drawable/bg_home_card"
                         android:contentDescription="@string/detail_thumbnail_view_description"
-                        android:minHeight="280dp"
-                        android:scaleType="fitCenter"
+                        android:minHeight="360dp"
+                        android:scaleType="centerCrop"
                         tools:ignore="RtlHardcoded"
                         tools:layout_height="200dp"
                         tools:src="@drawable/placeholder_thumbnail_video" />
@@ -296,7 +296,8 @@
                                     android:textSize="@dimen/video_item_detail_sub_channel_text_size"
                                     android:textStyle="normal|bold"
                                     tools:ignore="RtlHardcoded"
-                                    tools:text="Channel" />
+                                    tools:text="Channel"
+                                android:visibility="gone"/>
 
                                 <com.winatra.urmix.views.NewPipeTextView
                                     android:id="@+id/detail_uploader_text_view"
@@ -335,7 +336,8 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="@dimen/video_item_detail_views_text_size"
                                 tools:ignore="RtlHardcoded"
-                                tools:text="2,816,821,505 views" />
+                                tools:text="2,816,821,505 views"
+                                android:visibility="gone"/>
 
                             <ImageView
                                 android:id="@+id/detail_thumbs_up_img_view"
@@ -343,7 +345,8 @@
                                 android:layout_height="@dimen/video_item_detail_like_image_height"
                                 android:layout_below="@id/detail_view_count_view"
                                 android:contentDescription="@string/detail_likes_img_view_description"
-                                android:src="@drawable/ic_thumb_up" />
+                                android:src="@drawable/ic_thumb_up"
+                                android:visibility="gone"/>
 
                             <com.winatra.urmix.views.NewPipeTextView
                                 android:id="@+id/detail_thumbs_up_count_view"
@@ -357,7 +360,8 @@
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:textSize="@dimen/video_item_detail_likes_text_size"
                                 tools:ignore="RtlHardcoded"
-                                tools:text="12M" />
+                                tools:text="12M"
+                                android:visibility="gone"/>
 
                             <ImageView
                                 android:id="@+id/detail_thumbs_down_img_view"
@@ -368,7 +372,8 @@
                                 android:layout_toRightOf="@id/detail_thumbs_up_count_view"
                                 android:contentDescription="@string/detail_dislikes_img_view_description"
                                 android:src="@drawable/ic_thumb_down"
-                                tools:ignore="RtlHardcoded" />
+                                tools:ignore="RtlHardcoded"
+                                android:visibility="gone"/>
 
                             <com.winatra.urmix.views.NewPipeTextView
                                 android:id="@+id/detail_thumbs_down_count_view"
@@ -382,7 +387,8 @@
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:textSize="@dimen/video_item_detail_likes_text_size"
                                 tools:ignore="RtlHardcoded"
-                                tools:text="10K" />
+                                tools:text="10K"
+                                android:visibility="gone"/>
 
                             <com.winatra.urmix.views.NewPipeTextView
                                 android:id="@+id/detail_thumbs_disabled_view"
@@ -424,7 +430,8 @@
                             android:gravity="center"
                             android:paddingVertical="@dimen/detail_control_padding"
                             android:text="@string/controls_add_to_playlist_title"
-                            android:textSize="@dimen/detail_control_text_size" />
+                            android:textSize="@dimen/detail_control_text_size"
+                                android:visibility="gone"/>
 
                         <com.winatra.urmix.views.NewPipeTextView
                             android:id="@+id/detail_controls_background"
@@ -440,7 +447,8 @@
                             android:gravity="center"
                             android:paddingVertical="@dimen/detail_control_padding"
                             android:text="@string/controls_background_title"
-                            android:textSize="@dimen/detail_control_text_size" />
+                            android:textSize="@dimen/detail_control_text_size"
+                                android:visibility="gone"/>
 
                         <com.winatra.urmix.views.NewPipeTextView
                             android:id="@+id/detail_controls_popup"
@@ -456,7 +464,8 @@
                             android:gravity="center"
                             android:paddingVertical="@dimen/detail_control_padding"
                             android:text="@string/controls_popup_title"
-                            android:textSize="@dimen/detail_control_text_size" />
+                            android:textSize="@dimen/detail_control_text_size"
+                                android:visibility="gone"/>
 
                         <com.winatra.urmix.views.NewPipeTextView
                             android:id="@+id/detail_controls_download"
@@ -472,7 +481,8 @@
                             android:gravity="center"
                             android:paddingVertical="@dimen/detail_control_padding"
                             android:text="@string/download"
-                            android:textSize="@dimen/detail_control_text_size" />
+                            android:textSize="@dimen/detail_control_text_size"
+                                android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -501,7 +511,8 @@
                             android:gravity="center"
                             android:paddingVertical="@dimen/detail_control_padding"
                             android:text="@string/share"
-                            android:textSize="@dimen/detail_control_text_size" />
+                            android:textSize="@dimen/detail_control_text_size"
+                                android:visibility="gone"/>
 
                         <com.winatra.urmix.views.NewPipeTextView
                             android:id="@+id/detail_controls_open_in_browser"
@@ -517,7 +528,8 @@
                             android:gravity="center"
                             android:paddingVertical="@dimen/detail_control_padding"
                             android:text="@string/open_in_browser"
-                            android:textSize="@dimen/detail_control_text_size" />
+                            android:textSize="@dimen/detail_control_text_size"
+                                android:visibility="gone"/>
 
                         <com.winatra.urmix.views.NewPipeTextView
                             android:id="@+id/detail_controls_play_with_kodi"
@@ -533,7 +545,8 @@
                             android:gravity="center"
                             android:paddingVertical="@dimen/detail_control_padding"
                             android:text="@string/play_with_kodi_title"
-                            android:textSize="@dimen/detail_control_text_size" />
+                            android:textSize="@dimen/detail_control_text_size"
+                                android:visibility="gone"/>
 
                         <com.winatra.urmix.views.NewPipeTextView
                             android:id="@+id/detail_controls_crash_the_player"
@@ -549,7 +562,8 @@
                             android:gravity="center"
                             android:paddingVertical="@dimen/detail_control_padding"
                             android:text="@string/crash_the_player"
-                            android:textSize="@dimen/detail_control_text_size" />
+                            android:textSize="@dimen/detail_control_text_size"
+                                android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -559,7 +573,8 @@
                         android:layout_height="1px"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        android:background="?attr/separator_color" />
+                        android:background="?attr/separator_color"
+                                android:visibility="gone"/>
 
                     <com.winatra.urmix.views.NewPipeTextView
                         android:id="@+id/detail_meta_info_text_view"
@@ -568,7 +583,8 @@
                         android:gravity="center"
                         android:padding="12dp"
                         android:textSize="@dimen/video_item_detail_description_text_size"
-                        tools:text="Stream meta info with link" />
+                        tools:text="Stream meta info with link"
+                                android:visibility="gone"/>
 
                     <View
                         android:layout_width="match_parent"

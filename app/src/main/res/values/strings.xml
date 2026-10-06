@@ -903,6 +903,8 @@
     <string name="show_channel_tabs_summary">What tabs are shown on the channel pages</string>
     <string name="open_play_queue">Open play queue</string>
     <string name="toggle_fullscreen">Toggle fullscreen</string>
+    <string name="show_video">Show video</string>
+    <string name="show_audio">Show audio cover</string>
     <string name="toggle_screen_orientation">Toggle screen orientation</string>
     <string name="previous_stream">Previous stream</string>
     <string name="next_stream">Next stream</string>

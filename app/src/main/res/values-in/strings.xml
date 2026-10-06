@@ -770,6 +770,8 @@
     <string name="channel_tab_livestreams">Langsung</string>
     <string name="toggle_screen_orientation">Saklar orientasi layar</string>
     <string name="toggle_fullscreen">Saklar layar penuh</string>
+    <string name="show_video">Tampilkan video</string>
+    <string name="show_audio">Tampilkan sampul audio</string>
     <string name="next_stream">Saluran berikutnya</string>
     <string name="open_play_queue">Buka antrean pemain</string>
     <string name="forward">Maju</string>
