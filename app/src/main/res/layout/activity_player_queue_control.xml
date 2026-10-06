@@ -174,7 +174,7 @@
             android:clickable="true"
             android:focusable="true"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_repeat"
+            android:src="@drawable/urmix_player_repeat"
             app:tint="?attr/colorAccent"
             tools:ignore="ContentDescription" />
 
@@ -189,7 +189,7 @@
             android:clickable="true"
             android:focusable="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_previous"
+            android:src="@drawable/urmix_player_previous"
             android:tint="?attr/colorAccent"
             tools:ignore="ContentDescription" />
 
@@ -219,7 +219,7 @@
             android:clickable="true"
             android:focusable="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_pause"
+            android:src="@drawable/urmix_player_pause"
             app:tint="?attr/colorAccent"
             tools:ignore="ContentDescription" />
 
@@ -268,7 +268,7 @@
             android:clickable="true"
             android:focusable="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_next"
+            android:src="@drawable/urmix_player_next"
             android:tint="?attr/colorAccent"
             tools:ignore="ContentDescription" />
 
@@ -284,7 +284,7 @@
             android:clickable="true"
             android:focusable="true"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_shuffle"
+            android:src="@drawable/urmix_player_shuffle"
             app:tint="?attr/colorAccent"
             tools:ignore="ContentDescription" />
 

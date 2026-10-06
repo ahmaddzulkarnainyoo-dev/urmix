@@ -247,7 +247,7 @@
                         android:paddingEnd="3dp"
                         android:paddingBottom="3dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/ic_list"
+                        android:src="@drawable/urmix_player_queue"
                         android:visibility="gone"
                         app:tint="@color/white"
                         tools:ignore="RtlHardcoded" />
@@ -403,7 +403,7 @@
                         android:focusable="true"
                         android:padding="@dimen/player_main_buttons_padding"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/ic_movie"
+                        android:src="@drawable/urmix_video_toggle"
                         android:visibility="visible"
                         app:tint="@color/white"
                         tools:ignore="RtlHardcoded"
@@ -554,7 +554,7 @@
                 android:contentDescription="@string/previous_stream"
                 android:focusable="true"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_previous"
+                android:src="@drawable/urmix_player_previous"
                 app:tint="@color/white" />
 
 
@@ -566,7 +566,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/pause"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_pause"
+                android:src="@drawable/urmix_player_pause"
                 app:tint="@color/white" />
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -580,7 +580,7 @@
                 android:contentDescription="@string/next_stream"
                 android:focusable="true"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_next"
+                android:src="@drawable/urmix_player_next"
                 app:tint="@color/white" />
 
         </LinearLayout>
@@ -631,7 +631,7 @@
                 android:focusable="true"
                 android:padding="10dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/exo_controls_repeat_off"
+                android:src="@drawable/urmix_player_repeat"
                 android:tint="?attr/colorAccent"
                 tools:ignore="RtlHardcoded" />
 
@@ -647,7 +647,7 @@
                 android:focusable="true"
                 android:padding="10dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_shuffle"
+                android:src="@drawable/urmix_player_shuffle"
                 android:tint="?attr/colorAccent"
                 tools:ignore="RtlHardcoded" />
 

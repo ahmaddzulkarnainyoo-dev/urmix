@@ -2460,7 +2460,10 @@ public final class VideoDetailFragment
         binding.overlayTitleTextView.setText(isEmpty(overlayTitle) ? "" : overlayTitle);
         binding.overlayChannelTextView.setText(isEmpty(uploader) ? "" : uploader);
         binding.overlayThumbnail.setImageDrawable(null);
-        CoilHelper.INSTANCE.loadDetailsThumbnail(binding.overlayThumbnail, thumbnails);
+        CoilHelper.INSTANCE.loadPlayerThumbnail(
+                binding.overlayThumbnail,
+                thumbnails,
+                R.drawable.urmix_fallback_cover_square);
         refreshOverlayLikeButton();
     }
 

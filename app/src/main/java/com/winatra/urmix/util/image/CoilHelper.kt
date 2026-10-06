@@ -65,6 +65,14 @@ object CoilHelper {
         loadImageDefault(target, url, R.drawable.placeholder_thumbnail_video)
     }
 
+    fun loadPlayerThumbnail(
+        target: ImageView,
+        images: List<Image>,
+        @DrawableRes placeholderResId: Int
+    ) {
+        loadImageDefault(target, images, placeholderResId)
+    }
+
     fun loadScaledDownThumbnail(
         context: Context,
         images: List<Image>,

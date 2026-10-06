@@ -536,11 +536,11 @@ public final class PlayQueueActivity extends AppCompatActivity
         final ImageButton playPauseButton = queueControlBinding.controlPlayPause;
         switch (state) {
             case Player.STATE_PAUSED:
-                playPauseButton.setImageResource(R.drawable.ic_play_arrow);
+                playPauseButton.setImageResource(R.drawable.urmix_player_play);
                 playPauseButton.setContentDescription(getString(R.string.play));
                 break;
             case Player.STATE_PLAYING:
-                playPauseButton.setImageResource(R.drawable.ic_pause);
+                playPauseButton.setImageResource(R.drawable.urmix_player_pause);
                 playPauseButton.setContentDescription(getString(R.string.pause));
                 break;
             case Player.STATE_COMPLETED:
@@ -571,19 +571,22 @@ public final class PlayQueueActivity extends AppCompatActivity
         switch (repeatMode) {
             case com.google.android.exoplayer2.Player.REPEAT_MODE_OFF:
                 queueControlBinding.controlRepeat.setImageResource(
-                        com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_off);
+                        R.drawable.urmix_player_repeat);
                 break;
             case com.google.android.exoplayer2.Player.REPEAT_MODE_ONE:
                 queueControlBinding.controlRepeat.setImageResource(
-                        com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_one);
+                        R.drawable.urmix_player_repeat_active);
                 break;
             case com.google.android.exoplayer2.Player.REPEAT_MODE_ALL:
                 queueControlBinding.controlRepeat.setImageResource(
-                        com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_all);
+                        R.drawable.urmix_player_repeat_active);
                 break;
         }
 
         final int shuffleAlpha = shuffled ? 255 : 77;
+        queueControlBinding.controlShuffle.setImageResource(shuffled
+                ? R.drawable.urmix_player_shuffle_active
+                : R.drawable.urmix_player_shuffle);
         queueControlBinding.controlShuffle.setImageAlpha(shuffleAlpha);
     }
 

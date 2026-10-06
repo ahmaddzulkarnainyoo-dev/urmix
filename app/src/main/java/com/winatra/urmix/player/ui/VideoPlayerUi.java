@@ -790,11 +790,11 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         switch (action) {
             case PLAY:
                 button.setContentDescription(context.getString(R.string.play));
-                button.setImageResource(R.drawable.ic_play_arrow);
+                button.setImageResource(R.drawable.urmix_player_play);
                 break;
             case PAUSE:
                 button.setContentDescription(context.getString(R.string.pause));
-                button.setImageResource(R.drawable.ic_pause);
+                button.setImageResource(R.drawable.urmix_player_pause);
                 break;
             case REPLAY:
                 button.setContentDescription(context.getString(R.string.replay));
@@ -972,14 +972,11 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         super.onRepeatModeChanged(repeatMode);
 
         if (repeatMode == REPEAT_MODE_ALL) {
-            binding.repeatButton.setImageResource(
-                    com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_all);
+            binding.repeatButton.setImageResource(R.drawable.urmix_player_repeat_active);
         } else if (repeatMode == REPEAT_MODE_ONE) {
-            binding.repeatButton.setImageResource(
-                    com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_one);
+            binding.repeatButton.setImageResource(R.drawable.urmix_player_repeat_active);
         } else /* repeatMode == REPEAT_MODE_OFF */ {
-            binding.repeatButton.setImageResource(
-                    com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_off);
+            binding.repeatButton.setImageResource(R.drawable.urmix_player_repeat);
         }
     }
 
@@ -1001,16 +998,16 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
     }
 
     private void setShuffleButton(final boolean shuffled) {
+        binding.shuffleButton.setImageResource(shuffled
+                ? R.drawable.urmix_player_shuffle_active
+                : R.drawable.urmix_player_shuffle);
         binding.shuffleButton.setImageAlpha(shuffled ? 255 : 77);
     }
 
     private void setRepeatButton(final int repeatMode) {
         final int resId = switch (repeatMode) {
-            case REPEAT_MODE_ALL
-                    -> com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_all;
-            case REPEAT_MODE_ONE
-                    -> com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_one;
-            default -> com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_off;
+            case REPEAT_MODE_ALL, REPEAT_MODE_ONE -> R.drawable.urmix_player_repeat_active;
+            default -> R.drawable.urmix_player_repeat;
         };
         binding.repeatButton.setImageResource(resId);
     }
@@ -1064,7 +1061,10 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
             binding.playbackEndTime.setVisibility(View.GONE);
             binding.playbackLiveSync.setVisibility(View.GONE);
             applyAudioFirstVisibility();
-            CoilHelper.INSTANCE.loadThumbnail(binding.albumArtFull, info.getThumbnails());
+            CoilHelper.INSTANCE.loadPlayerThumbnail(
+                    binding.albumArtFull,
+                    info.getThumbnails(),
+                    R.drawable.urmix_fallback_cover_9_16);
 
             switch (info.getStreamType()) {
                 case AUDIO_STREAM:
