@@ -1,62 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/urmix_primary_background"
-    tools:context="com.winatra.urmix.SplashActivity">
-
-    <LinearLayout
-        android:id="@+id/splash_brand_block"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/splash_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textColor="@color/urmix_text_primary"
-            android:textSize="40sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/splash_tagline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/splash_tagline"
-            android:textColor="@color/urmix_text_secondary"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/splash_footer_block"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingBottom="28dp">
-
-        <TextView
-            android:id="@+id/splash_footer_developer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/splash_footer_developer"
-            android:textColor="@color/urmix_text_secondary"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/splash_footer_built_on"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/splash_footer_built_on"
-            android:textColor="@color/urmix_text_secondary"
-            android:textSize="12sp" />
-    </LinearLayout>
-</FrameLayout>
+    android:contentDescription="@string/app_name"
+    android:scaleType="centerCrop"
+    android:src="@drawable/urmix_splash"
+    tools:context="com.winatra.urmix.SplashActivity" />

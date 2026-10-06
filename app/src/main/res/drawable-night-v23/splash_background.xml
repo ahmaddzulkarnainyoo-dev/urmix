@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:drawable="@color/dark_youtube_primary_color"/>
-
-    <item
-        android:width="80dp"
-        android:height="80dp"
-        android:gravity="center"
-        android:drawable="@drawable/splash_foreground"/>
+    <item>
+        <bitmap
+            android:src="@drawable/urmix_splash"
+            android:gravity="fill" />
+    </item>
 </layer-list>
