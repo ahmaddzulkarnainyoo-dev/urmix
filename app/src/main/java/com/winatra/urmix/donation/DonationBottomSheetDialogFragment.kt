@@ -12,14 +12,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.winatra.urmix.R
 import com.winatra.urmix.remoteconfig.RemoteConfigRepository
 import com.winatra.urmix.util.external_communication.ShareUtils
-import com.winatra.urmix.util.image.CoilHelper
 
 /*
  * DonationBottomSheetDialogFragment — dark-themed support sheet (§6).
  *
- * Content comes from the cached remote config (Saweria link + QRIS image);
- * falls back to the static donation URL when the config is absent.
- * QRIS loads via CoilHelper with a graceful empty state.
+ * Content comes from the cached remote config (Saweria link); QRIS uses the
+ * bundled local image.
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  * This file is part of URMIX, a fork of NewPipe (org.schabi.newpipe).
@@ -49,28 +47,16 @@ class DonationBottomSheetDialogFragment : BottomSheetDialogFragment() {
         val message = donation?.dailyMessage?.takeIf { it.isNotBlank() }
             ?: getString(R.string.donation_sheet_fallback_message)
         val saweriaUrl = donation?.saweriaUrl ?: getString(R.string.donation_url)
-        val qrisUrl = donation?.qrisUrl
 
         titleView.text = title
         messageView.text = message
-        if (!qrisUrl.isNullOrBlank()) {
-            qrisView.isVisible = true
-            CoilHelper.loadThumbnail(qrisView, qrisUrl)
-        } else {
-            qrisView.isVisible = false
-        }
+        qrisView.setImageResource(R.drawable.qris_donasi)
+        qrisView.isVisible = true
         saweriaButton.setOnClickListener {
             ShareUtils.openUrlInBrowser(context, saweriaUrl)
             dismissAllowingStateLoss()
         }
         closeButton.setOnClickListener { dismissAllowingStateLoss() }
-    }
-
-    override fun onDestroyView() {
-        dialog?.findViewById<ImageView>(R.id.donation_sheet_qris)?.let {
-            runCatching { CoilHelper.disposeRequests(it) }
-        }
-        super.onDestroyView()
     }
 
     companion object {

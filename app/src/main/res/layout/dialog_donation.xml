@@ -8,6 +8,14 @@
     android:orientation="vertical"
     android:padding="20dp">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/urmix_donation_header" />
+
     <com.winatra.urmix.views.NewPipeTextView
         android:id="@+id/donation_sheet_title"
         android:layout_width="match_parent"
