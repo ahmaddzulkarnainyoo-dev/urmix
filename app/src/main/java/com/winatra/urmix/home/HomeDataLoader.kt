@@ -184,6 +184,11 @@ class HomeDataLoader(
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ kiosk ->
+                    // v1.0.2: kiosk kosong → panggil fallback podcast-channel supaya tidak kosong.
+                    if (kiosk.relatedItems.isEmpty()) {
+                        loadPodcastingChannelFallback(appContext)
+                        return@subscribe
+                    }
                     val items = kiosk.relatedItems
                         .filterIsInstance<StreamInfoItem>()
                         .sortedWith(
@@ -221,7 +226,8 @@ class HomeDataLoader(
                         .onErrorReturnItem(emptyList())
                 }
                 .toList()
-                .map { pages -> pages.flatten().take(20) }
+                // v1.0.2: cap 10 item per carousel supaya tidak didominasi satu section.
+                .map { pages -> pages.flatten().take(10) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ items ->
@@ -232,6 +238,21 @@ class HomeDataLoader(
                         binding.homePodcastTitle.visibility = visible
                         binding.homePodcastList.visibility = visible
                     }
+                    updateEmptyState()
+                }, { updateEmptyState() })
+        )
+    }
+
+    // v1.0.2: fallback ketika kiosk trending kosong — pinjam 10 item pertama dari
+    // section podcast (diobserve di main thread) supaya section tidak kosong.
+    fun loadPodcastingChannelFallback(appContext: Context) {
+        disposables.add(
+            NewPipeDatabase.getInstance(appContext).streamHistoryDAO()
+                .history.take(1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ _ ->
+                    loadPodcasting()
                     updateEmptyState()
                 }, { updateEmptyState() })
         )
