@@ -189,7 +189,7 @@ configure<ApplicationExtension> {
             // suffix the app id and the app name with git branch name
             if (normalizedWorkingBranch.isEmpty() || workingBranch in defaultBranches) {
                 applicationIdSuffix = ".continuous"
-                resValue("string", "app_name", "URMIX Continuous")
+                resValue("string", "app_name", "URMIX")
             } else {
                 applicationIdSuffix = ".continuous.$normalizedWorkingBranch"
                 resValue("string", "app_name", "URMIX $workingBranch")
