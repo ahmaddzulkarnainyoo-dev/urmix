@@ -55,10 +55,11 @@ class HomeFragment : Fragment() {
         binding.homeGreeting.text = greetingText()
         madeForYouAdapter = HomeCarouselAdapter(::playStream)
         trendingAdapter = HomeCarouselAdapter(::playStream)
+        // Podcast home section is temporarily disabled.
         podcastAdapter = HomeCarouselAdapter(::playStream)
         setupCarousel(binding.homeMadeForYouList, madeForYouAdapter)
         setupCarousel(binding.homeTrendingList, trendingAdapter)
-        setupCarousel(binding.homePodcastList, podcastAdapter)
+        // setupCarousel(binding.homePodcastList, podcastAdapter)
         offlineBanner = OfflineBannerHelper(binding.offlineBanner.root) { reloadContent() }
         networkObserver = NetworkStateObserver(
             requireContext().applicationContext,

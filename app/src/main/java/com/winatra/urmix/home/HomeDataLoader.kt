@@ -41,7 +41,7 @@ class HomeDataLoader(
         loadMadeForYou()
         if (fragment.isOnlineNow()) {
             loadTrendingAudio()
-            loadPodcasting()
+            // loadPodcasting() is temporarily disabled while the home section is hidden.
         } else {
             // FASE 5 §12.2: offline — skip the network-only sections, keep the
             // Room-backed sections visible and raise the offline banner.
@@ -184,9 +184,9 @@ class HomeDataLoader(
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ kiosk ->
-                    // v1.0.2: kiosk kosong → panggil fallback podcast-channel supaya tidak kosong.
+                    // Keep the empty state accurate while podcast loading is disabled.
                     if (kiosk.relatedItems.isEmpty()) {
-                        loadPodcastingChannelFallback(appContext)
+                        updateEmptyState()
                         return@subscribe
                     }
                     val items = kiosk.relatedItems
@@ -202,6 +202,7 @@ class HomeDataLoader(
                 }, { updateEmptyState() })
         )
     }
+    /*
     fun loadPodcasting() {
         val appContext = callbacks.appContext() ?: return
         val cached = runCatching {
@@ -257,6 +258,7 @@ class HomeDataLoader(
                 }, { updateEmptyState() })
         )
     }
+     */
 
     fun resolvePodcastSource(
         appContext: Context,
@@ -323,7 +325,7 @@ class HomeDataLoader(
         binding.homeLoading.visibility = View.GONE
         val hasContent = callbacks.madeForYou().itemCount > 0 ||
             callbacks.trending().itemCount > 0 ||
-            callbacks.podcast().itemCount > 0 ||
+            // callbacks.podcast().itemCount > 0 ||
             binding.homeQuickPlayGrid.childCount > 0
         binding.homeEmpty.visibility = if (hasContent) View.GONE else View.VISIBLE
     }
