@@ -56,6 +56,7 @@ import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player.RepeatMode;
 import com.google.android.exoplayer2.Tracks;
 import com.google.android.exoplayer2.text.Cue;
+import com.google.android.exoplayer2.trackselection.TrackSelectionOverride;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.CaptionStyleCompat;
 import com.google.android.exoplayer2.ui.SubtitleView;
@@ -120,6 +121,10 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
     // URMIX audio-first (v1.0.2): default tampilkan cover art, video hanya bila toggle ON
     private boolean showVideoSurface = false;
     private boolean hasSubtitleCues = false;
+    private boolean hasManualCaptionSelection = false;
+    private boolean audioFirstCaptionAutoSelected = false;
+    @Nullable
+    private Tracks availableTracks;
 
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -227,14 +232,38 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
             binding.subtitleView.setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
             binding.subtitleView.setBottomPaddingFraction(0.22f);
         }
-        binding.subtitleView.setVisibility(hasSubtitleCues ? View.VISIBLE : View.GONE);
+        binding.subtitleView.setVisibility(
+                (showVideo || !(this instanceof MainPlayerUi)) && hasSubtitleCues
+                        ? View.VISIBLE : View.GONE);
+        binding.audioLyricsView.setVisibility(
+                isMainPlayerAudioFirstMode() && binding.audioLyricsView.length() > 0
+                        ? View.VISIBLE : View.GONE);
         binding.fullScreenButton.setContentDescription(context.getString(
                 showVideo ? R.string.show_audio : R.string.show_video));
     }
 
     private void toggleVideoSurface() {
         showVideoSurface = !showVideoSurface;
+        final int rendererIndex = player.getCaptionRendererIndex();
+        if (showVideoSurface) {
+            if (audioFirstCaptionAutoSelected && rendererIndex != RENDERER_UNAVAILABLE
+                    && !hasManualCaptionSelection
+                    && player.getPrefs().getString(
+                    context.getString(R.string.caption_user_set_key), null) == null) {
+                player.getTrackSelector().setParameters(player.getTrackSelector()
+                        .buildUponParameters().setRendererDisabled(rendererIndex, true));
+                audioFirstCaptionAutoSelected = false;
+            }
+        } else if (this instanceof MainPlayerUi && availableTracks != null) {
+            autoSelectFirstCaptionTrack(availableTracks.getGroups().stream()
+                    .filter(group -> group.getType() == C.TRACK_TYPE_TEXT)
+                    .collect(Collectors.toList()));
+        }
         applyAudioFirstVisibility();
+    }
+
+    private boolean isMainPlayerAudioFirstMode() {
+        return this instanceof MainPlayerUi && !showVideoSurface;
     }
 
     protected void initListeners() {
@@ -1081,6 +1110,8 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
             binding.playbackEndTime.setVisibility(View.GONE);
             binding.playbackLiveSync.setVisibility(View.GONE);
             hasSubtitleCues = false;
+            availableTracks = null;
+            binding.audioLyricsView.setText("");
             applyAudioFirstVisibility();
             CoilHelper.INSTANCE.loadPlayerThumbnail(
                     binding.albumArtFull,
@@ -1221,6 +1252,8 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         final MenuItem captionOffItem = captionPopupMenu.getMenu().add(POPUP_MENU_ID_CAPTION,
                 0, Menu.NONE, R.string.caption_none);
         captionOffItem.setOnMenuItemClickListener(menuItem -> {
+            hasManualCaptionSelection = true;
+            audioFirstCaptionAutoSelected = false;
             final int textRendererIndex = player.getCaptionRendererIndex();
             if (textRendererIndex != RENDERER_UNAVAILABLE) {
                 player.getTrackSelector().setParameters(player.getTrackSelector()
@@ -1237,6 +1270,8 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
             final MenuItem captionItem = captionPopupMenu.getMenu().add(POPUP_MENU_ID_CAPTION,
                     i + 1, Menu.NONE, captionLanguage);
             captionItem.setOnMenuItemClickListener(menuItem -> {
+                hasManualCaptionSelection = true;
+                audioFirstCaptionAutoSelected = false;
                 final int textRendererIndex = player.getCaptionRendererIndex();
                 if (textRendererIndex != RENDERER_UNAVAILABLE) {
                     // DefaultTrackSelector will select for text tracks in the following order.
@@ -1273,8 +1308,10 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         final String userPreferredLanguage =
                 player.getPrefs().getString(context.getString(R.string.caption_user_set_key), null);
         if (userPreferredLanguage == null) {
-            player.getTrackSelector().setParameters(player.getTrackSelector().buildUponParameters()
-                    .setRendererDisabled(textRendererIndex, true));
+            if (!isMainPlayerAudioFirstMode() || hasManualCaptionSelection) {
+                player.getTrackSelector().setParameters(player.getTrackSelector()
+                        .buildUponParameters().setRendererDisabled(textRendererIndex, true));
+            }
             return;
         }
 
@@ -1416,6 +1453,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
     @Override
     public void onTextTracksChanged(@NonNull final Tracks currentTracks) {
         super.onTextTracksChanged(currentTracks);
+        availableTracks = currentTracks;
 
         final boolean trackTypeTextSupported = !currentTracks.containsType(C.TRACK_TYPE_TEXT)
                 || currentTracks.isTypeSupported(C.TRACK_TYPE_TEXT, false);
@@ -1446,6 +1484,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
 
         // Build UI
         buildCaptionMenu(availableLanguages);
+        autoSelectFirstCaptionTrack(textTracks);
         if (player.getTrackSelector().getParameters().getRendererDisabled(
                 player.getCaptionRendererIndex()) || selectedTracks.isEmpty()) {
             binding.captionTextView.setText(R.string.caption_none);
@@ -1456,12 +1495,61 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
                 availableLanguages.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
+    private void autoSelectFirstCaptionTrack(@NonNull final List<Tracks.Group> textTracks) {
+        if (!isMainPlayerAudioFirstMode() || hasManualCaptionSelection
+                || player.getPrefs().getString(
+                context.getString(R.string.caption_user_set_key), null) != null
+                || textTracks.isEmpty()) {
+            return;
+        }
+
+        final int rendererIndex = player.getCaptionRendererIndex();
+        if (rendererIndex == RENDERER_UNAVAILABLE) {
+            return;
+        }
+
+        final boolean rendererDisabled = player.getTrackSelector().getParameters()
+                .getRendererDisabled(rendererIndex);
+        final boolean hasSelectedTrack = textTracks.stream().anyMatch(Tracks.Group::isSelected);
+        if (!rendererDisabled && hasSelectedTrack) {
+            return;
+        }
+
+        final Tracks.Group firstTrack = textTracks.get(0);
+        if (firstTrack.getMediaTrackGroup().length == 0) {
+            return;
+        }
+
+        player.getTrackSelector().setParameters(player.getTrackSelector().buildUponParameters()
+                .setOverrideForType(new TrackSelectionOverride(
+                        firstTrack.getMediaTrackGroup(), 0))
+                .setRendererDisabled(rendererIndex, false));
+        audioFirstCaptionAutoSelected = true;
+    }
+
     @Override
     public void onCues(@NonNull final List<Cue> cues) {
         super.onCues(cues);
         binding.subtitleView.setCues(cues);
         hasSubtitleCues = !cues.isEmpty();
-        binding.subtitleView.setVisibility(hasSubtitleCues ? View.VISIBLE : View.GONE);
+        binding.subtitleView.setVisibility(
+                (showVideoSurface || !(this instanceof MainPlayerUi)) && hasSubtitleCues
+                        ? View.VISIBLE : View.GONE);
+
+        final StringBuilder lyrics = new StringBuilder();
+        for (final Cue cue : cues) {
+            if (cue.text == null) {
+                continue;
+            }
+            if (lyrics.length() > 0) {
+                lyrics.append('\n');
+            }
+            lyrics.append(cue.text);
+        }
+        binding.audioLyricsView.setText(lyrics);
+        binding.audioLyricsView.setVisibility(
+                isMainPlayerAudioFirstMode() && lyrics.length() > 0
+                        ? View.VISIBLE : View.GONE);
     }
 
     private void setupSubtitleView() {
