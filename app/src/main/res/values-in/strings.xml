@@ -879,11 +879,11 @@
     <string name="home_greeting_morning">Selamat Pagi</string>
     <string name="home_greeting_afternoon">Selamat Siang</string>
     <string name="home_greeting_evening">Selamat Malam</string>
-    <string name="home_subtitle">Streaming fokus audio, didukung mesin NewPipe</string>
-    <string name="home_made_for_you">Dibuat Untukmu</string>
-    <string name="home_trending_audio">Audio Trending</string>
+    <string name="home_subtitle">Dengar musik favoritmu, didukung mesin NewPipe</string>
+    <string name="home_made_for_you">Untukmu</string>
+    <string name="home_trending_audio">Sedang Trending</string>
     <string name="home_podcasting">Podcast</string>
-    <string name="home_empty">Belum ada apa-apa di sini — berlangganan, tonton, atau cek trending.</string>
+    <string name="home_empty">Belum ada apa-apa di sini. Coba lihat koleksi atau yang sedang trending.</string>
     <string name="urmix_attribution">URMIX dikembangkan oleh WINATRA. Aplikasi ini menggunakan fondasi arsitektur dan engine open-source dari NewPipe Core. WINATRA merancang ulang seluruh pengalaman UI/UX, tata kelola notifikasi, serta mengoptimalkan pemutaran fokus audio bergaya Spotify.</string>
     <string name="liked_songs_playlist_name">Lagu Disukai</string>
     <string name="liked_songs_playlist_summary">Playlist khusus untuk trek yang kamu sukai</string>
