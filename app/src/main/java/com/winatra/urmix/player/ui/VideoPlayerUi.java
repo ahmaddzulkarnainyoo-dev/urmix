@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -57,6 +58,7 @@ import com.google.android.exoplayer2.Tracks;
 import com.google.android.exoplayer2.text.Cue;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.CaptionStyleCompat;
+import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.video.VideoSize;
 
 import com.winatra.urmix.App;
@@ -117,6 +119,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
     boolean surfaceIsSetup = false;
     // URMIX audio-first (v1.0.2): default tampilkan cover art, video hanya bila toggle ON
     private boolean showVideoSurface = false;
+    private boolean hasSubtitleCues = false;
 
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -208,6 +211,23 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         if (binding.albumArtFull != null) {
             binding.albumArtFull.setVisibility(showVideo ? View.GONE : View.VISIBLE);
         }
+        if (showVideo) {
+            setupSubtitleView();
+            binding.subtitleView.setBottomPaddingFraction(
+                    SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION);
+        } else {
+            binding.subtitleView.setApplyEmbeddedStyles(false);
+            binding.subtitleView.setStyle(new CaptionStyleCompat(
+                    Color.WHITE,
+                    Color.TRANSPARENT,
+                    Color.TRANSPARENT,
+                    CaptionStyleCompat.EDGE_TYPE_DROP_SHADOW,
+                    Color.BLACK,
+                    null));
+            binding.subtitleView.setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+            binding.subtitleView.setBottomPaddingFraction(0.22f);
+        }
+        binding.subtitleView.setVisibility(hasSubtitleCues ? View.VISIBLE : View.GONE);
         binding.fullScreenButton.setContentDescription(context.getString(
                 showVideo ? R.string.show_audio : R.string.show_video));
     }
@@ -1060,6 +1080,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
 
             binding.playbackEndTime.setVisibility(View.GONE);
             binding.playbackLiveSync.setVisibility(View.GONE);
+            hasSubtitleCues = false;
             applyAudioFirstVisibility();
             CoilHelper.INSTANCE.loadPlayerThumbnail(
                     binding.albumArtFull,
@@ -1439,6 +1460,8 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
     public void onCues(@NonNull final List<Cue> cues) {
         super.onCues(cues);
         binding.subtitleView.setCues(cues);
+        hasSubtitleCues = !cues.isEmpty();
+        binding.subtitleView.setVisibility(hasSubtitleCues ? View.VISIBLE : View.GONE);
     }
 
     private void setupSubtitleView() {
