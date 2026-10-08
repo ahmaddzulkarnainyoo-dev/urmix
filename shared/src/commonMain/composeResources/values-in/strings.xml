@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="navigate_back">Kembali</string>
-    <string name="title_activity_about">Tentang NewPipe</string>
+    <string name="about_title">Tentang URMIX</string>
+    <string name="title_activity_about">Tentang URMIX</string>
     <string name="title_licenses">Lisensi Pihak-ketiga</string>
     <string name="license">Oleh %1$s di bawah %2$s</string>
     <string name="tab_about">Tentang &amp; FAQ</string>
@@ -9,22 +10,37 @@
     <string name="contribution_title">Kontribusi</string>
     <string name="view_on_github">Lihat di GitHub</string>
     <string name="donation_title">Donasi</string>
-    <string name="website_encouragement">Kunjungi Situs Web NewPipe untuk info dan berita lainnya.</string>
-    <string name="privacy_policy_title">Kebijakan Privasi NewPipe</string>
+    <string name="website_encouragement">Kunjungi kanal resmi WINATRA untuk mendapatkan kabar terbaru tentang URMIX.</string>
+    <string name="privacy_policy_title">Kebijakan Privasi URMIX</string>
     <string name="website_title">Situs web</string>
-    <string name="app_license_title">Lisensi NewPipe</string>
+    <string name="app_license_title">Lisensi URMIX</string>
     <string name="faq_title">Pertanyaan yang sering diajukan</string>
     <string name="open_in_browser">Buka di peramban</string>
     <string name="done">Selesai</string>
     <string name="not_available">Tidak tersedia</string>
-    <string name="app_description">Streaming ringan Libre di Android.</string>
-    <string name="contribution_encouragement">Baik Anda memiliki ide tentang; terjemahan, pengubahan desain, pembersihan kode, atau pengubahan kode yang besar—bantuan selalu diterima. Semakin banyak yang dilakukan, semakin banyak hasilnya!</string>
-    <string name="donation_encouragement">NewPipe dikembangkan oleh para sukarelawan yang meluangkan waktu luang mereka untuk memberikan Anda pengalaman pengguna terbaik. Berikan dukungan untuk membantu para pengembang membuat NewPipe menjadi lebih baik lagi sementara mereka menikmati secangkir kopi.</string>
+    <string name="app_description">URMIX dikembangkan oleh WINATRA untuk menghadirkan pengalaman streaming yang mengutamakan audio, dengan pilihan untuk beralih ke video saat dibutuhkan.\n\nKami membuat URMIX karena ingin pengalaman mendengarkan yang ringan, fokus suara, dan bebas dari distraksi — tanpa harus kehilangan akses ke konten video saat dibutuhkan.</string>
+    <string name="urmix_attribution">URMIX dibangun di atas kode dan engine open-source NewPipe. URMIX merupakan fork independen yang dikembangkan sepenuhnya oleh WINATRA, bukan aplikasi resmi NewPipe. Komponen NewPipe mengikuti lisensi GPL-3.0-or-later.</string>
+    <string name="contribution_encouragement">Lihat kode sumber URMIX di GitHub atau ikut berkontribusi dalam pengembangannya.</string>
+    <string name="donation_encouragement">Dukung WINATRA agar kami dapat terus mengembangkan URMIX.</string>
     <string name="give_back">Berikan</string>
     <string name="faq">Lihat di situs web</string>
-    <string name="privacy_policy_encouragement">Proyek NewPipe sangat mementingkan privasi Anda. Oleh karena itu, aplikasi ini tidak mengumpulkan data apapun tanpa persetujuan Anda.\nKebijakan privasi NewPipe menjelaskan secara detail data apa yang dikirim dan disimpan saat Anda mengirim laporan kerusakan.</string>
+    <string name="privacy_policy_encouragement">URMIX menghormati privasi Anda. Kebijakan privasi URMIX menjelaskan data yang dikirim dan disimpan saat Anda mengirim laporan kerusakan.</string>
     <string name="read_privacy_policy">Baca kebijakan privasi</string>
     <string name="read_full_license">Baca lisensi</string>
     <string name="faq_description">Jika Anda mengalami kesulitan menggunakan aplikasi, pastikan untuk memeriksa jawaban atas pertanyaan umum ini!</string>
+    <string name="winatra_team_title">Tim WINATRA</string>
+    <string name="winatra_team_members">Dikembangkan oleh @ahmddzlkrn dan @imamyahyaaaaa. Ikuti kabar terbaru lewat Instagram resmi WINATRA.</string>
+    <string name="winatra_team_instagram">Instagram resmi WINATRA</string>
+    <string name="settings">Pengaturan</string>
+    <string name="search">Cari</string>
+    <string name="content">Konten</string>
+    <string name="notifications">Notifikasi</string>
+    <string name="settings_category_video_audio_title">Video dan audio</string>
+    <string name="settings_category_downloads_title">Unduhan</string>
+    <string name="settings_category_appearance_title">Tampilan</string>
+    <string name="settings_category_history_title">Riwayat dan cache</string>
+    <string name="settings_category_updates_title">Pembaruan</string>
+    <string name="settings_category_backup_restore_title">Cadangkan dan pulihkan</string>
+    <string name="settings_category_debug_title">Debug</string>
     <string name="app_license">Aplikasi ini adalah perangkat lunak bebas copyleft: Anda dapat menggunakan, mempelajari, membagikan, dan memperbaikinya sesuka hati. Secara khusus, Anda dapat mendistribusikan dan/atau memodifikasinya berdasarkan ketentuan Lisensi Publik Umum GNU sebagaimana diterbitkan oleh Free Software Foundation, baik versi 3 dari Lisensi, atau (sesuai pilihan Anda) versi apapun yang lebih baru.</string>
 </resources>

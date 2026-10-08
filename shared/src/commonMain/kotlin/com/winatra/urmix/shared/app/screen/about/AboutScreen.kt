@@ -30,7 +30,7 @@ import com.winatra.urmix.shared.app.preview.ThemePreviewProvider
 import com.winatra.urmix.shared.app.screen.about.navigation.Page
 import com.winatra.urmix.shared.app.theme.currentServiceScheme
 import com.winatra.urmix.shared.generated.resources.Res
-import com.winatra.urmix.shared.generated.resources.title_activity_about
+import com.winatra.urmix.shared.generated.resources.about_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
@@ -56,7 +56,7 @@ fun AboutScreenContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = stringResource(Res.string.title_activity_about),
+                title = stringResource(Res.string.about_title),
                 onNavigateUp = onNavigateUp
             )
         }

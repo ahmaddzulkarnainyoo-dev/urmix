@@ -8,18 +8,19 @@
     <string name="navigate_back">Back</string>
 
     <!-- AboutScreen -->
+    <string name="about_title">About URMIX</string>
     <string name="title_activity_about">About URMIX</string>
     <string name="title_licenses">Third-party Licenses</string>
     <string name="license">By %1$s under %2$s</string>
     <string name="tab_about">About \u0026 FAQ</string>
     <string name="tab_licenses">Licenses</string>
-    <string name="app_description">URMIX is developed by WINATRA.\nThis app uses the open-source architecture and engine of NewPipe Core.\nWINATRA redesigned the entire UI/UX experience, notification management, and audio-first focus.</string>
-    <string name="urmix_attribution">URMIX dikembangkan oleh WINATRA. Aplikasi ini menggunakan fondasi arsitektur dan engine open-source dari NewPipe Core. WINATRA merancang ulang seluruh pengalaman UI/UX, tata kelola notifikasi, serta mengoptimalkan pemutaran fokus audio bergaya Spotify.</string>
+    <string name="app_description">URMIX is developed by WINATRA to offer an audio-first streaming experience, with the option to switch to video when needed.\n\nWe created URMIX because we wanted a lightweight, sound-focused listening experience with fewer distractions — without giving up access to video when you need it.</string>
+    <string name="urmix_attribution">URMIX is built on the open-source code and engine of NewPipe. URMIX is an independent fork developed entirely by WINATRA, not an official NewPipe app. NewPipe components are licensed under GPL-3.0-or-later.</string>
     <string name="contribution_title">Contribute</string>
-    <string name="contribution_encouragement">Whether you have ideas of; translation, design changes, code cleaning, or real heavy code changes—help is always welcome. The more is done the better it gets!</string>
+    <string name="contribution_encouragement">Explore the URMIX source code on GitHub or contribute to the project.</string>
     <string name="view_on_github">View on GitHub</string>
     <string name="donation_title">Donate</string>
-    <string name="donation_encouragement">URMIX is developed by WINATRA. Your support helps keep the service running and bring you the best audio experience.</string>
+    <string name="donation_encouragement">Support WINATRA to help us continue developing URMIX.</string>
     <string name="give_back">Give back</string>
     <string name="website_title">Website</string>
     <string name="website_encouragement">Visit the URMIX website for more info and news.</string>
@@ -37,9 +38,9 @@
     <string name="not_available">Not available</string>
 
     <!-- URMIX WINATRA team header (blueprint v1.0.2 §8) -->
-    <string name="winatra_team_title">Tim WINATRA</string>
-    <string name="winatra_team_members">@ahmddzlkrn dan @imamyahyaaaaa</string>
-    <string name="winatra_team_instagram">Instagram resmi WINATRA</string>
+    <string name="winatra_team_title">WINATRA Team</string>
+    <string name="winatra_team_members">Developed by @ahmddzlkrn and @imamyahyaaaaa. Follow the latest updates on WINATRA’s official Instagram.</string>
+    <string name="winatra_team_instagram">Official WINATRA Instagram</string>
 
     <!-- SettingsHomeScreen -->
     <string name="settings">Settings</string>

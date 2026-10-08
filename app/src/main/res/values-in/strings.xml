@@ -111,10 +111,10 @@
     <string name="copyright" formatted="true">© %1$s oleh %2$s di bawah %3$s</string>
     <string name="tab_about">Tentang &amp; FAQ</string>
     <string name="tab_licenses">Lisensi</string>
-    <string name="app_description">Streaming ringan Libre di Android.</string>
+    <string name="app_description">URMIX dikembangkan oleh WINATRA untuk menghadirkan pengalaman streaming yang mengutamakan audio, dengan pilihan untuk beralih ke video saat dibutuhkan.\n\nKami membuat URMIX karena ingin pengalaman mendengarkan yang ringan, fokus suara, dan bebas dari distraksi — tanpa harus kehilangan akses ke konten video saat dibutuhkan.</string>
     <string name="view_on_github">Lihat di GitHub</string>
-    <string name="app_license_title">Lisensi NewPipe</string>
-    <string name="contribution_encouragement">Baik Anda memiliki ide tentang; terjemahan, pengubahan desain, pembersihan kode, atau pengubahan kode yang besar—bantuan selalu diterima. Semakin banyak yang dilakukan, semakin banyak hasilnya!</string>
+    <string name="app_license_title">Lisensi URMIX</string>
+    <string name="contribution_encouragement">Lihat kode sumber URMIX di GitHub atau ikut berkontribusi dalam pengembangannya.</string>
     <string name="read_full_license">Baca lisensi</string>
     <string name="contribution_title">Kontribusi</string>
     <string name="subscribe_button_title">Berlanggan</string>
@@ -182,10 +182,10 @@
     <string name="dismiss">Abaikan</string>
     <string name="rename">Ubah nama</string>
     <string name="donation_title">Donasi</string>
-    <string name="donation_encouragement">NewPipe dikembangkan oleh para sukarelawan yang meluangkan waktu luang mereka untuk memberikan Anda pengalaman pengguna terbaik. Berikan dukungan untuk membantu para pengembang membuat NewPipe menjadi lebih baik lagi sementara mereka menikmati secangkir kopi.</string>
+    <string name="donation_encouragement">Dukung WINATRA agar kami dapat terus mengembangkan URMIX.</string>
     <string name="give_back">Berikan</string>
     <string name="website_title">Situs web</string>
-    <string name="website_encouragement">Kunjungi Situs Web NewPipe untuk info dan berita lainnya.</string>
+    <string name="website_encouragement">Kunjungi kanal resmi WINATRA untuk mendapatkan kabar terbaru tentang URMIX.</string>
     <string name="delete_item_search_history">Apakah ingin hapus butir ini dari riwayat pencarian?</string>
     <string name="title_last_played">Terakhir Diputar</string>
     <string name="title_most_played">Sering Diputar</string>
@@ -301,14 +301,13 @@
     <string name="playlists">Daftar Putar</string>
     <string name="tracks">Trek</string>
     <string name="users">Pengguna</string>
-    <string name="privacy_policy_title">Kebijakan Privasi NewPipe</string>
-    <string name="privacy_policy_encouragement">Proyek NewPipe sangat memperhatikan privasi kamu. Oleh karena itu, aplikasi ini tidak mengumpulkan data apa pun tanpa persetujuan Anda.
-\nKebijakan privasi URMIX menjelaskan secara detail data apa saja yang dikirim dan disimpan ketika kamu mengirimkan laporan kerusakan aplikasi.</string>
+    <string name="privacy_policy_title">Kebijakan Privasi URMIX</string>
+    <string name="privacy_policy_encouragement">URMIX menghormati privasi Anda. Kebijakan privasi URMIX menjelaskan data yang dikirim dan disimpan saat Anda mengirim laporan kerusakan.</string>
     <string name="read_privacy_policy">Baca kebijakan privasi</string>
     <string name="skip_silence_checkbox">Percepat saat diam</string>
     <string name="playback_step">Langkah</string>
     <string name="playback_reset">Atur ulang</string>
-    <string name="start_accept_privacy_policy">Agar sesuai dengan Regulasi Perlindungan Data Umum Eropa (GDPR), dengan ini kami tarik perhatian Anda ke kebijakan privasi NewPipe. Silakan baca dengan seksama.
+    <string name="start_accept_privacy_policy">Agar sesuai dengan Regulasi Perlindungan Data Umum Eropa (GDPR), dengan ini kami mengingatkan Anda untuk membaca kebijakan privasi URMIX dengan saksama.
 \nAnda harus menerimanya untuk mengirimkan laporan bug kepada kami.</string>
     <string name="accept">Setuju</string>
     <string name="decline">Tolak</string>
@@ -884,7 +883,7 @@
     <string name="home_trending_audio">Sedang Trending</string>
     <string name="home_podcasting">Podcast</string>
     <string name="home_empty">Belum ada apa-apa di sini. Coba lihat koleksi atau yang sedang trending.</string>
-    <string name="urmix_attribution">URMIX dikembangkan oleh WINATRA. Aplikasi ini menggunakan fondasi arsitektur dan engine open-source dari NewPipe Core. WINATRA merancang ulang seluruh pengalaman UI/UX, tata kelola notifikasi, serta mengoptimalkan pemutaran fokus audio bergaya Spotify.</string>
+    <string name="urmix_attribution">URMIX dibangun di atas kode dan engine open-source NewPipe. URMIX merupakan fork independen yang dikembangkan sepenuhnya oleh WINATRA, bukan aplikasi resmi NewPipe. Komponen NewPipe mengikuti lisensi GPL-3.0-or-later.</string>
     <string name="liked_songs_playlist_name">Lagu Disukai</string>
     <string name="liked_songs_playlist_summary">Playlist khusus untuk trek yang kamu sukai</string>
     <string name="like_song">Suka</string>

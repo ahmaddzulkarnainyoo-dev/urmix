@@ -198,7 +198,7 @@ fun AboutPageContent(
             }
         }
 
-        // Links about NewPipe
+        // Additional URMIX links
         items(items = links, key = { link -> link.url }) { link ->
             LinkListItem(
                 link = link,
