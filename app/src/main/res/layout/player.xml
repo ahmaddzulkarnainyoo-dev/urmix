@@ -15,17 +15,25 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
-    <!-- URMIX audio-first album art (v1.0.2): default tampil, video hanya via toggle -->
-    <ImageView
-        android:id="@+id/album_art_full"
+    <!-- URMIX audio-first album art stays at a 9:16 ratio in the upper player area. -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:background="@color/urmix_primary_background"
-        android:contentDescription="@string/detail_thumbnail_view_description"
-        android:scaleType="centerCrop"
-        tools:ignore="ContentDescription"
-        tools:src="@drawable/placeholder_thumbnail_video" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/album_art_full"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/urmix_primary_background"
+            android:contentDescription="@string/detail_thumbnail_view_description"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="9:16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/placeholder_thumbnail_video" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/surfaceForeground"

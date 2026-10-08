@@ -115,7 +115,6 @@ import com.winatra.urmix.util.Localization;
 import com.winatra.urmix.util.NavigationHelper;
 import com.winatra.urmix.util.PermissionHelper;
 import com.winatra.urmix.util.PlayButtonHelper;
-import com.winatra.urmix.util.StreamTypeUtil;
 import com.winatra.urmix.util.ThemeHelper;
 import com.winatra.urmix.util.external_communication.KoreUtils;
 import com.winatra.urmix.util.external_communication.ShareUtils;
@@ -1545,51 +1544,12 @@ public final class VideoDetailFragment
             displayUploaderAsSubChannel(info);
         }
 
-        if (info.getViewCount() >= 0) {
-            if (info.getStreamType().equals(StreamType.AUDIO_LIVE_STREAM)) {
-                binding.detailViewCountView.setText(Localization.listeningCount(activity,
-                        info.getViewCount()));
-            } else if (info.getStreamType().equals(StreamType.LIVE_STREAM)) {
-                binding.detailViewCountView.setText(Localization
-                        .localizeWatchingCount(activity, info.getViewCount()));
-            } else {
-                binding.detailViewCountView.setText(Localization
-                        .localizeViewCount(activity, info.getViewCount()));
-            }
-            binding.detailViewCountView.setVisibility(View.VISIBLE);
-        } else {
-            binding.detailViewCountView.setVisibility(View.GONE);
-        }
-
-        if (info.getDislikeCount() == -1 && info.getLikeCount() == -1) {
-            binding.detailThumbsDownImgView.setVisibility(View.VISIBLE);
-            binding.detailThumbsUpImgView.setVisibility(View.VISIBLE);
-            binding.detailThumbsUpCountView.setVisibility(View.GONE);
-            binding.detailThumbsDownCountView.setVisibility(View.GONE);
-
-            binding.detailThumbsDisabledView.setVisibility(View.VISIBLE);
-        } else {
-            if (info.getDislikeCount() >= 0) {
-                binding.detailThumbsDownCountView.setText(Localization
-                        .shortCount(activity, info.getDislikeCount()));
-                binding.detailThumbsDownCountView.setVisibility(View.VISIBLE);
-                binding.detailThumbsDownImgView.setVisibility(View.VISIBLE);
-            } else {
-                binding.detailThumbsDownCountView.setVisibility(View.GONE);
-                binding.detailThumbsDownImgView.setVisibility(View.GONE);
-            }
-
-            if (info.getLikeCount() >= 0) {
-                binding.detailThumbsUpCountView.setText(Localization.shortCount(activity,
-                        info.getLikeCount()));
-                binding.detailThumbsUpCountView.setVisibility(View.VISIBLE);
-                binding.detailThumbsUpImgView.setVisibility(View.VISIBLE);
-            } else {
-                binding.detailThumbsUpCountView.setVisibility(View.GONE);
-                binding.detailThumbsUpImgView.setVisibility(View.GONE);
-            }
-            binding.detailThumbsDisabledView.setVisibility(View.GONE);
-        }
+        binding.detailViewCountView.setVisibility(View.GONE);
+        binding.detailThumbsDownImgView.setVisibility(View.GONE);
+        binding.detailThumbsUpImgView.setVisibility(View.GONE);
+        binding.detailThumbsUpCountView.setVisibility(View.GONE);
+        binding.detailThumbsDownCountView.setVisibility(View.GONE);
+        binding.detailThumbsDisabledView.setVisibility(View.GONE);
 
         if (info.getDuration() > 0) {
             binding.detailDurationView.setText(Localization.getDurationString(info.getDuration()));
@@ -1636,15 +1596,11 @@ public final class VideoDetailFragment
             }
         }
 
-        binding.detailControlsDownload.setVisibility(
-                StreamTypeUtil.isLiveStream(info.getStreamType()) ? View.GONE : View.VISIBLE);
-        binding.detailControlsBackground.setVisibility(
-                info.getAudioStreams().isEmpty() && info.getVideoStreams().isEmpty()
-                        ? View.GONE : View.VISIBLE);
-
+        binding.detailControlsDownload.setVisibility(View.GONE);
+        binding.detailControlsBackground.setVisibility(View.GONE);
+        binding.detailControlsPopup.setVisibility(View.GONE);
         final boolean noVideoStreams =
                 info.getVideoStreams().isEmpty() && info.getVideoOnlyStreams().isEmpty();
-        binding.detailControlsPopup.setVisibility(noVideoStreams ? View.GONE : View.VISIBLE);
         binding.detailThumbnailPlayButton.setImageResource(
                 noVideoStreams ? R.drawable.ic_headset_shadow : R.drawable.ic_play_arrow_shadow);
     }
@@ -1654,13 +1610,7 @@ public final class VideoDetailFragment
         binding.detailSubChannelTextView.setVisibility(View.VISIBLE);
         binding.detailSubChannelTextView.setSelected(true);
 
-        if (info.getUploaderSubscriberCount() > -1) {
-            binding.detailUploaderTextView.setText(
-                    Localization.shortSubscriberCount(activity, info.getUploaderSubscriberCount()));
-            binding.detailUploaderTextView.setVisibility(View.VISIBLE);
-        } else {
-            binding.detailUploaderTextView.setVisibility(View.GONE);
-        }
+        binding.detailUploaderTextView.setVisibility(View.GONE);
 
         CoilHelper.INSTANCE.loadAvatar(binding.detailSubChannelThumbnailView,
                 info.getUploaderAvatars());
@@ -1678,14 +1628,6 @@ public final class VideoDetailFragment
             subText.append(
                     String.format(getString(R.string.video_detail_by), info.getUploaderName()));
         }
-        if (info.getUploaderSubscriberCount() > -1) {
-            if (subText.length() > 0) {
-                subText.append(Localization.DOT_SEPARATOR);
-            }
-            subText.append(
-                    Localization.shortSubscriberCount(activity, info.getUploaderSubscriberCount()));
-        }
-
         if (subText.length() > 0) {
             binding.detailUploaderTextView.setText(subText);
             binding.detailUploaderTextView.setVisibility(View.VISIBLE);
