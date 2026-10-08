@@ -6,8 +6,8 @@ package com.winatra.urmix.remoteconfig
  * Fetches the remote config from Supabase with a strict 4 s timeout, caches the
  * last successful payload in a dedicated SharedPreferences store and fails back
  * silently. App startup is never blocked by network problems; it is only blocked
- * when a *cached* config demands a forced update (force_update == true) and the
- * locally installed app version is older than the required one.
+ * when the effective config demands a forced update and either the installed app
+ * or bundled extractor is older than its required version.
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  * This file is part of URMIX, a fork of NewPipe (org.schabi.newpipe).
@@ -53,7 +53,10 @@ object RemoteConfigRepository {
     private const val PREFS_NAME = "urmix_remote_config"
     private const val KEY_CACHED_JSON = "cached_config_json"
     private const val KEY_LAST_FETCH_MILLIS = "last_successful_fetch_millis"
+    private const val KEY_LAST_FETCH_ATTEMPT_MILLIS = "last_fetch_attempt_millis"
     private const val TIMEOUT_SECONDS = 4L
+    private const val RETRY_INTERVAL_MILLIS = 5 * 60 * 1000L
+    private const val SUPPORTED_CONFIG_SCHEMA_VERSION = 2
 
     private val cachedConfig = AtomicReference<RemoteConfig?>(null)
 
@@ -65,6 +68,7 @@ object RemoteConfigRepository {
         OkHttpClient.Builder()
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .callTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build()
     }
 
@@ -82,6 +86,7 @@ object RemoteConfigRepository {
         return shared.newBuilder()
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .callTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build()
     }
 
@@ -141,17 +146,8 @@ object RemoteConfigRepository {
 
     private fun extractorVersion(): String? = BuildConfig.EXTRACTOR_VERSION
 
-    /**
-     * True only when a *cached* config demands a blocking forced update and the
-     * installed app version is older than the required app_version.
-     */
-    fun shouldBlockStartup(context: Context): Boolean {
-        val config = getCachedConfig(context) ?: return false
-        if (!config.forceUpdate) {
-            return false
-        }
-        return isNewerVersion(config.appVersion, BuildConfig.VERSION_NAME)
-    }
+    /** True only when the effective cached config requires a forced update. */
+    fun shouldBlockStartup(context: Context): Boolean = getUpdateState(context) == UpdateGate.UpdateState.FORCE_UPDATE
 
     /** The update_url to direct the user to (config value or the WINATRA default). */
     fun getEffectiveUpdateUrl(context: Context): String = getCachedConfig(context)?.updateUrl ?: DEFAULT_UPDATE_URL
@@ -174,8 +170,21 @@ object RemoteConfigRepository {
      * successful response. Offline/timeout/corrupt payloads fall back to the
      * cached config without disturbing the user.
      */
+    @Synchronized
     fun refresh(context: Context) {
         // Might block up to ~4 s: only ever call from a background thread.
+        val preferences = prefs(context)
+        val now = System.currentTimeMillis()
+        val lastAttempt = preferences.getLong(KEY_LAST_FETCH_ATTEMPT_MILLIS, 0L)
+        val lastSuccess = preferences.getLong(KEY_LAST_FETCH_MILLIS, 0L)
+        if (lastAttempt > lastSuccess && now - lastAttempt < RETRY_INTERVAL_MILLIS) {
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "Skipping remote config retry; using cached config")
+            }
+            return
+        }
+        preferences.edit().putLong(KEY_LAST_FETCH_ATTEMPT_MILLIS, now).apply()
+
         val raw = try {
             fetchConfigJson()
         } catch (e: Exception) {
@@ -223,6 +232,14 @@ object RemoteConfigRepository {
     internal fun parseConfig(raw: String): RemoteConfig? {
         return try {
             val root: JsonObject = parseRoot(raw) ?: return null
+            val schemaVersion = root.getInt("config_schema_version", 0)
+            if (schemaVersion > SUPPORTED_CONFIG_SCHEMA_VERSION) {
+                Log.w(
+                    TAG,
+                    "Unsupported remote config schema version $schemaVersion; keeping cached config"
+                )
+                return null
+            }
             val announcementObject = optionalObject(root, "announcement")
             val donationObject = optionalObject(root, "donation")
 
@@ -248,7 +265,7 @@ object RemoteConfigRepository {
             }
 
             RemoteConfig(
-                root.getInt("config_schema_version", 0),
+                schemaVersion,
                 nullable(root.getString("app_version")),
                 nullable(root.getString("min_extractor_version")),
                 root.getBoolean("force_update", false),

@@ -8,8 +8,8 @@ const val URMIX_VERSION_SDK_COMPILE_MINOR = 0
 const val URMIX_VERSION_SDK_MIN = 23
 const val URMIX_VERSION_SDK_TARGET = 35
 
-const val URMIX_VERSION_CODE = 101
-const val URMIX_VERSION_NAME = "1.0.1"
+const val URMIX_VERSION_CODE = 102
+const val URMIX_VERSION_NAME = "1.0.2"
 
 const val URMIX_APPLICATION_ID = "com.winatra.urmix"
 const val URMIX_APPLICATION_ID_SHARED = "com.winatra.urmix.shared.app"

@@ -16,6 +16,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import androidx.appcompat.app.AppCompatActivity
 import com.winatra.urmix.databinding.ActivitySplashBinding
 import com.winatra.urmix.remoteconfig.RemoteConfigRepository
@@ -44,13 +45,19 @@ class SplashActivity : AppCompatActivity() {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
 
-        // Fetch the WINATRA remote config non-blocking in the background
-        // (strict 4 s timeout inside RemoteConfigRepository, cache fallback).
-        Thread { RemoteConfigRepository.refresh(applicationContext) }.start()
-
-        // Keep the splash for ~1.6 s, then continue (blueprint §2 allows
-        // `lifecycleScope`/`Handler`; we use a Handler-based timer).
-        Handler(Looper.getMainLooper()).postDelayed({ openMainActivityOrBlock() }, splashDurationMs)
+        val splashStartedAt = SystemClock.elapsedRealtime()
+        val mainHandler = Handler(Looper.getMainLooper())
+        Thread({
+            // Refresh completes with either the new config or the existing cache.
+            RemoteConfigRepository.refresh(applicationContext)
+            val remainingSplashTime =
+                (splashDurationMs - (SystemClock.elapsedRealtime() - splashStartedAt))
+                    .coerceAtLeast(0L)
+            mainHandler.postDelayed(
+                { openMainActivityOrBlock() },
+                remainingSplashTime
+            )
+        }, "urmix-remote-config").start()
     }
 
     private fun openMainActivityOrBlock() {
