@@ -1,6 +1,7 @@
 package com.winatra.urmix.home
 // URMIX home data loader (blueprint v2 S3.1/S3.3) - part 1 of 4.
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.GridLayout
 import android.widget.ImageView
@@ -145,7 +146,7 @@ class HomeDataLoader(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ streams ->
-                    val items = streams.take(20).mapNotNull { withState ->
+                    val items = streams.take(HOME_CAROUSEL_LIMIT).mapNotNull { withState ->
                         val stream = withState.stream
                         if (stream.url.isEmpty()) {
                             return@mapNotNull null
@@ -161,6 +162,11 @@ class HomeDataLoader(
                         }
                     }
                     callbacks.madeForYou().submitList(items)
+                    callbacks.binding()?.let { binding ->
+                        val visibility = if (items.isEmpty()) View.GONE else View.VISIBLE
+                        binding.homeMadeForYouTitle.visibility = visibility
+                        binding.homeMadeForYouList.visibility = visibility
+                    }
                     updateEmptyState()
                 }, { updateEmptyState() })
         )
@@ -184,11 +190,6 @@ class HomeDataLoader(
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ kiosk ->
-                    // Keep the empty state accurate while podcast loading is disabled.
-                    if (kiosk.relatedItems.isEmpty()) {
-                        updateEmptyState()
-                        return@subscribe
-                    }
                     val items = kiosk.relatedItems
                         .filterIsInstance<StreamInfoItem>()
                         .sortedWith(
@@ -196,11 +197,58 @@ class HomeDataLoader(
                                 { !HomeFragment.isAudioLeaning(it.streamType) },
                                 { it.name.lowercase() }
                             )
-                        ).take(20)
-                    callbacks.trending().submitList(items)
+                        ).take(HOME_CAROUSEL_LIMIT)
+                    if (items.isEmpty()) {
+                        loadTrendingHistoryFallback(appContext)
+                    } else {
+                        showTrendingItems(items)
+                    }
                     updateEmptyState()
-                }, { updateEmptyState() })
+                }, {
+                    loadTrendingHistoryFallback(appContext)
+                    updateEmptyState()
+                })
         )
+    }
+
+    private fun loadTrendingHistoryFallback(appContext: Context) {
+        disposables.add(
+            Observable.fromCallable {
+                NewPipeDatabase.getInstance(appContext).streamHistoryDAO()
+                    .history.blockingFirst()
+            }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ entries ->
+                    val items = entries.take(HOME_CAROUSEL_LIMIT).map { entry ->
+                        StreamInfoItem(
+                            entry.streamEntity.serviceId,
+                            entry.streamEntity.url,
+                            entry.streamEntity.title,
+                            entry.streamEntity.streamType
+                        ).apply {
+                            uploaderName = entry.streamEntity.uploader
+                            thumbnails =
+                                ImageStrategy.dbUrlToImageList(entry.streamEntity.thumbnailUrl)
+                        }
+                    }
+                    showTrendingItems(items)
+                    updateEmptyState()
+                }, { error ->
+                    Log.w(TAG, "Could not load cached history for the Trending fallback", error)
+                    showTrendingItems(emptyList())
+                    updateEmptyState()
+                })
+        )
+    }
+
+    private fun showTrendingItems(items: List<StreamInfoItem>) {
+        callbacks.trending().submitList(items)
+        callbacks.binding()?.let { binding ->
+            val visibility = if (items.isEmpty()) View.GONE else View.VISIBLE
+            binding.homeTrendingTitle.visibility = visibility
+            binding.homeTrendingList.visibility = visibility
+        }
     }
     /*
     fun loadPodcasting() {
@@ -328,5 +376,10 @@ class HomeDataLoader(
             // callbacks.podcast().itemCount > 0 ||
             binding.homeQuickPlayGrid.childCount > 0
         binding.homeEmpty.visibility = if (hasContent) View.GONE else View.VISIBLE
+    }
+
+    companion object {
+        private const val HOME_CAROUSEL_LIMIT = 10
+        private const val TAG = "HomeDataLoader"
     }
 }
