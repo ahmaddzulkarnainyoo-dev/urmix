@@ -7,6 +7,7 @@ package com.winatra.urmix.shared.app
 
 object Constants {
     const val URL_GITHUB = "https://github.com/ahmaddzulkarnainyoo-dev/urmix"
+    const val URL_INSTAGRAM = "https://www.instagram.com/winatra.official"
     const val URL_DONATION = "https://saweria.co/winatra"
     // v1.0.2: placeholder sampai URL asli siap — tombol WEBSITE/FAQ/PRIVACY di-hide di About.
     const val URL_WEBSITE = "https://winatra.com"

@@ -31,6 +31,10 @@
     <string name="winatra_team_title">Tim WINATRA</string>
     <string name="winatra_team_members">Dikembangkan oleh @ahmddzlkrn dan @imamyahyaaaaa. Ikuti kabar terbaru lewat Instagram resmi WINATRA.</string>
     <string name="winatra_team_instagram">Instagram resmi WINATRA</string>
+    <string name="winatra_member_ahmddzlkrn">@ahmddzlkrn</string>
+    <string name="winatra_member_imamyahyaaaaa">@imamyahyaaaaa</string>
+    <string name="social_instagram_title">Instagram</string>
+    <string name="social_github_title">GitHub</string>
     <string name="settings">Pengaturan</string>
     <string name="search">Cari</string>
     <string name="content">Konten</string>

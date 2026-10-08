@@ -8,7 +8,9 @@ package com.winatra.urmix.shared.app.screen.about
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -18,6 +20,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -26,10 +30,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -52,21 +58,18 @@ import com.winatra.urmix.shared.generated.resources.contribution_encouragement
 import com.winatra.urmix.shared.generated.resources.contribution_title
 import com.winatra.urmix.shared.generated.resources.donation_encouragement
 import com.winatra.urmix.shared.generated.resources.donation_title
-import com.winatra.urmix.shared.generated.resources.faq
-import com.winatra.urmix.shared.generated.resources.faq_description
-import com.winatra.urmix.shared.generated.resources.faq_title
+import com.winatra.urmix.shared.generated.resources.github
 import com.winatra.urmix.shared.generated.resources.give_back
 import com.winatra.urmix.shared.generated.resources.ic_foreground
-import com.winatra.urmix.shared.generated.resources.open_in_browser
-import com.winatra.urmix.shared.generated.resources.privacy_policy_encouragement
-import com.winatra.urmix.shared.generated.resources.privacy_policy_title
-import com.winatra.urmix.shared.generated.resources.read_privacy_policy
+import com.winatra.urmix.shared.generated.resources.instagram
+import com.winatra.urmix.shared.generated.resources.social_github_title
+import com.winatra.urmix.shared.generated.resources.social_instagram_title
 import com.winatra.urmix.shared.generated.resources.urmix_about_banner
 import com.winatra.urmix.shared.generated.resources.urmix_attribution
+import com.winatra.urmix.shared.generated.resources.urmix_team_badge
 import com.winatra.urmix.shared.generated.resources.view_on_github
-import com.winatra.urmix.shared.generated.resources.website_encouragement
-import com.winatra.urmix.shared.generated.resources.website_title
-import com.winatra.urmix.shared.generated.resources.winatra_team_instagram
+import com.winatra.urmix.shared.generated.resources.winatra_member_ahmddzlkrn
+import com.winatra.urmix.shared.generated.resources.winatra_member_imamyahyaaaaa
 import com.winatra.urmix.shared.generated.resources.winatra_team_members
 import com.winatra.urmix.shared.generated.resources.winatra_team_title
 import org.jetbrains.compose.resources.painterResource
@@ -185,15 +188,46 @@ fun AboutPageContent(
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(spaceXSmall))
-                    LinkListItem(
-                        link = Link(
-                            title = stringResource(Res.string.winatra_team_instagram),
-                            description = WINATRA_INSTAGRAM_URL,
-                            action = stringResource(Res.string.open_in_browser),
-                            url = WINATRA_INSTAGRAM_URL
-                        ),
-                        onAction = { onOpenUrl(WINATRA_INSTAGRAM_URL) }
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        TeamMemberAvatar(
+                            initial = "A",
+                            handle = stringResource(Res.string.winatra_member_ahmddzlkrn)
+                        )
+                        TeamMemberAvatar(
+                            initial = "I",
+                            handle = stringResource(Res.string.winatra_member_imamyahyaaaaa)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(spaceXSmall))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextButton(onClick = { onOpenUrl(Constants.URL_INSTAGRAM) }) {
+                            Image(
+                                modifier = Modifier.size(20.dp),
+                                painter = painterResource(Res.drawable.instagram),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                            )
+                            Spacer(modifier = Modifier.width(spaceXSmall))
+                            Text(text = stringResource(Res.string.social_instagram_title))
+                        }
+                        TextButton(onClick = { onOpenUrl(Constants.URL_GITHUB) }) {
+                            Image(
+                                modifier = Modifier.size(20.dp),
+                                painter = painterResource(Res.drawable.github),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                            )
+                            Spacer(modifier = Modifier.width(spaceXSmall))
+                            Text(text = stringResource(Res.string.social_github_title))
+                        }
+                    }
                 }
             }
         }
@@ -205,6 +239,41 @@ fun AboutPageContent(
                 onAction = { onOpenUrl(link.url) }
             )
         }
+    }
+}
+
+@Composable
+private fun TeamMemberAvatar(initial: String, handle: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            modifier = Modifier.requiredSize(108.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(Res.drawable.urmix_team_badge),
+                contentDescription = null,
+                contentScale = ContentScale.Fit
+            )
+            Box(
+                modifier = Modifier
+                    .size(68.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = initial,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
+        Text(
+            text = handle,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -224,9 +293,6 @@ private fun defaultLinks() = listOf(
         url = Constants.URL_DONATION
     )
 )
-
-private const val WINATRA_INSTAGRAM_URL =
-    "https://www.instagram.com/winatra.official?stkn=cHRlc3A5eTFyM3N2"
 
 @PreviewWrapper(ThemePreviewProvider::class)
 @PreviewLightDark

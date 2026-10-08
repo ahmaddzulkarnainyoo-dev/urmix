@@ -41,6 +41,10 @@
     <string name="winatra_team_title">WINATRA Team</string>
     <string name="winatra_team_members">Developed by @ahmddzlkrn and @imamyahyaaaaa. Follow the latest updates on WINATRA’s official Instagram.</string>
     <string name="winatra_team_instagram">Official WINATRA Instagram</string>
+    <string name="winatra_member_ahmddzlkrn">@ahmddzlkrn</string>
+    <string name="winatra_member_imamyahyaaaaa">@imamyahyaaaaa</string>
+    <string name="social_instagram_title">Instagram</string>
+    <string name="social_github_title">GitHub</string>
 
     <!-- SettingsHomeScreen -->
     <string name="settings">Settings</string>
