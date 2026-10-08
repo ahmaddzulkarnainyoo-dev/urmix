@@ -1,10 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/splash_brand_block"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:contentDescription="@string/app_name"
-    android:scaleType="centerCrop"
-    android:src="@drawable/urmix_splash"
-    tools:context="com.winatra.urmix.SplashActivity" />
+    tools:context="com.winatra.urmix.SplashActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/app_name"
+        android:scaleType="centerCrop"
+        android:src="@drawable/urmix_splash" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="28dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.85"
+            android:lineSpacingExtra="4dp"
+            android:text="@string/splash_footer_developer"
+            android:textAlignment="center"
+            android:textColor="@color/urmix_text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.85"
+            android:lineSpacingExtra="4dp"
+            android:text="@string/splash_footer_built_on"
+            android:textAlignment="center"
+            android:textColor="@color/urmix_text_secondary"
+            android:textSize="12sp" />
+    </LinearLayout>
+</FrameLayout>
