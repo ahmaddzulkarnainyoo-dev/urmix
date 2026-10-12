@@ -120,6 +120,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
     boolean surfaceIsSetup = false;
     // URMIX audio-first (v1.0.2): default tampilkan cover art, video hanya bila toggle ON
     private boolean showVideoSurface = false;
+    private boolean hasQualityOptions = false;
     private boolean hasSubtitleCues = false;
     private boolean hasManualCaptionSelection = false;
     private boolean audioFirstCaptionAutoSelected = false;
@@ -238,6 +239,12 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         binding.audioLyricsView.setVisibility(
                 isMainPlayerAudioFirstMode() && binding.audioLyricsView.length() > 0
                         ? View.VISIBLE : View.GONE);
+        if (this instanceof MainPlayerUi) {
+            binding.qualityTextView.setVisibility(
+                    showVideoSurface && hasQualityOptions ? View.VISIBLE : View.GONE);
+            binding.playbackSpeed.setVisibility(
+                    showVideoSurface ? View.VISIBLE : View.GONE);
+        }
         binding.fullScreenButton.setContentDescription(context.getString(
                 showVideo ? R.string.show_audio : R.string.show_video));
     }
@@ -1110,6 +1117,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
             binding.playbackEndTime.setVisibility(View.GONE);
             binding.playbackLiveSync.setVisibility(View.GONE);
             hasSubtitleCues = false;
+            hasQualityOptions = false;
             availableTracks = null;
             binding.audioLyricsView.setText("");
             applyAudioFirstVisibility();
@@ -1149,8 +1157,11 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
 
                     buildQualityMenu();
                     buildAudioTrackMenu();
+                    hasQualityOptions = true;
 
-                    binding.qualityTextView.setVisibility(View.VISIBLE);
+                    binding.qualityTextView.setVisibility(
+                            this instanceof MainPlayerUi && !showVideoSurface
+                                    ? View.GONE : View.VISIBLE);
                     binding.surfaceView.setVisibility(View.VISIBLE);
                     // fallthrough
                 default:
@@ -1164,7 +1175,9 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
             }
 
             buildPlaybackSpeedMenu();
-            binding.playbackSpeed.setVisibility(View.VISIBLE);
+            binding.playbackSpeed.setVisibility(
+                    this instanceof MainPlayerUi && !showVideoSurface
+                            ? View.GONE : View.VISIBLE);
         });
     }
     //endregion
