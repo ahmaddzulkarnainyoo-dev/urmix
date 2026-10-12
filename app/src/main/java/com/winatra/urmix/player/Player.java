@@ -237,6 +237,7 @@ public final class Player implements PlaybackListener, Listener {
     // minimized to background but will resume automatically to the original player type
     private boolean isAudioOnly = false;
     private boolean isPrepared = false;
+    private boolean autoQueueEndHandled = false;
 
     // Number of consecutive stream load failures (e.g. extraction failing due to a private video,
     // region lock or an outdated extractor). After MAX_CONSECUTIVE_STREAM_FAILURES failures in a
@@ -1169,6 +1170,7 @@ public final class Player implements PlaybackListener, Listener {
                 }
                 break;
             case com.google.android.exoplayer2.Player.STATE_READY: //3
+                autoQueueEndHandled = false;
                 if (!isPrepared) {
                     isPrepared = true;
                     onPrepared(playWhenReady);
@@ -1179,6 +1181,10 @@ public final class Player implements PlaybackListener, Listener {
                 changeState(STATE_COMPLETED);
                 saveStreamProgressStateCompleted();
                 isPrepared = false;
+                if (!autoQueueEndHandled) {
+                    autoQueueEndHandled = true;
+                    autoQueueRelatedStreamAtEnd();
+                }
                 break;
         }
     }
@@ -1937,7 +1943,9 @@ public final class Player implements PlaybackListener, Listener {
             return;
         }
 
-        saveStreamProgressState();
+        if (currentState != STATE_COMPLETED) {
+            saveStreamProgressState();
+        }
         playQueue.offsetIndex(+1);
         triggerProgressUpdate();
     }
@@ -2104,6 +2112,28 @@ public final class Player implements PlaybackListener, Listener {
         if (autoQueue != null) {
             playQueue.append(autoQueue.getStreams());
         }
+    }
+
+    private void autoQueueRelatedStreamAtEnd() {
+        if (playQueue == null || playQueue.isEmpty()
+                || playQueue.getIndex() + 1 < playQueue.size()
+                || getRepeatMode() != REPEAT_MODE_OFF
+                || !PlayerHelper.isAutoQueueEnabled(context)) {
+            return;
+        }
+
+        getCurrentStreamInfo().ifPresent(info -> {
+            final PlayQueue relatedQueue = PlayerHelper.autoQueueOf(info,
+                    playQueue.getStreams());
+            if (relatedQueue == null || relatedQueue.isEmpty()) {
+                return;
+            }
+
+            playQueue.append(relatedQueue.getStreams());
+            if (playQueue.getIndex() + 1 < playQueue.size()) {
+                playNext();
+            }
+        });
     }
 
     public void selectQueueItem(final PlayQueueItem item) {
