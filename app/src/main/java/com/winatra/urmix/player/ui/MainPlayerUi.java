@@ -26,6 +26,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,8 @@ import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,6 +59,7 @@ import com.winatra.urmix.info_list.StreamSegmentAdapter;
 import com.winatra.urmix.info_list.StreamSegmentItem;
 import com.winatra.urmix.ktx.AnimationType;
 import com.winatra.urmix.local.dialog.PlaylistDialog;
+import com.winatra.urmix.local.playlist.LikedSongsManager;
 import com.winatra.urmix.player.Player;
 import com.winatra.urmix.player.event.PlayerServiceEventListener;
 import com.winatra.urmix.player.gesture.BasePlayerGestureListener;
@@ -79,6 +84,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutChangeListener {
     private static final String TAG = MainPlayerUi.class.getSimpleName();
 
@@ -95,6 +105,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
 
     private PlayQueueAdapter playQueueAdapter;
     private StreamSegmentAdapter segmentAdapter;
+    private final CompositeDisposable likedSongsDisposables = new CompositeDisposable();
     private boolean isQueueVisible = false;
     private boolean areSegmentsVisible = false;
 
@@ -167,6 +178,9 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
         }));
         binding.queueButton.setOnClickListener(v -> onQueueClicked());
         binding.segmentsButton.setOnClickListener(v -> onSegmentsClicked());
+        binding.playerLikeButton.setOnClickListener(v -> toggleLikedSong());
+        binding.audioVideoToggleButton.setOnClickListener(
+                v -> binding.fullScreenButton.performClick());
 
         binding.addToPlaylistButton.setOnClickListener(v ->
                 getParentActivity().map(FragmentActivity::getSupportFragmentManager)
@@ -201,6 +215,9 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
         binding.queueButton.setOnClickListener(null);
         binding.segmentsButton.setOnClickListener(null);
         binding.addToPlaylistButton.setOnClickListener(null);
+        binding.playerLikeButton.setOnClickListener(null);
+        binding.audioVideoToggleButton.setOnClickListener(null);
+        likedSongsDisposables.clear();
 
         context.getContentResolver().unregisterContentObserver(settingsContentObserver);
 
@@ -270,31 +287,74 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
     }
 
     @Override
+    protected void applyAudioFirstVisibility() {
+        super.applyAudioFirstVisibility();
+        setupScreenRotationButton();
+        if (isAudioFirstMode()) {
+            binding.screenRotationButton.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     protected void setupElementsVisibility() {
         super.setupElementsVisibility();
 
         closeItemsList();
         showHideKodiButton();
-        binding.fullScreenButton.setVisibility(View.VISIBLE);
+        final boolean audioFirst = isAudioFirstMode();
+        binding.fullScreenButton.setVisibility(View.GONE);
+        binding.audioVideoToggleButton.setVisibility(View.VISIBLE);
         setupScreenRotationButton();
-        binding.resizeTextView.setVisibility(View.VISIBLE);
-        binding.getRoot().findViewById(R.id.metadataView).setVisibility(View.VISIBLE);
-        binding.moreOptionsButton.setVisibility(View.VISIBLE);
+        binding.screenRotationButton.setVisibility(
+                audioFirst ? View.GONE : binding.screenRotationButton.getVisibility());
+        binding.resizeTextView.setVisibility(audioFirst ? View.GONE : View.VISIBLE);
+        final View metadataView = binding.getRoot().findViewById(R.id.metadataView);
+        final View audioTrackContainer = (View) binding.audioTrackTextView.getParent();
+        metadataView.setVisibility(View.VISIBLE);
+        audioTrackContainer.setVisibility(audioFirst ? View.GONE : View.VISIBLE);
+        final int titleGravity = audioFirst ? Gravity.CENTER : Gravity.START;
+        binding.titleTextView.setGravity(titleGravity);
+        binding.channelTextView.setGravity(titleGravity);
+        binding.titleTextView.setTextSize(
+                TypedValue.COMPLEX_UNIT_SP, audioFirst ? 20 : 15);
+        binding.channelTextView.setTextSize(
+                TypedValue.COMPLEX_UNIT_SP, audioFirst ? 14 : 12);
+        if (metadataView instanceof LinearLayout) {
+            ((LinearLayout) metadataView).setGravity(
+                    audioFirst ? Gravity.CENTER : Gravity.START);
+        }
+        binding.moreOptionsButton.setVisibility(audioFirst ? View.GONE : View.VISIBLE);
+        binding.audioSecondaryControls.setVisibility(View.VISIBLE);
         binding.topControls.setOrientation(LinearLayout.VERTICAL);
+        final RelativeLayout.LayoutParams topControlsLayoutParams =
+                (RelativeLayout.LayoutParams) binding.topControls.getLayoutParams();
+        topControlsLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_TOP);
+        topControlsLayoutParams.addRule(RelativeLayout.ABOVE, R.id.bottomControls);
+        binding.topControls.setLayoutParams(topControlsLayoutParams);
+        final RelativeLayout.LayoutParams bottomControlsLayoutParams =
+                (RelativeLayout.LayoutParams) binding.bottomControls.getLayoutParams();
+        bottomControlsLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        bottomControlsLayoutParams.addRule(RelativeLayout.ABOVE, R.id.mainPlaybackControls);
+        binding.bottomControls.setLayoutParams(bottomControlsLayoutParams);
+        final RelativeLayout.LayoutParams mainControlsLayoutParams =
+                (RelativeLayout.LayoutParams) binding.mainPlaybackControls.getLayoutParams();
+        mainControlsLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mainControlsLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        binding.mainPlaybackControls.setLayoutParams(mainControlsLayoutParams);
         binding.primaryControls.getLayoutParams().width = MATCH_PARENT;
-        binding.secondaryControls.setVisibility(View.INVISIBLE);
+        binding.shuffleButton.setVisibility(View.VISIBLE);
+        binding.repeatButton.setVisibility(View.VISIBLE);
+        binding.secondaryControls.setVisibility(audioFirst ? View.GONE : View.INVISIBLE);
         binding.moreOptionsButton.setImageDrawable(AppCompatResources.getDrawable(context,
                 R.drawable.ic_expand_more));
-        binding.share.setVisibility(View.VISIBLE);
-        binding.openInBrowser.setVisibility(View.VISIBLE);
-        binding.switchMute.setVisibility(View.VISIBLE);
-        binding.playerCloseButton.setVisibility(isFullscreen ? View.GONE : View.VISIBLE);
+        binding.share.setVisibility(audioFirst ? View.GONE : View.VISIBLE);
+        binding.openInBrowser.setVisibility(audioFirst ? View.GONE : View.VISIBLE);
+        binding.switchMute.setVisibility(audioFirst ? View.GONE : View.VISIBLE);
+        binding.playerCloseButton.setVisibility(View.GONE);
         // Top controls have a large minHeight which is allows to drag the player
         // down in fullscreen mode (just larger area to make easy to locate by finger)
         binding.topControls.setClickable(true);
         binding.topControls.setFocusable(true);
-
-        binding.metadataView.setVisibility(isFullscreen ? View.VISIBLE : View.GONE);
 
         // Reset workaround changes from popup player
         binding.audioTrackTextView.setMaxWidth(Integer.MAX_VALUE);
@@ -584,6 +644,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
     @Override
     public void onMetadataChanged(@NonNull final StreamInfo info) {
         super.onMetadataChanged(info);
+        refreshLikedSongState(info);
         showHideKodiButton();
         if (areSegmentsVisible) {
             if (segmentAdapter.setItems(info)) {
@@ -595,6 +656,65 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
                 closeItemsList();
             }
         }
+    }
+
+    private void refreshLikedSongState(@NonNull final StreamInfo info) {
+        likedSongsDisposables.clear();
+        final String streamUrl = info.getUrl();
+        if (streamUrl == null || streamUrl.isEmpty()) {
+            setLikedSongButton(false);
+            return;
+        }
+
+        final Context queryContext = context.getApplicationContext();
+        likedSongsDisposables.add(Single.fromCallable(
+                        () -> LikedSongsManager.isLiked(queryContext, streamUrl))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(liked -> {
+                    if (player.getCurrentStreamInfo()
+                            .map(StreamInfo::getUrl)
+                            .filter(streamUrl::equals)
+                            .isPresent()) {
+                        setLikedSongButton(liked);
+                    }
+                }, throwable -> Log.w(TAG, "Could not refresh liked song state", throwable)));
+    }
+
+    private void toggleLikedSong() {
+        final StreamInfo info = player.getCurrentStreamInfo().orElse(null);
+        if (info == null || info.getUrl() == null || info.getUrl().isEmpty()) {
+            return;
+        }
+
+        likedSongsDisposables.clear();
+        final String streamUrl = info.getUrl();
+        final Context toggleContext = context.getApplicationContext();
+        likedSongsDisposables.add(LikedSongsManager.toggleMaybe(toggleContext, info)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(newLiked -> {
+                    if (player.getCurrentStreamInfo()
+                            .map(StreamInfo::getUrl)
+                            .filter(streamUrl::equals)
+                            .isPresent()) {
+                        setLikedSongButton(newLiked);
+                        Toast.makeText(context,
+                                newLiked ? R.string.like_added : R.string.like_removed,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }, throwable -> {
+                    Log.w(TAG, "Could not toggle liked song state", throwable);
+                    Toast.makeText(context, R.string.general_error, Toast.LENGTH_SHORT).show();
+                }, () -> Toast.makeText(context, R.string.general_error, Toast.LENGTH_SHORT)
+                        .show()));
+    }
+
+    private void setLikedSongButton(final boolean liked) {
+        binding.playerLikeButton.setImageResource(
+                liked ? R.drawable.ic_heart_liked : R.drawable.ic_favorite);
+        binding.playerLikeButton.setContentDescription(
+                context.getString(liked ? R.string.unlike_song : R.string.like_song));
     }
 
     @Override
@@ -700,6 +820,8 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
                         // and ruins normal behavior of the app. This line fixes it
                         binding.itemsListPanel.setTranslationY(
                                 -binding.itemsListPanel.getHeight() * 5.0f));
+            binding.shuffleButton.setVisibility(View.VISIBLE);
+            binding.repeatButton.setVisibility(View.VISIBLE);
 
             // clear focus, otherwise a white rectangle remains on top of the player
             binding.itemsListClose.clearFocus();
@@ -932,8 +1054,8 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
         }
         fragmentListener.onFullscreenStateChanged(isFullscreen);
 
-        binding.metadataView.setVisibility(isFullscreen ? View.VISIBLE : View.GONE);
-        binding.playerCloseButton.setVisibility(isFullscreen ? View.GONE : View.VISIBLE);
+        binding.metadataView.setVisibility(View.VISIBLE);
+        binding.playerCloseButton.setVisibility(View.GONE);
         setupScreenRotationButton();
     }
 

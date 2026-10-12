@@ -217,6 +217,12 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         if (binding.albumArtFull != null) {
             binding.albumArtFull.setVisibility(showVideo ? View.GONE : View.VISIBLE);
         }
+        if (this instanceof MainPlayerUi) {
+            binding.surfaceForeground.setVisibility(showVideo ? View.VISIBLE : View.GONE);
+            if (!showVideo) {
+                binding.endScreen.setVisibility(View.GONE);
+            }
+        }
         if (showVideo) {
             setupSubtitleView();
             binding.subtitleView.setBottomPaddingFraction(
@@ -245,8 +251,15 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
             binding.playbackSpeed.setVisibility(
                     showVideoSurface ? View.VISIBLE : View.GONE);
         }
-        binding.fullScreenButton.setContentDescription(context.getString(
-                showVideo ? R.string.show_audio : R.string.show_video));
+        final int videoToggleDescription = showVideo
+                ? R.string.show_audio : R.string.show_video;
+        binding.fullScreenButton.setContentDescription(context.getString(videoToggleDescription));
+        binding.audioVideoToggleButton.setContentDescription(
+                context.getString(videoToggleDescription));
+    }
+
+    public boolean isAudioFirstMode() {
+        return this instanceof MainPlayerUi && !showVideoSurface;
     }
 
     private void toggleVideoSurface() {
@@ -267,6 +280,10 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
                     .collect(Collectors.toList()));
         }
         applyAudioFirstVisibility();
+        if (this instanceof MainPlayerUi) {
+            context.sendBroadcast(new Intent(VideoDetailFragment.ACTION_AUDIO_FIRST_MODE_CHANGED)
+                    .setPackage(App.PACKAGE_NAME));
+        }
     }
 
     private boolean isMainPlayerAudioFirstMode() {
@@ -766,8 +783,13 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
                 : DPAD_CONTROLS_HIDE_TIME;
 
         showHideShadow(true, DEFAULT_CONTROLS_DURATION);
-        animate(binding.playbackControlRoot, true, DEFAULT_CONTROLS_DURATION,
-                AnimationType.ALPHA, 0, () -> hideControls(DEFAULT_CONTROLS_DURATION, hideTime));
+        if (isMainPlayerAudioFirstMode()) {
+            animate(binding.playbackControlRoot, true, DEFAULT_CONTROLS_DURATION);
+        } else {
+            animate(binding.playbackControlRoot, true, DEFAULT_CONTROLS_DURATION,
+                    AnimationType.ALPHA, 0,
+                    () -> hideControls(DEFAULT_CONTROLS_DURATION, hideTime));
+        }
     }
 
     public void showControls(final long duration) {
@@ -787,6 +809,11 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
                     + "], delay = [" + delay + "]");
         }
 
+        if (isMainPlayerAudioFirstMode() && delay > 0) {
+            controlsVisibilityHandler.removeCallbacksAndMessages(null);
+            return;
+        }
+
         showOrHideButtons();
 
         controlsVisibilityHandler.removeCallbacksAndMessages(null);
@@ -798,7 +825,11 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
     }
 
     public void showHideShadow(final boolean show, final long duration) {
-        animate(binding.playbackControlsShadow, show, duration, AnimationType.ALPHA, 0, null);
+        if (isMainPlayerAudioFirstMode()) {
+            binding.playbackControlsShadow.setVisibility(View.GONE);
+        } else {
+            animate(binding.playbackControlsShadow, show, duration, AnimationType.ALPHA, 0, null);
+        }
         animate(binding.playerTopShadow, show, duration, AnimationType.ALPHA, 0, null);
         animate(binding.playerBottomShadow, show, duration, AnimationType.ALPHA, 0, null);
     }
@@ -886,7 +917,11 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
 
         binding.loadingPanel.setBackgroundColor(Color.BLACK);
         animate(binding.loadingPanel, true, 0);
-        animate(binding.surfaceForeground, true, 100);
+        if (isMainPlayerAudioFirstMode()) {
+            binding.surfaceForeground.setVisibility(View.GONE);
+        } else {
+            animate(binding.surfaceForeground, true, 100);
+        }
 
         updatePlayPauseButton(PlayButtonAction.PLAY);
         animatePlayButtons(false, 100);
@@ -975,7 +1010,11 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         showControls(500);
         animate(binding.currentDisplaySeek, false, 200, AnimationType.SCALE_AND_ALPHA);
         binding.loadingPanel.setVisibility(View.GONE);
-        animate(binding.surfaceForeground, true, 100);
+        if (isMainPlayerAudioFirstMode()) {
+            binding.surfaceForeground.setVisibility(View.GONE);
+        } else {
+            animate(binding.surfaceForeground, true, 100);
+        }
     }
 
     private void animatePlayButtons(final boolean show, final long duration) {

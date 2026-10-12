@@ -151,6 +151,8 @@ public final class VideoDetailFragment
             App.PACKAGE_NAME + ".VideoDetailFragment.ACTION_HIDE_MAIN_PLAYER";
     public static final String ACTION_PLAYER_STARTED =
             App.PACKAGE_NAME + ".VideoDetailFragment.ACTION_PLAYER_STARTED";
+    public static final String ACTION_AUDIO_FIRST_MODE_CHANGED =
+            App.PACKAGE_NAME + ".VideoDetailFragment.ACTION_AUDIO_FIRST_MODE_CHANGED";
     public static final String ACTION_VIDEO_FRAGMENT_RESUMED =
             App.PACKAGE_NAME + ".VideoDetailFragment.ACTION_VIDEO_FRAGMENT_RESUMED";
     public static final String ACTION_VIDEO_FRAGMENT_STOPPED =
@@ -975,6 +977,7 @@ public final class VideoDetailFragment
         updateTabLayoutVisibility();
         pageAdapter.notifyDataSetUpdate();
         updateTabIconsAndContentDescriptions();
+        updateAudioFirstDetailVisibility();
     }
 
     private boolean shouldShowComments() {
@@ -995,6 +998,11 @@ public final class VideoDetailFragment
             return;
         }
 
+        if (isAudioFirstPlayerMode()) {
+            binding.tabLayout.setVisibility(View.GONE);
+            return;
+        }
+
         if (pageAdapter.getCount() < 2 || binding.viewPager.getVisibility() != View.VISIBLE) {
             // hide tab layout if there is only one tab or if the view pager is also hidden
             binding.tabLayout.setVisibility(View.GONE);
@@ -1004,6 +1012,10 @@ public final class VideoDetailFragment
             binding.tabLayout.post(() -> {
                 final var activity = getActivity();
                 if (activity != null) {
+                    if (isAudioFirstPlayerMode()) {
+                        binding.tabLayout.setVisibility(View.GONE);
+                        return;
+                    }
                     final Rect pagerHitRect = new Rect();
                     binding.viewPager.getHitRect(pagerHitRect);
 
@@ -1353,6 +1365,17 @@ public final class VideoDetailFragment
         final boolean isPortrait = metrics.heightPixels > metrics.widthPixels;
         requireView().getViewTreeObserver().removeOnPreDrawListener(preDrawListener);
 
+        if (isAudioFirstPlayerMode()) {
+            final int height = DeviceUtils.isInMultiWindow(activity)
+                    ? requireView().getHeight() : metrics.heightPixels;
+            if (height != 0) {
+                setHeightThumbnail(height, metrics);
+            } else {
+                requireView().getViewTreeObserver().addOnPreDrawListener(preDrawListener);
+            }
+            return;
+        }
+
         if (isFullscreen()) {
             final int height = (DeviceUtils.isInMultiWindow(activity)
                     ? requireView()
@@ -1385,7 +1408,33 @@ public final class VideoDetailFragment
     }
 
     private void showContent() {
-        binding.detailContentRootHiding.setVisibility(View.VISIBLE);
+        binding.detailContentRootHiding.setVisibility(
+                isAudioFirstPlayerMode() ? View.GONE : View.VISIBLE);
+    }
+
+    private boolean isAudioFirstPlayerMode() {
+        return isPlayerAvailable() && player.UIs().get(MainPlayerUi.class)
+                .map(MainPlayerUi::isAudioFirstMode)
+                .orElse(false);
+    }
+
+    private void updateAudioFirstDetailVisibility() {
+        if (binding == null) {
+            return;
+        }
+
+        final boolean audioFirst = isAudioFirstPlayerMode();
+        binding.detailTitleRootLayout.setVisibility(audioFirst ? View.GONE : View.VISIBLE);
+        binding.detailContentRootHiding.setVisibility(audioFirst ? View.GONE : View.VISIBLE);
+        binding.viewPager.setVisibility(audioFirst ? View.GONE : View.VISIBLE);
+        binding.tabLayout.setVisibility(audioFirst ? View.GONE : View.VISIBLE);
+        if (binding.relatedItemsLayout != null) {
+            binding.relatedItemsLayout.setVisibility(
+                    audioFirst || isFullscreen() ? View.GONE : View.VISIBLE);
+        }
+        if (!audioFirst) {
+            updateTabLayoutVisibility();
+        }
     }
 
     protected void setInitialData(final int newServiceId,
@@ -1450,6 +1499,10 @@ public final class VideoDetailFragment
                                     false, VideoDetailFragment.this);
                         }
                         break;
+                    case ACTION_AUDIO_FIRST_MODE_CHANGED:
+                        updateAudioFirstDetailVisibility();
+                        setHeightThumbnail();
+                        break;
                 }
             }
         };
@@ -1457,6 +1510,7 @@ public final class VideoDetailFragment
         intentFilter.addAction(ACTION_SHOW_MAIN_PLAYER);
         intentFilter.addAction(ACTION_HIDE_MAIN_PLAYER);
         intentFilter.addAction(ACTION_PLAYER_STARTED);
+        intentFilter.addAction(ACTION_AUDIO_FIRST_MODE_CHANGED);
         ContextCompat.registerReceiver(activity, broadcastReceiver, intentFilter,
                 ContextCompat.RECEIVER_EXPORTED);
     }
@@ -1719,6 +1773,7 @@ public final class VideoDetailFragment
 
     @Override
     public void onViewCreated() {
+        updateAudioFirstDetailVisibility();
         tryAddVideoPlayerView();
     }
 

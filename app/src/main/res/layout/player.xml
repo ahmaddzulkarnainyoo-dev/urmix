@@ -15,10 +15,17 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
-    <!-- URMIX audio-first album art stays at a 9:16 ratio in the upper player area. -->
+    <!-- Keep the portrait cover within the upper 60% of the full player. -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/albumArtBottomGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.6" />
 
         <ImageView
             android:id="@+id/album_art_full"
@@ -28,6 +35,7 @@
             android:contentDescription="@string/detail_thumbnail_view_description"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="9:16"
+            app:layout_constraintBottom_toTopOf="@id/albumArtBottomGuide"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -265,25 +273,6 @@
                         tools:text="1x" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/queueButton"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:clickable="true"
-                        android:contentDescription="@string/open_play_queue"
-                        android:focusable="true"
-                        android:paddingStart="3dp"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="3dp"
-                        android:paddingBottom="3dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/urmix_player_queue"
-                        android:visibility="gone"
-                        app:tint="@color/white"
-                        tools:ignore="RtlHardcoded" />
-
-                    <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/segmentsButton"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
@@ -316,6 +305,49 @@
                         app:tint="@color/white"
                         tools:ignore="RtlHardcoded" />
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/audioSecondaryControls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/playerLikeButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/like_song"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_favorite"
+                        app:tint="@color/white" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/queueButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/open_play_queue"
+                        android:padding="12dp"
+                        android:visibility="gone"
+                        android:src="@drawable/urmix_player_queue"
+                        app:tint="@color/white" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/audioVideoToggleButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/show_video"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/urmix_video_toggle"
+                        app:tint="@color/white" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -568,17 +600,31 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/mainPlaybackControls"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="horizontal"
-            android:weightSum="5.5">
+            android:paddingStart="@dimen/player_main_controls_padding"
+            android:paddingEnd="@dimen/player_main_controls_padding">
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/shuffleButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/notification_action_shuffle"
+                android:padding="12dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/urmix_player_shuffle"
+                android:visibility="gone"
+                android:tint="?attr/colorAccent" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/playPreviousButton"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="10dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
@@ -592,7 +638,7 @@
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/playPauseButton"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="64dp"
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/pause"
@@ -603,8 +649,7 @@
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/playNextButton"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="10dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
@@ -613,6 +658,19 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/urmix_player_next"
                 app:tint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/repeatButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/notification_action_repeat"
+                android:padding="12dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/urmix_player_repeat"
+                android:visibility="gone"
+                android:tint="?attr/colorAccent" />
 
         </LinearLayout>
 
@@ -647,49 +705,15 @@
                 android:textColor="@android:color/white"
                 android:visibility="gone" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/repeatButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="40dp"
-                android:layout_marginLeft="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:contentDescription="@string/notification_action_repeat"
-                android:focusable="true"
-                android:padding="10dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/urmix_player_repeat"
-                android:tint="?attr/colorAccent"
-                tools:ignore="RtlHardcoded" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/shuffleButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/repeatButton"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:contentDescription="@string/notification_action_shuffle"
-                android:focusable="true"
-                android:padding="10dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/urmix_player_shuffle"
-                android:tint="?attr/colorAccent"
-                tools:ignore="RtlHardcoded" />
-
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/itemsListHeaderDuration"
                 style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
                 android:layout_toStartOf="@id/addToPlaylistButton"
-                android:layout_toEndOf="@id/shuffleButton"
                 android:gravity="center"
                 android:textColor="@android:color/white" />
 
