@@ -717,15 +717,14 @@
                 android:src="@drawable/ic_play_arrow" />
 
             <ImageButton
-                android:id="@+id/overlay_close_button"
-                android:layout_width="48dp"
+                android:id="@+id/overlay_play_next_button"
+                android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:background="?attr/selectableItemBackground"
-                android:contentDescription="@string/close"
-                android:paddingRight="8dp"
+                android:contentDescription="@string/next_stream"
                 android:scaleType="center"
-                android:src="@drawable/ic_close"
-                tools:ignore="RtlSymmetry" />
+                android:src="@drawable/urmix_player_next"
+                android:tint="@color/white" />
 
         </LinearLayout>
 

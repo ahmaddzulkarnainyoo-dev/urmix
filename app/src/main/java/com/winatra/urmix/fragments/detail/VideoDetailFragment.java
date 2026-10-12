@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.ContentObserver;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -36,6 +37,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -528,9 +530,12 @@ public final class VideoDetailFragment
         binding.overlayThumbnail.setOnClickListener(overlayListener);
         binding.overlayMetadataLayout.setOnClickListener(overlayListener);
         binding.overlayButtonsLayout.setOnClickListener(overlayListener);
-        binding.overlayCloseButton.setOnClickListener(v -> bottomSheetBehavior
-                .setState(BottomSheetBehavior.STATE_HIDDEN));
         binding.overlayPlayQueueButton.setOnClickListener(v -> openPlayQueue(requireContext()));
+        binding.overlayPlayNextButton.setOnClickListener(v -> {
+            if (isPlayerAvailable()) {
+                player.playNext();
+            }
+        });
         binding.overlayPlayPauseButton.setOnClickListener(v -> {
             if (playerIsNotStopped()) {
                 player.playPause();
@@ -629,6 +634,15 @@ public final class VideoDetailFragment
         pageAdapter = new TabAdapter(getChildFragmentManager());
         binding.viewPager.setAdapter(pageAdapter);
         binding.tabLayout.setupWithViewPager(binding.viewPager);
+        final int miniThumbnailCornerRadius = DeviceUtils.dpToPx(8, requireContext());
+        binding.overlayThumbnail.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(@NonNull final View view, @NonNull final Outline outline) {
+                outline.setRoundRect(
+                        0, 0, view.getWidth(), view.getHeight(), miniThumbnailCornerRadius);
+            }
+        });
+        binding.overlayThumbnail.setClipToOutline(true);
 
         binding.detailThumbnailRootLayout.requestFocus();
 
@@ -2494,8 +2508,8 @@ public final class VideoDetailFragment
         binding.overlayButtonsLayout.setClickable(enable);
         binding.overlayPlayQueueButton.setClickable(enable);
         binding.overlayPlayPauseButton.setClickable(enable);
+        binding.overlayPlayNextButton.setClickable(enable);
         binding.overlayLikeButton.setClickable(enable);
-        binding.overlayCloseButton.setClickable(enable);
     }
 
     // URMIX Phase C: mini-player Like (heart) state — mirrors the reserved
