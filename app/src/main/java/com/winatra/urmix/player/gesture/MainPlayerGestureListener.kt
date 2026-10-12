@@ -68,6 +68,50 @@ class MainPlayerGestureListener(
         return true
     }
 
+    override fun onFling(
+        e1: MotionEvent?,
+        e2: MotionEvent,
+        velocityX: Float,
+        velocityY: Float
+    ): Boolean {
+        val cover = binding.albumArtFull
+        if (
+            e1 == null ||
+            !playerUi.isAudioFirstMode() ||
+            !cover.isVisible ||
+            binding.itemsListPanel.isVisible
+        ) {
+            return false
+        }
+
+        val coverLocation = IntArray(2)
+        cover.getLocationOnScreen(coverLocation)
+        if (
+            e1.rawX < coverLocation[0] ||
+            e1.rawX > coverLocation[0] + cover.width ||
+            e1.rawY < coverLocation[1] ||
+            e1.rawY > coverLocation[1] + cover.height
+        ) {
+            return false
+        }
+
+        val distanceX = e2.rawX - e1.rawX
+        val distanceY = e2.rawY - e1.rawY
+        if (
+            abs(distanceX) < cover.width * HORIZONTAL_SWIPE_DISTANCE_FRACTION ||
+            abs(distanceX) <= abs(distanceY)
+        ) {
+            return false
+        }
+
+        if (distanceX < 0) {
+            player.playNext()
+        } else {
+            player.playPrevious()
+        }
+        return true
+    }
+
     private fun onScrollVolume(distanceY: Float) {
         val bar: ProgressBar = binding.volumeProgressBar
         val audioReactor: AudioReactor = player.audioReactor
@@ -236,5 +280,6 @@ class MainPlayerGestureListener(
         private val TAG = MainPlayerGestureListener::class.java.simpleName
         private val DEBUG = MainActivity.DEBUG
         private const val MOVEMENT_THRESHOLD = 40
+        private const val HORIZONTAL_SWIPE_DISTANCE_FRACTION = 0.2f
     }
 }
