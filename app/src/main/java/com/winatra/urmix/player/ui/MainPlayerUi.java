@@ -29,6 +29,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -96,6 +97,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
     private static final int DETAIL_ROOT_MINIMUM_HEIGHT = 85; // dp
     private static final int DETAIL_TITLE_TEXT_SIZE_TV = 16; // sp
     private static final int DETAIL_TITLE_TEXT_SIZE_TABLET = 15; // sp
+    private static final float QUEUE_PANEL_HEIGHT_FRACTION = 0.35f;
 
     private boolean isFullscreen = false;
     private boolean isVerticalVideo = false;
@@ -108,6 +110,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
     private final CompositeDisposable likedSongsDisposables = new CompositeDisposable();
     private boolean isQueueVisible = false;
     private boolean areSegmentsVisible = false;
+    private float queuePanelTouchStartY;
 
     // fullscreen player
     private ItemTouchHelper itemTouchHelper;
@@ -181,6 +184,29 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
         binding.playerLikeButton.setOnClickListener(v -> toggleLikedSong());
         binding.audioVideoToggleButton.setOnClickListener(
                 v -> binding.fullScreenButton.performClick());
+        binding.itemsListControl.setOnTouchListener((view, event) -> {
+            if (!isQueueVisible) {
+                return false;
+            }
+
+            switch (event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    queuePanelTouchStartY = event.getY();
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    if (event.getY() - queuePanelTouchStartY
+                            > DeviceUtils.dpToPx(48, context)) {
+                        closeItemsList();
+                    }
+                    return true;
+                case MotionEvent.ACTION_CANCEL:
+                    return true;
+                default:
+                    return false;
+            }
+        });
 
         binding.addToPlaylistButton.setOnClickListener(v ->
                 getParentActivity().map(FragmentActivity::getSupportFragmentManager)
@@ -217,6 +243,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
         binding.addToPlaylistButton.setOnClickListener(null);
         binding.playerLikeButton.setOnClickListener(null);
         binding.audioVideoToggleButton.setOnClickListener(null);
+        binding.itemsListControl.setOnTouchListener(null);
         likedSongsDisposables.clear();
 
         context.getContentResolver().unregisterContentObserver(settingsContentObserver);
@@ -620,8 +647,12 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
             binding.brightnessProgressBar.setMax(maxGestureLength);
 
             setInitialGestureValues();
-            binding.itemsListPanel.getLayoutParams().height =
-                    height - binding.itemsListPanel.getTop();
+            if (isQueueVisible) {
+                updateQueuePanelBounds(true);
+            } else {
+                binding.itemsListPanel.getLayoutParams().height =
+                        height - binding.itemsListPanel.getTop();
+            }
         }
     }
 
@@ -728,6 +759,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
 
         hideSystemUIIfNeeded();
         buildQueue();
+        updateQueuePanelBounds(true);
 
         binding.itemsListHeaderTitle.setVisibility(View.GONE);
         binding.itemsListHeaderDuration.setVisibility(View.VISIBLE);
@@ -735,10 +767,11 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
         binding.repeatButton.setVisibility(View.VISIBLE);
         binding.addToPlaylistButton.setVisibility(View.VISIBLE);
 
-        hideControls(0, 0);
+        binding.itemsListPanel.setTranslationY(0);
+        showControls(0);
         binding.itemsListPanel.requestFocus();
         animate(binding.itemsListPanel, true, DEFAULT_CONTROLS_DURATION,
-                AnimationType.SLIDE_AND_ALPHA);
+                AnimationType.ALPHA);
 
         @Nullable final PlayQueue playQueue = player.getPlayQueue();
         if (playQueue != null) {
@@ -807,6 +840,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
 
     public void closeItemsList() {
         if (isQueueVisible || areSegmentsVisible) {
+            final boolean closingQueue = isQueueVisible;
             isQueueVisible = false;
             areSegmentsVisible = false;
 
@@ -815,11 +849,16 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
             }
 
             animate(binding.itemsListPanel, false, DEFAULT_CONTROLS_DURATION,
-                    AnimationType.SLIDE_AND_ALPHA, 0, () ->
-                        // Even when queueLayout is GONE it receives touch events
-                        // and ruins normal behavior of the app. This line fixes it
+                    closingQueue ? AnimationType.ALPHA : AnimationType.SLIDE_AND_ALPHA,
+                    0, () -> {
+                        // Keep the hidden panel outside the player so it cannot intercept touches.
                         binding.itemsListPanel.setTranslationY(
-                                -binding.itemsListPanel.getHeight() * 5.0f));
+                                (closingQueue ? 1 : -1)
+                                        * binding.itemsListPanel.getHeight() * 5.0f);
+                        if (closingQueue) {
+                            updateQueuePanelBounds(false);
+                        }
+                    });
             binding.shuffleButton.setVisibility(View.VISIBLE);
             binding.repeatButton.setVisibility(View.VISIBLE);
 
@@ -827,6 +866,62 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
             binding.itemsListClose.clearFocus();
             binding.playPauseButton.requestFocus();
         }
+    }
+
+    private void updateQueuePanelBounds(final boolean queueVisible) {
+        final int playerHeight = binding.getRoot().getHeight();
+        if (playerHeight <= 0) {
+            return;
+        }
+
+        final int queueHeight = queueVisible
+                ? (int) (playerHeight * QUEUE_PANEL_HEIGHT_FRACTION) : MATCH_PARENT;
+        final int contentHeight = queueVisible ? playerHeight - queueHeight : MATCH_PARENT;
+
+        final RelativeLayout.LayoutParams panelParams =
+                (RelativeLayout.LayoutParams) binding.itemsListPanel.getLayoutParams();
+        panelParams.height = queueHeight;
+        if (queueVisible) {
+            panelParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            binding.itemsListPanel.setTranslationY(0);
+        } else {
+            panelParams.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }
+        binding.itemsListPanel.setLayoutParams(panelParams);
+
+        final RelativeLayout.LayoutParams windowParams =
+                (RelativeLayout.LayoutParams) binding.playbackWindowRoot.getLayoutParams();
+        windowParams.height = contentHeight;
+        windowParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        binding.playbackWindowRoot.setLayoutParams(windowParams);
+
+        setPlayerContentHeight(binding.albumArtContainer, contentHeight,
+                RelativeLayout.ALIGN_PARENT_BOTTOM);
+        setPlayerContentHeight(binding.surfaceView, contentHeight,
+                RelativeLayout.CENTER_IN_PARENT);
+        setPlayerContentHeight(binding.subtitleView, contentHeight,
+                RelativeLayout.CENTER_IN_PARENT);
+        setPlayerContentHeight(binding.endScreen, contentHeight,
+                RelativeLayout.ALIGN_PARENT_BOTTOM);
+
+        final RelativeLayout.LayoutParams foregroundParams =
+                (RelativeLayout.LayoutParams) binding.surfaceForeground.getLayoutParams();
+        foregroundParams.height = contentHeight;
+        foregroundParams.removeRule(RelativeLayout.ALIGN_BOTTOM);
+        foregroundParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        binding.surfaceForeground.setLayoutParams(foregroundParams);
+        binding.audioLyricsView.setTranslationY(
+                queueVisible ? -queueHeight : 0);
+    }
+
+    private void setPlayerContentHeight(final View view, final int height,
+                                        final int ruleToRemove) {
+        final RelativeLayout.LayoutParams params =
+                (RelativeLayout.LayoutParams) view.getLayoutParams();
+        params.height = height;
+        params.removeRule(ruleToRemove);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        view.setLayoutParams(params);
     }
 
     private OnScrollBelowItemsListener getQueueScrollListener() {

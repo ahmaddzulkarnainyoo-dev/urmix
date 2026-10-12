@@ -17,6 +17,7 @@
 
     <!-- Keep the portrait cover within the upper 60% of the full player. -->
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/albumArtContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
