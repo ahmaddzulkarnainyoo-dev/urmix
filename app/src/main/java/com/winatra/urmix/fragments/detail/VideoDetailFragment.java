@@ -1432,6 +1432,31 @@ public final class VideoDetailFragment
                 .orElse(false);
     }
 
+    private void animatePlayerCoverTransition() {
+        if (!isAudioFirstPlayerMode()) {
+            return;
+        }
+
+        player.UIs().get(MainPlayerUi.class).ifPresent(playerUi -> {
+            final View cover = playerUi.getBinding().albumArtFull;
+            if (cover.getVisibility() != View.VISIBLE) {
+                return;
+            }
+
+            cover.animate().cancel();
+            cover.setAlpha(0.85f);
+            cover.setScaleX(0.94f);
+            cover.setScaleY(0.94f);
+            cover.animate()
+                    .alpha(1f)
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(250)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .start();
+        });
+    }
+
     private void updateAudioFirstDetailVisibility() {
         if (binding == null) {
             return;
@@ -2389,6 +2414,7 @@ public final class VideoDetailFragment
                         moveFocusToMainFragment(false);
                         manageSpaceAtTheBottom(false);
 
+                        animatePlayerCoverTransition();
                         bottomSheetBehavior.setPeekHeight(peekHeight);
                         // Disable click because overlay buttons located on top of buttons
                         // from the player
