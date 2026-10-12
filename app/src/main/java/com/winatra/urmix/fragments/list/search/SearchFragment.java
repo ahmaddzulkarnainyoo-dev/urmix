@@ -54,7 +54,9 @@ import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.Page;
 import org.schabi.newpipe.extractor.StreamingService;
+import org.schabi.newpipe.extractor.channel.ChannelInfoItem;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.search.SearchInfo;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
@@ -229,6 +231,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
         super.onViewCreated(rootView, savedInstanceState);
 
         updateService();
+        applyDefaultMusicFilter();
         // Add the service name to search string hint
         // to make it more obvious which platform is being searched.
         if (service != null) {
@@ -245,6 +248,18 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
             service = NewPipe.getService(serviceId);
         } catch (final Exception e) {
             ErrorUtil.showUiErrorSnackbar(this, "Getting service for id " + serviceId, e);
+        }
+    }
+
+    private void applyDefaultMusicFilter() {
+        if (service == null || filterItemCheckedId != -1 || contentFilter.length != 0) {
+            return;
+        }
+
+        final List<String> availableFilters =
+                service.getSearchQHFactory().getAvailableContentFilter();
+        if (availableFilters.contains(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS)) {
+            contentFilter = new String[]{YoutubeSearchQueryHandlerFactory.MUSIC_SONGS};
         }
     }
 
@@ -497,8 +512,13 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
                     itemId++,
                     0,
                     ServiceHelper.getTranslatedFilterString(filter, c));
-            if (isFirstItem) {
+            if (Arrays.asList(contentFilter).contains(filter)) {
                 item.setChecked(true);
+                filterItemCheckedId = item.getItemId();
+                isFirstItem = false;
+            } else if (isFirstItem) {
+                item.setChecked(true);
+                filterItemCheckedId = item.getItemId();
                 isFirstItem = false;
             }
         }
@@ -1103,8 +1123,12 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
         nextPage = result.getNextPage();
 
         if (infoListAdapter.getItemsList().isEmpty()) {
-            if (!result.getRelatedItems().isEmpty()) {
-                infoListAdapter.addInfoItemList(result.getRelatedItems());
+            final List<InfoItem> filteredItems = filterSearchItems(result.getRelatedItems());
+            if (!filteredItems.isEmpty()) {
+                infoListAdapter.addInfoItemList(filteredItems);
+            } else if (Page.isValid(nextPage)) {
+                loadMoreItems();
+                return;
             } else {
                 infoListAdapter.clearStreamItemList();
                 showEmptyState();
@@ -1149,7 +1173,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
     @Override
     public void handleNextItems(final ListExtractor.InfoItemsPage<?> result) {
         showListFooter(false);
-        infoListAdapter.addInfoItemList(result.getItems());
+        infoListAdapter.addInfoItemList(filterSearchItems(result.getItems()));
 
         if (!result.getErrors().isEmpty()) {
             // nextPage should be non-null at this point, because it refers to the page
@@ -1171,6 +1195,20 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
         // still holds the correct value during the error handling
         nextPage = result.getNextPage();
         super.handleNextItems(result);
+        if (infoListAdapter.getItemsList().isEmpty()) {
+            if (hasMoreItems()) {
+                loadMoreItems();
+            } else {
+                showEmptyState();
+            }
+        }
+    }
+
+    private List<InfoItem> filterSearchItems(final List<? extends InfoItem> items) {
+        return items.stream()
+                .filter(item -> !(item instanceof ChannelInfoItem)
+                        && !(item instanceof PlaylistInfoItem))
+                .collect(Collectors.toList());
     }
 
     @Override
