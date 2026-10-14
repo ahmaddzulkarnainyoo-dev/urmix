@@ -16,12 +16,14 @@ import static com.winatra.urmix.player.helper.PlayerHelper.getTimeString;
 import static com.winatra.urmix.player.helper.PlayerHelper.nextResizeModeAndSaveToPrefs;
 import static com.winatra.urmix.player.helper.PlayerHelper.retrieveSeekDurationFromPreferences;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -36,6 +38,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,6 +91,8 @@ import com.winatra.urmix.util.external_communication.KoreUtils;
 import com.winatra.urmix.util.external_communication.ShareUtils;
 import com.winatra.urmix.views.player.PlayerFastSeekOverlay;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -124,8 +129,22 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
     private boolean hasSubtitleCues = false;
     private boolean hasManualCaptionSelection = false;
     private boolean audioFirstCaptionAutoSelected = false;
+    private final List<AudioLyricCue> audioLyricCues = new ArrayList<>();
+    private String currentAudioLyricCue = "";
+    private boolean useAudioLyricLines = false;
+    private int activeAudioLyricLine = -2;
     @Nullable
     private Tracks availableTracks;
+
+    private static final class AudioLyricCue {
+        private final long positionMs;
+        private final String text;
+
+        private AudioLyricCue(final long positionMs, @NonNull final String text) {
+            this.positionMs = positionMs;
+            this.text = text;
+        }
+    }
 
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -242,9 +261,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         binding.subtitleView.setVisibility(
                 (showVideo || !(this instanceof MainPlayerUi)) && hasSubtitleCues
                         ? View.VISIBLE : View.GONE);
-        binding.audioLyricsView.setVisibility(
-                isMainPlayerAudioFirstMode() && binding.audioLyricsView.length() > 0
-                        ? View.VISIBLE : View.GONE);
+        updateActiveAudioLyric((int) player.getExoPlayer().getCurrentPosition());
         if (this instanceof MainPlayerUi) {
             binding.qualityTextView.setVisibility(
                     showVideoSurface && hasQualityOptions ? View.VISIBLE : View.GONE);
@@ -350,6 +367,14 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
                 (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
                     binding.playerOverlays.setPadding(v.getPaddingLeft(), v.getPaddingTop(),
                             v.getPaddingRight(), v.getPaddingBottom());
+                    final RelativeLayout.LayoutParams lyricsParams =
+                            (RelativeLayout.LayoutParams) binding.audioLyricsView.getLayoutParams();
+                    final int lyricsWidth = (int) ((right - left) * 0.85f);
+                    if (lyricsParams.width != lyricsWidth) {
+                        lyricsParams.width = lyricsWidth;
+                        lyricsParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                        binding.audioLyricsView.setLayoutParams(lyricsParams);
+                    }
 
                     // If we added padding to the fast seek overlay, too, it would not go under the
                     // system ui. Instead we apply negative margins equal to the window insets of
@@ -610,6 +635,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
                                  final int duration,
                                  final int bufferPercent) {
 
+        updateActiveAudioLyric(currentProgress);
         if (duration != binding.playbackSeekBar.getMax()) {
             setVideoDurationToControls(duration);
         }
@@ -1158,7 +1184,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
             hasSubtitleCues = false;
             hasQualityOptions = false;
             availableTracks = null;
-            binding.audioLyricsView.setText("");
+            clearAudioLyrics();
             applyAudioFirstVisibility();
             CoilHelper.INSTANCE.loadPlayerThumbnail(
                     binding.albumArtFull,
@@ -1602,10 +1628,135 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
             }
             lyrics.append(cue.text);
         }
-        binding.audioLyricsView.setText(lyrics);
-        binding.audioLyricsView.setVisibility(
-                isMainPlayerAudioFirstMode() && lyrics.length() > 0
-                        ? View.VISIBLE : View.GONE);
+        updateAudioLyrics(lyrics.toString(), player.getExoPlayer().getCurrentPosition());
+    }
+
+    private void updateAudioLyrics(@NonNull final String cueText, final long positionMs) {
+        if (!cueText.equals(currentAudioLyricCue)) {
+            currentAudioLyricCue = cueText;
+            // ExoPlayer reports active cue text, so capture its playback position on each change.
+            if (audioLyricCues.isEmpty()
+                    || audioLyricCues.get(audioLyricCues.size() - 1).positionMs != positionMs) {
+                audioLyricCues.add(new AudioLyricCue(positionMs, cueText));
+            } else {
+                audioLyricCues.set(audioLyricCues.size() - 1,
+                        new AudioLyricCue(positionMs, cueText));
+            }
+            audioLyricCues.sort(Comparator.comparingLong(cue -> cue.positionMs));
+            final long nonEmptyCueCount = audioLyricCues.stream()
+                    .filter(cue -> !cue.text.isEmpty())
+                    .count();
+            if (nonEmptyCueCount >= 3) {
+                useAudioLyricLines = true;
+                renderAudioLyricLines();
+            }
+        }
+
+        if (!useAudioLyricLines) {
+            binding.audioLyricsFallback.setText(cueText);
+            binding.audioLyricsFallback.setVisibility(
+                    cueText.isEmpty() ? View.GONE : View.VISIBLE);
+            binding.audioLyricsScroll.setVisibility(View.GONE);
+        }
+        updateActiveAudioLyric((int) positionMs);
+    }
+
+    private void renderAudioLyricLines() {
+        binding.audioLyricsLines.removeAllViews();
+        for (final AudioLyricCue cue : audioLyricCues) {
+            if (cue.text.isEmpty()) {
+                continue;
+            }
+            final TextView line = new TextView(context);
+            line.setText(cue.text);
+            line.setGravity(Gravity.CENTER);
+            line.setTextColor(Color.WHITE);
+            line.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            line.setAlpha(0.4f);
+            line.setPadding(0, DeviceUtils.dpToPx(4, context), 0, DeviceUtils.dpToPx(4, context));
+            binding.audioLyricsLines.addView(line, new LinearLayout.LayoutParams(
+                    MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+        activeAudioLyricLine = -2;
+        binding.audioLyricsFallback.setVisibility(View.GONE);
+        binding.audioLyricsScroll.setVisibility(View.VISIBLE);
+    }
+
+    private void updateActiveAudioLyric(final int currentPositionMs) {
+        if (!isMainPlayerAudioFirstMode()) {
+            binding.audioLyricsView.setVisibility(View.GONE);
+            return;
+        }
+
+        if (!useAudioLyricLines) {
+            final boolean hasCue = !currentAudioLyricCue.isEmpty();
+            binding.audioLyricsFallback.setVisibility(hasCue ? View.VISIBLE : View.GONE);
+            binding.audioLyricsScroll.setVisibility(View.GONE);
+            binding.audioLyricsView.setVisibility(hasCue ? View.VISIBLE : View.GONE);
+            return;
+        }
+
+        int activeCueIndex = -1;
+        for (int i = 0; i < audioLyricCues.size(); i++) {
+            if (audioLyricCues.get(i).positionMs > currentPositionMs) {
+                break;
+            }
+            activeCueIndex = i;
+        }
+        final String activeCueText = activeCueIndex < 0
+                ? "" : audioLyricCues.get(activeCueIndex).text;
+        if (activeCueText.isEmpty()) {
+            binding.audioLyricsView.setVisibility(View.GONE);
+            activeAudioLyricLine = -1;
+            return;
+        }
+
+        int activeLineIndex = -1;
+        for (int i = 0; i <= activeCueIndex; i++) {
+            if (!audioLyricCues.get(i).text.isEmpty()) {
+                activeLineIndex++;
+            }
+        }
+        binding.audioLyricsFallback.setVisibility(View.GONE);
+        binding.audioLyricsScroll.setVisibility(View.VISIBLE);
+        binding.audioLyricsView.setVisibility(View.VISIBLE);
+        if (activeLineIndex == activeAudioLyricLine) {
+            return;
+        }
+
+        activeAudioLyricLine = activeLineIndex;
+        for (int i = 0; i < binding.audioLyricsLines.getChildCount(); i++) {
+            final TextView line = (TextView) binding.audioLyricsLines.getChildAt(i);
+            final boolean active = i == activeLineIndex;
+            line.setAlpha(active ? 1.0f : 0.4f);
+            line.setTextSize(TypedValue.COMPLEX_UNIT_SP, active ? 20 : 16);
+            line.setTypeface(Typeface.DEFAULT, active ? Typeface.BOLD : Typeface.NORMAL);
+        }
+
+        binding.audioLyricsScroll.post(() -> {
+            if (activeLineIndex >= binding.audioLyricsLines.getChildCount()) {
+                return;
+            }
+            final View line = binding.audioLyricsLines.getChildAt(activeLineIndex);
+            final int targetScrollY = line.getTop()
+                    - (binding.audioLyricsScroll.getHeight() - line.getHeight()) / 2;
+            ObjectAnimator.ofInt(binding.audioLyricsScroll, "scrollY",
+                    binding.audioLyricsScroll.getScrollY(), Math.max(0, targetScrollY))
+                    .setDuration(300)
+                    .start();
+        });
+    }
+
+    private void clearAudioLyrics() {
+        audioLyricCues.clear();
+        currentAudioLyricCue = "";
+        useAudioLyricLines = false;
+        activeAudioLyricLine = -2;
+        binding.audioLyricsFallback.setText("");
+        binding.audioLyricsFallback.setVisibility(View.GONE);
+        binding.audioLyricsLines.removeAllViews();
+        binding.audioLyricsScroll.setVisibility(View.GONE);
+        binding.audioLyricsView.setVisibility(View.GONE);
     }
 
     private void setupSubtitleView() {
