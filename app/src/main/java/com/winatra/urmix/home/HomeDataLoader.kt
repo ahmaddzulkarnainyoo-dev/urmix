@@ -23,6 +23,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
+import org.schabi.newpipe.extractor.stream.StreamType
 class HomeDataLoader(
     private val fragment: HomeFragment,
     private val disposables: CompositeDisposable,
@@ -61,11 +62,17 @@ class HomeDataLoader(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ entries ->
                     val tiles = entries.take(4).map { entry ->
+                        val stream = entry.streamEntity
+                        val title = if (stream.uploader.isBlank()) {
+                            stream.title
+                        } else {
+                            "${stream.title}\n${stream.uploader}"
+                        }
                         QuickPlayTile(
-                            title = entry.streamEntity.title,
-                            artworkUrl = entry.streamEntity.thumbnailUrl,
-                            streamUrl = entry.streamEntity.url,
-                            serviceId = entry.streamEntity.serviceId
+                            title = title,
+                            artworkUrl = stream.thumbnailUrl,
+                            streamUrl = stream.url,
+                            serviceId = stream.serviceId
                         )
                     }
                     renderQuickPlay(tiles)
@@ -146,21 +153,26 @@ class HomeDataLoader(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ streams ->
-                    val items = streams.take(HOME_CAROUSEL_LIMIT).mapNotNull { withState ->
-                        val stream = withState.stream
-                        if (stream.url.isEmpty()) {
-                            return@mapNotNull null
+                    val items = streams.asSequence()
+                        .map { it.stream }
+                        .filter { isMusicCandidate(it.streamType, it.duration) }
+                        .take(HOME_CAROUSEL_LIMIT)
+                        .mapNotNull { stream ->
+                            if (stream.url.isEmpty()) {
+                                return@mapNotNull null
+                            }
+                            StreamInfoItem(
+                                stream.serviceId,
+                                stream.url,
+                                stream.title,
+                                stream.streamType
+                            ).apply {
+                                uploaderName = stream.uploader
+                                thumbnails =
+                                    ImageStrategy.dbUrlToImageList(stream.thumbnailUrl)
+                            }
                         }
-                        StreamInfoItem(
-                            stream.serviceId,
-                            stream.url,
-                            stream.title,
-                            stream.streamType
-                        ).apply {
-                            uploaderName = stream.uploader
-                            thumbnails = ImageStrategy.dbUrlToImageList(stream.thumbnailUrl)
-                        }
-                    }
+                        .toList()
                     callbacks.madeForYou().submitList(items)
                     callbacks.binding()?.let { binding ->
                         val visibility = if (items.isEmpty()) View.GONE else View.VISIBLE
@@ -192,12 +204,9 @@ class HomeDataLoader(
                 .subscribe({ kiosk ->
                     val items = kiosk.relatedItems
                         .filterIsInstance<StreamInfoItem>()
-                        .sortedWith(
-                            compareBy(
-                                { !HomeFragment.isAudioLeaning(it.streamType) },
-                                { it.name.lowercase() }
-                            )
-                        ).take(HOME_CAROUSEL_LIMIT)
+                        .filter { isMusicCandidate(it.streamType, it.duration) }
+                        .sortedBy { it.name.lowercase() }
+                        .take(HOME_CAROUSEL_LIMIT)
                     if (items.isEmpty()) {
                         loadTrendingHistoryFallback(appContext)
                     } else {
@@ -220,18 +229,24 @@ class HomeDataLoader(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ entries ->
-                    val items = entries.take(HOME_CAROUSEL_LIMIT).map { entry ->
-                        StreamInfoItem(
-                            entry.streamEntity.serviceId,
-                            entry.streamEntity.url,
-                            entry.streamEntity.title,
-                            entry.streamEntity.streamType
-                        ).apply {
-                            uploaderName = entry.streamEntity.uploader
-                            thumbnails =
-                                ImageStrategy.dbUrlToImageList(entry.streamEntity.thumbnailUrl)
+                    val items = entries.asSequence()
+                        .map { it.streamEntity }
+                        .filter { isMusicCandidate(it.streamType, it.duration) }
+                        .take(HOME_CAROUSEL_LIMIT)
+                        .map { stream ->
+                            StreamInfoItem(
+                                stream.serviceId,
+                                stream.url,
+                                stream.title,
+                                stream.streamType
+                            ).apply {
+                                duration = stream.duration
+                                uploaderName = stream.uploader
+                                thumbnails =
+                                    ImageStrategy.dbUrlToImageList(stream.thumbnailUrl)
+                            }
                         }
-                    }
+                        .toList()
                     showTrendingItems(items)
                     updateEmptyState()
                 }, { error ->
@@ -249,6 +264,11 @@ class HomeDataLoader(
             binding.homeTrendingTitle.visibility = visibility
             binding.homeTrendingList.visibility = visibility
         }
+    }
+
+    private fun isMusicCandidate(streamType: StreamType, duration: Long): Boolean {
+        return streamType == StreamType.AUDIO_STREAM &&
+            duration in MIN_MUSIC_DURATION_SECONDS..MAX_MUSIC_DURATION_SECONDS
     }
     /*
     fun loadPodcasting() {
@@ -380,6 +400,8 @@ class HomeDataLoader(
 
     companion object {
         private const val HOME_CAROUSEL_LIMIT = 10
+        private const val MIN_MUSIC_DURATION_SECONDS = 60L
+        private const val MAX_MUSIC_DURATION_SECONDS = 15 * 60L
         private const val TAG = "HomeDataLoader"
     }
 }
