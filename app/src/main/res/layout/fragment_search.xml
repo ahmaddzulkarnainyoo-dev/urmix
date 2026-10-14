@@ -34,11 +34,20 @@
         android:layout_marginRight="8dp"
         android:background="?attr/separator_color" />
 
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/search_music_filters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_meta_info_separator"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/items_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/search_meta_info_separator"
+        android:layout_below="@id/search_music_filters"
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/list_stream_item" />
@@ -72,11 +81,23 @@
             tools:ignore="HardcodedText,UnusedAttribute" />
 
         <com.winatra.urmix.views.NewPipeTextView
+            android:id="@+id/empty_state_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/search_no_results"
             android:textSize="24sp" />
+
+        <com.winatra.urmix.views.NewPipeTextView
+            android:id="@+id/empty_state_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:text="Coba kata kunci lain"
+            android:textSize="14sp"
+            android:textColor="@color/urmix_text_secondary"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 

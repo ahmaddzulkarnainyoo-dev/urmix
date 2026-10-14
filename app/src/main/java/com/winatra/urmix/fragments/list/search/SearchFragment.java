@@ -40,6 +40,7 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.Chip;
 import com.evernote.android.state.State;
 
 import com.winatra.urmix.R;
@@ -60,6 +61,7 @@ import org.schabi.newpipe.extractor.playlist.PlaylistInfoItem;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
 import org.schabi.newpipe.extractor.search.SearchInfo;
 import org.schabi.newpipe.extractor.services.peertube.linkHandler.PeertubeSearchQueryHandlerFactory;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory;
 import com.winatra.urmix.fragments.BackPressable;
 import com.winatra.urmix.fragments.list.BaseListFragment;
@@ -79,7 +81,9 @@ import com.winatra.urmix.view.OfflineBannerHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -114,6 +118,10 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
     // FASE 5 §12.2: offline banner + reconnect retry for the last search.
     private NetworkStateObserver networkObserver;
     private OfflineBannerHelper offlineBanner;
+    private boolean musicFilterChipsAvailable;
+
+    private static final long MIN_MUSIC_STREAM_DURATION_SECONDS = 60;
+    private static final long MAX_MUSIC_STREAM_DURATION_SECONDS = 15 * 60;
 
     @State
     int filterItemCheckedId = -1;
@@ -232,6 +240,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
 
         updateService();
         applyDefaultMusicFilter();
+        setupMusicFilterChips();
         // Add the service name to search string hint
         // to make it more obvious which platform is being searched.
         if (service != null) {
@@ -260,7 +269,111 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
                 service.getSearchQHFactory().getAvailableContentFilter();
         if (availableFilters.contains(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS)) {
             contentFilter = new String[]{YoutubeSearchQueryHandlerFactory.MUSIC_SONGS};
+        } else if (availableFilters.contains("tracks")) {
+            contentFilter = new String[]{"tracks"};
         }
+    }
+
+    private void setupMusicFilterChips() {
+        final var chipGroup = searchBinding.searchMusicFilters;
+        chipGroup.removeAllViews();
+        chipGroup.setVisibility(View.GONE);
+        musicFilterChipsAvailable = false;
+        if (service == null) {
+            return;
+        }
+
+        final List<String> availableFilters =
+                service.getSearchQHFactory().getAvailableContentFilter();
+        final Map<String, Integer> musicFilters = new LinkedHashMap<>();
+        if (availableFilters.contains(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS)) {
+            musicFilters.put(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS, R.string.songs);
+        } else if (availableFilters.contains("tracks")) {
+            musicFilters.put("tracks", R.string.songs);
+        }
+        addAvailableMusicFilter(musicFilters, availableFilters,
+                "music_albums", R.string.albums);
+        addAvailableMusicFilter(musicFilters, availableFilters,
+                "music_artists", R.string.artists);
+        if (availableFilters.contains("users")) {
+            if (!musicFilters.containsKey("users")) {
+                musicFilters.put("users", R.string.artists);
+            }
+        }
+        addAvailableMusicFilter(musicFilters, availableFilters,
+                "music_playlists", R.string.playlists);
+        if (availableFilters.contains("playlists")) {
+            if (!musicFilters.containsKey("playlists")) {
+                musicFilters.put("playlists", R.string.playlists);
+            }
+        }
+        if (musicFilters.isEmpty()) {
+            return;
+        }
+
+        musicFilterChipsAvailable = true;
+        chipGroup.setSingleSelection(true);
+        chipGroup.setVisibility(View.VISIBLE);
+        addMusicFilterChip("", R.string.all);
+        for (final Map.Entry<String, Integer> filter : musicFilters.entrySet()) {
+            addMusicFilterChip(filter.getKey(), filter.getValue());
+        }
+        updateMusicFilterChipSelection();
+    }
+
+    private static void addAvailableMusicFilter(final Map<String, Integer> musicFilters,
+                                                final List<String> availableFilters,
+                                                final String filter,
+                                                final int label) {
+        if (availableFilters.contains(filter)) {
+            musicFilters.put(filter, label);
+        }
+    }
+
+    private void addMusicFilterChip(final String filter, final int label) {
+        final Chip chip = (Chip) LayoutInflater.from(requireContext())
+                .inflate(R.layout.chip, searchBinding.searchMusicFilters, false);
+        chip.setText(label);
+        chip.setCheckable(true);
+        chip.setTag(filter);
+        chip.setOnClickListener(view -> selectMusicFilter(filter, chip));
+        searchBinding.searchMusicFilters.addView(chip);
+    }
+
+    private void selectMusicFilter(final String filter, final Chip chip) {
+        contentFilter = filter.isEmpty() ? new String[0] : new String[]{filter};
+        filterItemCheckedId = -1;
+        chip.setChecked(true);
+        updateMusicFilterChipSelection();
+        if (service != null) {
+            if (filter.isEmpty()) {
+                searchEditText.setHint(getString(R.string.search_with_service_name,
+                        service.getServiceInfo().getName()));
+            } else {
+                searchEditText.setHint(getString(R.string.search_with_service_name_and_filter,
+                        service.getServiceInfo().getName(), chip.getText()));
+            }
+        }
+        if (!TextUtils.isEmpty(searchString)) {
+            search(searchString, contentFilter, sortFilter);
+        }
+    }
+
+    private void updateMusicFilterChipSelection() {
+        final String selectedFilter = contentFilter.length == 0 ? "" : contentFilter[0];
+        for (int i = 0; i < searchBinding.searchMusicFilters.getChildCount(); i++) {
+            final Chip chip = (Chip) searchBinding.searchMusicFilters.getChildAt(i);
+            chip.setChecked(selectedFilter.equals(chip.getTag()));
+        }
+    }
+
+    private boolean isMusicSongSearch() {
+        final List<String> filters = Arrays.asList(contentFilter);
+        if (!musicFilterChipsAvailable && filters.isEmpty()) {
+            return true;
+        }
+        return filters.contains(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS)
+                || filters.contains("tracks");
     }
 
     @Override
@@ -1038,6 +1151,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
         }
 
         contentFilter = theContentFilter.toArray(new String[0]);
+        updateMusicFilterChipSelection();
 
         if (!TextUtils.isEmpty(searchString)) {
             search(searchString, contentFilter, sortFilter);
@@ -1206,8 +1320,19 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
 
     private List<InfoItem> filterSearchItems(final List<? extends InfoItem> items) {
         return items.stream()
-                .filter(item -> !(item instanceof ChannelInfoItem)
-                        && !(item instanceof PlaylistInfoItem))
+                .filter(item -> {
+                    if (isMusicSongSearch()
+                            && (item instanceof ChannelInfoItem
+                            || item instanceof PlaylistInfoItem)) {
+                        return false;
+                    }
+                    if (item instanceof StreamInfoItem) {
+                        final long duration = ((StreamInfoItem) item).getDuration();
+                        return duration >= MIN_MUSIC_STREAM_DURATION_SECONDS
+                                && duration <= MAX_MUSIC_STREAM_DURATION_SECONDS;
+                    }
+                    return true;
+                })
                 .collect(Collectors.toList());
     }
 
